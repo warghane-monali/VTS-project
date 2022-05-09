@@ -1,0 +1,667 @@
+import React, {useEffect, useRef, useState} from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
+import {createBrowserHistory} from 'history'
+import {makeStyles} from '@mui/styles'
+import {Button, IconButton, Modal, Paper, TextField, Typography} from '@mui/material'
+import {connect, useDispatch} from 'react-redux'
+import DeleteIcon from '@mui/icons-material/Delete'
+import * as ActionCreators from "../../actions/requestAction";
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import moment from "moment";
+import Stack from "@mui/material/Stack";
+import CloseIcon from '@mui/icons-material/Close';
+import Alert from "@mui/material/Alert";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
+import AddLocationIcon from '@mui/icons-material/AddLocation';
+import {usePlacesWidget} from "react-google-autocomplete";
+import {trackDestinationLocation, trackLocationSuccess, trackSourceLocation} from "../../actions/trackLocationAction";
+import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
+import Geocode from "react-geocode";
+import DesktopDateTimePicker from "@mui/lab/DesktopDateTimePicker";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
+import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
+
+Geocode.setApiKey("AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo");
+
+
+const filter = createFilterOptions();
+
+const Request = ({sourceLocation, destinationLocation, userDetails, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData}) => {
+
+    const classes = useStyles();
+    const history = createBrowserHistory();
+    const navigate = useNavigate();
+    const routeLocation = useLocation();
+    const [locationData, setLocationData] = useState(routeLocation?.state);
+    let dispatch = useDispatch();
+    const currentDateTime = new Date();
+    const currentAddDateTime = currentDateTime.setMinutes(15);
+    const [travellerList, setTravellerList] = useState(travellerListData&&travellerListData.length>0?travellerListData:[]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [travellerCounter, setTravellerCounter] = useState(0);
+    const [travellerName, setTravellerName] = useState('');
+    const [travellerNumber, setTravellerNumber] = useState('');
+    const [designation, setDesignation] = useState('');
+    const [travellerId, setTravellerId] = useState('');
+    const [source, setSource] = useState(null);
+    const [destination, setDestination] = useState(null);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const [vehicle, setVehicle] = useState('');
+    const [reason, setReason] = useState('');
+    const [error, setError] = useState(false);
+    const [errorMsg, setErrorMsg] = useState(false);
+    const [tripStatus, setTripStatus] = useState('');
+    const [value, setValue] = useState(null);
+    const inputRef = useRef(null);
+    const antInputRef = useRef(null);
+    const [country, setCountry] = useState("IN");
+
+
+    const { ref: sourceRef } = usePlacesWidget({
+        apiKey: 'AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo',
+        onPlaceSelected: (place) => {
+            console.log(place);
+            setSource(place && place.formatted_address);
+            const latitude=place.geometry.location.lat();
+            const longitude=place.geometry.location.lng();
+            dispatch(trackSourceLocation({lat: latitude, lng: longitude, place:place}));
+        },
+        inputAutocompleteValue: "IN",
+        options: {
+            types: ["geocode", "establishment"],
+            componentRestrictions: { country },
+        },
+    });
+
+    const { ref: destinationRef } = usePlacesWidget({
+        apiKey: 'AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo',
+        onPlaceSelected: (place) => {
+            console.log(place);
+            setDestination(place && place.formatted_address);
+            const latitude=place.geometry.location.lat();
+            const longitude=place.geometry.location.lng();
+            dispatch(trackDestinationLocation({lat:latitude, lng: longitude, place: place}));
+        },
+        inputAutocompleteValue: "IN",
+        options: {
+            types: ["geocode", "establishment"],
+            componentRestrictions: { country },
+        },
+    });
+    // const [vehicles, setVehicles] = useState(vehicleList);
+    // const [userList, setUserList] = useState(allUserList);
+
+
+    useEffect(() => {
+        getVehicleListData();
+        getAllUserListData({userRole: userDetails && userDetails?.user.userRole});
+    }, []);
+
+    useEffect(() => {
+        getLocation();
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log("Latitude is :", position.coords.latitude);
+            console.log("Longitude is :", position.coords.longitude);
+            dispatch(trackLocationSuccess({lat: position.coords.latitude, lng: position.coords.longitude}));
+            getCurrentAddress(position.coords.latitude, position.coords.longitude)
+        });
+        // if (requestRideData === null) return;
+        // if (requestRideData && requestRideData?.selfTravellerNo){
+        //     navigate('/dashboard/request-status')
+        // }
+    }, []);
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showError);
+        } else {
+            setErrorMsg("Geolocation is not supported by this browser.")
+        }
+    }
+
+    const showError =(error)=> {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                setErrorMsg("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                setErrorMsg("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                setErrorMsg("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                setErrorMsg("An unknown error occurred.");
+                break;
+        }
+    };
+
+
+    const getCurrentAddress = (latitude, longitude) =>{
+        if(locationData && locationData.name ==='source'){
+            setSource(sourceLocation.place);
+            setDestination(destinationLocation.place);
+        } else if (locationData && locationData.name ==='destination' ) {
+            setSource(sourceLocation.place);
+            setDestination(destinationLocation.place);
+        } else {
+            Geocode.fromLatLng(latitude, longitude).then(
+                (response) => {
+                    const address = response.results[0].formatted_address;
+                    // setSource(address);
+                    // setSourceLocation({lat: latitude, lng: longitude, place: address})
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+        }
+
+    };
+
+    const addTraveller = e => {
+        e.preventDefault();
+        setTravellerName(travellerName.trim());
+        setTravellerNumber(travellerNumber.trim());
+        if (travellerName !== '' && travellerNumber !== '') {
+            setTravellerList([
+                ...travellerList,
+                {
+                    id: travellerId?travellerId !== null && travellerId !== undefined && travellerId:0,
+                    name: travellerName,
+                    number: travellerNumber,
+                    designation:''
+                }
+            ]);
+            setTravellerCounter(pState => pState + 1);
+            setTravellerName('');
+            setTravellerNumber('');
+            setIsOpen(false);
+            setTravellerListData(travellerList)
+        }
+
+    };
+
+    const handleRequest = async (e) => {
+        setError(false);
+        e.preventDefault();
+        if (
+            tripStatus !==' ' && tripStatus !=='' &&
+            source !=='' &&
+            destination !=='' &&
+            startDate !=='' &&
+            endDate !=='' &&
+            reason !==''
+        ) {
+            flushRequestState();
+
+            // const selectedVehicle = vehicles.filter(v => vehicle === v._id)[0];
+            // const requestedVehicleType = vehicles && vehicles.length > 0 ? 'vehicle' : 'traveller';
+            const firstName = userDetails && userDetails?.user?.firstName !== null ? userDetails && userDetails?.user?.firstName : '';
+            const middleName = userDetails && userDetails?.user?.middleName !== null ? userDetails && userDetails?.user?.middleName : '';
+            const lastName = userDetails && userDetails?.user?.lastName !== null ? userDetails && userDetails?.user?.lastName : '';
+            const fullName = firstName +' '+ middleName +' '+ lastName;
+            let travellerIdArray = [];
+            travellerList.map((item, index)=>{
+                travellerIdArray.push(item.id)
+            });
+            const data = await setTravellerRequestData(
+                {
+                    selfTravellerId : userDetails && userDetails?.user._id,
+                    selfTravellerName : fullName,
+                    selfTravellerNo : userDetails && userDetails?.user?.contactNo,
+                    travellersId: travellerIdArray,
+                    travellersDetails: travellerList,
+                    source: source,
+                    oneWayOrRoundTrip:tripStatus,
+                    destination: destination,
+                    startDateTime : moment(startDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
+                    endDateTime : moment(endDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
+                    // requestedVehicleType : selectedVehicle.vehicleType,
+                    sourceLat: sourceLocation && sourceLocation.lat,
+                    sourceLong: sourceLocation && sourceLocation.lng,
+                    destinationLat: destinationLocation && destinationLocation.lat,
+                    destinationLong: destinationLocation && destinationLocation.lng,
+                    reason: reason,
+                    capacity: travellerList && travellerList?.length > 0 ? travellerList?.length + 1: 1,
+                    createdBy: userDetails.user._id
+                }
+            );
+            if(data){
+                navigate('/dashboard/request-status')
+            }
+        }
+        else{
+            setError(true);
+        }
+    };
+
+    const onInputChange =(event,value) => {
+        console.log(value);
+        setTravellerName(value)
+    };
+
+    const selectedNumberOnChange = (event, value)=>{
+        event.preventDefault();
+        if(value !== null && value!==undefined && value !== ''){
+            const firstName = value.firstName !== null ? value.firstName : '';
+            const middleName = value.middleName !== null ? value.middleName : '';
+            const lastName = value.lastName !== null ? value.lastName : '';
+            const fullName = firstName +' '+ middleName +' '+ lastName;
+            setTravellerName(fullName);
+            setTravellerNumber(value.contactNo);
+            setTravellerId(value._id);
+            setDesignation(value.designation)
+        }
+        console.log(value)
+    };
+
+    // const validate = (inputText) => {
+    //     setValue(validator.trim(inputText))
+    // };
+
+
+    return (
+        <div className={classes.root}>
+            <main className={classes.main}>
+                <Typography variant='h6' component='div' className={classes.heading} >
+                   Request
+                </Typography>
+                <FormControl style={{ margin:15}}>
+                    <RadioGroup value={tripStatus}
+                                onChange={(e)=>setTripStatus(e.target.value)} row name="row-radio-buttons-group">
+                        <FormControlLabel value="OneWay" control={<Radio />} label="One way" />
+                        <FormControlLabel value="RoundTrip" control={<Radio />} label="Round Trip" />
+                    </RadioGroup>
+                </FormControl>
+                <TextField
+                    inputRef={sourceRef}
+                    error={source === ""}
+                    helperText={source === "" ? 'Please enter source of your journey' : ' '}
+                    required
+                    label='Start Location'
+                    className={classes.textFields}
+                    value={source}
+                    onChange={e => setSource(e.target.value.replace(/^\s+/g, ''))}
+                    InputProps={{
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton onClick={e => {
+                                    navigate('/dashboard/map-view', {state: 'source'})
+                                }}>
+                                    <AddLocationIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                    }}
+                />
+                <TextField
+                    inputRef={destinationRef}
+                    error={destination === ""}
+                    helperText={destination === "" ? 'Please enter destination of your journey' : ' '}
+                    required
+                    inputProps={{pattern: "[a-z]"}}
+                    label='End Location'
+                    className={classes.textFields}
+                    value={destination}
+                    onChange={e => setDestination(e.target.value.replace(/^\s+/g, ''))}
+                    InputProps={{
+                        endAdornment:
+                            <InputAdornment position="end">
+                                <IconButton onClick={e => {
+                                    navigate('/dashboard/map-view', {state: 'destination'});
+                                }}>
+                                    <AddLocationIcon/>
+                                </IconButton>
+                            </InputAdornment>
+                    }}
+                />
+                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                {/*    <TextField className={classes.textFields}*/}
+                {/*               id="datetime-local"*/}
+                {/*               label="Start Date and Time"*/}
+                {/*               type="datetime-local"*/}
+                {/*               defaultValue={startDate}*/}
+                {/*               minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 40 * 60 * 1000)}*/}
+                {/*               onChange={(newValue) => {*/}
+                {/*                   setStartDate(newValue);*/}
+                {/*               }}*/}
+                {/*               InputLabelProps={{*/}
+                {/*                   shrink: true,*/}
+                {/*               }}*/}
+                {/*    />*/}
+                {/*</LocalizationProvider>*/}
+                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
+                {/*    <TextField className={classes.textFields}*/}
+                {/*               id="datetime-local"*/}
+                {/*               label="End Date and Time"*/}
+                {/*               type="datetime-local"*/}
+                {/*               defaultValue={endDate}*/}
+                {/*               minDateTime={new Date(startDate && startDate.getTime() + 15 * 60 * 1000)}*/}
+                {/*               onChange={(newValue) => {*/}
+                {/*                   setEndDate(newValue);*/}
+                {/*               }}*/}
+                {/*               InputLabelProps={{*/}
+                {/*                   shrink: true,*/}
+                {/*               }}*/}
+                {/*    />*/}
+                {/*</LocalizationProvider>*/}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <MobileDateTimePicker
+                        renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                        label="Start Date and Time"
+                        value={startDate}
+                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 40*60*1000)}
+                        onChange={(newValue) => {
+                            setStartDate(newValue);
+                        }}
+                        inputFormat="yyyy/MM/dd hh:mm a"
+                        mask="___/__/__ __:__ _M"
+                    />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <MobileDateTimePicker
+                        renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                        label="End Date and Time"
+                        value={endDate}
+                        minDateTime={new Date(startDate && startDate.getTime() + 15*60*1000)}
+                        onChange={(newValue) => {
+                            setEndDate(newValue);
+                        }}
+                    />
+                </LocalizationProvider>
+                <TextField
+                    error={reason && reason.length < 20}
+                    helperText={reason && reason.length < 20 ? 'Reason should be  grater than 20': ' '}
+                    required
+                    inputProps={{pattern: "[a-z]"}}
+                    label='Reason For Travel'
+                    placeholder="Reason should be minimum 20 character....."
+                    className={classes.textFields}
+                    multiline
+                    rows={2}
+                    value={reason}
+                    onChange={e => setReason(e.target.value.replace(/^\s+/g, ''))}
+                />
+                <Stack style={{width:'100%', marginTop:16}} direction="column" justifyContent="flex-start" alignItems="flex-start">
+                    <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                        <TableContainer component={Paper}>
+                            <Table size="small" aria-label="a dense table">
+                                <TableBody>
+                                    <TableRow >
+                                        <TableCell component="th" scope="row">
+                                            {`${userDetails?.user.firstName}` +' '+ `${userDetails?.user.middleName?userDetails?.user.middleName:''}` +' '+ `${  userDetails?.user.lastName}`}
+                                        </TableCell>
+                                        <TableCell >
+                                            <span>{`${userDetails.user.contactNo}`}</span>
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                            Self
+                                        </TableCell>
+                                    </TableRow>
+                                    {travellerList.map((traveller, index) => (
+                                        <TableRow key={index}>
+
+                                            <TableCell component="th" scope="row">
+                                                {traveller.name}
+                                            </TableCell>
+                                            <TableCell  component="th" scope="row">
+                                                {traveller.number}
+                                            </TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <IconButton
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        setTravellerList(travellerList.filter(t => t.id !== traveller.id));
+                                                        setTravellerListData(travellerList.filter(t => t.id !== traveller.id))
+                                                    }}><DeleteIcon/>
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        {error? <Alert
+                            severity="warning"
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        setError(false);
+                                    }}>
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                            }
+                            sx={{ mb: 2 }}
+                        >
+                            Please fill request form properly.
+                        </Alert>:null}
+                    </div>
+                </Stack>
+                <Stack style={{width:'100%', marginTop: '20px'}}
+                       direction="column"
+                       justifyContent="flex-start"
+                       alignItems="flex-start">
+                    <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                        <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
+                                onClick={e => {e.preventDefault(); setIsOpen(pState => !pState)}}>
+                            Add Traveller
+                        </Button>
+                    </div>
+                </Stack>
+                <Stack style={{width:'100%'}}
+                       direction="column"
+                       justifyContent="flex-start"
+                       alignItems="flex-start">
+                    <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                        <Button sx={{marginTop: '20px'}} variant="contained" size="medium" style={{padding:'4px 15px' }}
+                                onClick={handleRequest}>
+                            Submit Request
+                        </Button>
+                    </div>
+                </Stack>
+
+                <Modal
+                    className={classes.middlePosition}
+                    open={isOpen}
+                    onClose={e => {
+                        e.preventDefault();
+                        setIsOpen(false)
+                    }}>
+                    <Paper className={classes.form} style={{padding: 16}}>
+                        <Stack direction="row" justifyContent="space-between"
+                               alignItems="center" spacing={2}>
+                            <Stack direction="column">
+                                <Typography variant='h6' component='div'>Add Traveller Details</Typography>
+                                <Typography variant='caption' component='div'>Please add the person you would like to travel with</Typography>
+                            </Stack>
+                            <IconButton aria-label="delete" onClick={e => {
+                                e.preventDefault();
+                                setIsOpen(false)
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Stack>
+                        <hr className={classes.divider}/>
+                        <Autocomplete
+                            freeSolo
+                            id="userList"
+                            disableClearable
+                            onChange={(event, value) =>
+                                selectedNumberOnChange(event,value)
+                            }
+                            onInputChange={onInputChange}
+                            options={allUserList}
+                            getOptionLabel={(option, index) => {
+                                let fullName = `${option.firstName} ${option.middleName===null?'':option.middleName+' '} ${option.lastName}`;
+                                return fullName
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    className={classes.textField}
+                                    label="Name"
+                                    type="Name"
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        type: 'search',
+                                    }}
+                                />
+                            )}
+                        />
+
+                        <TextField
+                            label='Number'
+                            className={classes.textField}
+                            value={travellerNumber}
+                            onChange={e => {setTravellerNumber(e.target.value); setTravellerId(0)}}
+                        />
+                        <Alert severity="info">{errorMsg}</Alert>
+                        <Stack
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <Button size="medium" variant="contained"
+                                    onClick={addTraveller}>
+                                Add Traveller
+                            </Button>
+                        </Stack>
+                    </Paper>
+                </Modal>
+            </main>
+            <div style={{height:100, width:'100%'}}> </div>
+        </div>
+    )
+};
+
+const mapStateToProps = state => {
+    return {
+        userDetails: state.auth.userDetails,
+        loading: state.request.loading,
+        requestRideData: state.request.requestRideData,
+        allUserList: state.request.allUserList,
+        vehicleList: state.request.vehicleList,
+        travellerListData: state.request.travellerListData,
+        destinationLocation: state.trackLocation.destinationLocation,
+        sourceLocation: state.trackLocation.sourceLocation,
+        error: state.request.error
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        setTravellerRequestData: (requestBody) => dispatch(ActionCreators.setTravellerRequestData(requestBody)),
+        getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
+        setTravellerListData: (requestBody) => dispatch(ActionCreators.setTravellerListData(requestBody)),
+        getAllUserListData: (requestBody) => dispatch(ActionCreators.getAllUserListData(requestBody)),
+        flushRequestState: () => dispatch(ActionCreators.flushRequestState())
+    }
+};
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        height: '100%',
+        background: '#fcfcfc',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    appbar: {
+        alignItems: 'center',
+        padding: '15px',
+        background: '#0c1572 !important',
+    },
+    appbarBackIcon: {
+        fontSize: '40px !important'
+    },
+    main: {
+        height: 'calc(100% - 70px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        maxWidth: '600px'
+    },
+    heading: {
+        color: theme.palette.primary.main,
+        margin: '20px !important'
+    },
+    textFields: {
+        width: '100% !important',
+        marginBottom: '24px !important'
+    },
+    textField: {
+        width: '100% !important',
+        marginBottom: '15px !important'
+    },
+    placeholders: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    button: {
+        background: '#0c1572 !important',
+        color: 'white !important',
+    },
+    divider: {
+        width: '100%',
+        margin: '20px 0',
+    },
+    mainButton: {
+        background: '#0c1572 !important',
+        color: 'white !important',
+        padding: '0.5rem 3rem !important',
+        borderRadius: '50px !important'
+    },
+    form: {
+        padding: '20px',
+        borderRadius: '20px !important',
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    travellerHeading: {
+        fontWeight: 'bolder !important',
+        position: 'relative',
+        right: '160px',
+        marginLeft: '58px !important',
+        marginBottom: '18px !important',
+    },
+    travellerItem: {
+        width: '100%',
+        marginBottom: '16px',
+        display: 'flex',
+        justifyContent: 'space-between',
+    },
+    itemLeftSection: {
+        color: 'black',
+        paddingLeft: '15px'
+    },
+    itemRightSection: {
+        color: 'grey !important',
+        paddingRight: '15px',
+        display: 'flex',
+        alignItems: 'center'
+    },
+    middlePosition: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+}));
+
+export default connect(mapStateToProps, mapDispatchToProps)(Request)
