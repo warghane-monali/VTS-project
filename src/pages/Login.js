@@ -21,7 +21,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
     const [loginWithEmail, setLoginWithEmail] = useState(false);
     const [sendOtpForSignUp, setSendOtpForSignUp] = useState(false);
     const [open, setOpen] = React.useState(false);
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(true);
     const [error, setError] = React.useState();
     const [success, setSuccess] = React.useState(false);
     const [otpSuccess, setOtpSuccess] = React.useState(false);
@@ -73,10 +73,11 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                 newLoginOtp: otp
             });
             if(result && result.errors){
-                setOpen(true);
-                setError(result.errors);
+                setOtpVSuccess(true);
+                setError(result.message);
             }else{
-                setOtpVSuccess(true)
+                setOtpVSuccess(true);
+                setError(result.message);
             }
         }
     };
@@ -190,7 +191,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                                 }}
                             />
                         </div>:null}
-                        <div style={{width:'90%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', marginLeft:'5%'}}>
+                        <div style={{width:'90%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginLeft:'5%'}}>
                             {loginWithEmail && !sendOtpForSignUp?<Button className={classes.button} onClick={handleClick}>
                                 Send OTP
                             </Button>:null}
@@ -200,6 +201,12 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                             {loginWithEmail && sendOtpForSignUp?<Button className={classes.button} onClick={verifyOtoForSignUp}>
                                 Verify OTP
                             </Button>:null}
+                            {loginWithEmail && sendOtpForSignUp && <Button className={classes.button} onClick={()=>{
+                                setSendOtpForSignUp(false)
+                                setLoginWithEmail(false)
+                            }}>
+                                Back
+                            </Button>}
                         </div>
                         <div style={{width:'90%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin:'5%', marginTop:'3rem', marginBottom:'3rem'}}>
                             <Typography variant='body-1' component='p' className={classes.heading}>
@@ -224,8 +231,8 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                         </Alert>
                     </Snackbar>
                     <Snackbar open={otpVSuccess} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                            Sign up successfully.
+                        <Alert onClose={handleClose} severity={error && error.startsWith('Not')?'error':'success'} sx={{ width: '100%' }}>
+                            {error && error.startsWith('Not')?error:'Sign up successfully.'}
                         </Alert>
                     </Snackbar>
                 </div>

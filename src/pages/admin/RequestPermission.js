@@ -339,7 +339,24 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             const carListData = await getCarListData({userRole:'SAKAAL PAPERS LTD.', startDate: requestDetail && requestDetail.startDateTime,
                 lat: requestDetail && requestDetail.sourceLat, log: requestDetail && requestDetail.sourceLong});
             setDriverList(driverListData);
-            setCarList(carListData);
+        if (carListData && carListData.message.startsWith('NO RECORD FOUND')){
+            setCarList([{
+                agencyName: "SAKAAL PAPERS LTD.",
+                agencyNumber: null,
+                capacity: "8",
+                createdBy: [],
+                homeLocation: "null",
+                make: "TOYOTA",
+                manufactureYear: "2013",
+                model: "INNOVA",
+                status: "Active",
+                updatedBy: [],
+                vehicleName: "PVT CAR",
+                vehicleNo: "MH12JZ8545",
+                vehicleType: "PVT CAR",
+                _id: "",
+            }]);
+        }
     };
 
     const onChangeDriverInfo =(value)=>{
@@ -496,28 +513,10 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                                 <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                                     Reason
                                                 </Typography>
-                                                <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                                <Typography variant='subtitle2' component='div'  style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                                                     {requestDetails.reason}
                                                 </Typography>
                                             </Box>
-                                            {/*<div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%'}}>*/}
-                                            {/*    <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left' }}>*/}
-                                            {/*        <Typography variant='body-2' component='div'>*/}
-                                            {/*            Start Date & Time*/}
-                                            {/*        </Typography>*/}
-                                            {/*        <Typography variant='subtitle2' component='div' style={{marginTop:8}}>*/}
-                                            {/*            {moment(requestDetails.startDateTime).format('DD/MM/YYYY hh:mm a')}*/}
-                                            {/*        </Typography>*/}
-                                            {/*    </div>*/}
-                                            {/*    <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>*/}
-                                            {/*        <Typography variant='body-2' component='div'>*/}
-                                            {/*            End Date & Time*/}
-                                            {/*        </Typography>*/}
-                                            {/*        <Typography variant='subtitle2' component='div' style={{marginTop:8}}>*/}
-                                            {/*            {moment(requestDetails.endDateTime).format('DD/MM/YYYY hh:mm a')}*/}
-                                            {/*        </Typography>*/}
-                                            {/*    </div>*/}
-                                            {/*</div>*/}
                                         </div>
                                     </Box>
                                 </div>
@@ -687,7 +686,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                 Accept Ride
                             </Typography>
                             <div className={classes.inputContainer}>
-                                {  vehicleList && vehicleList.length>0?<FormControl style={{width:'80%', margin:16}}>
+                                {  carList && carList.length>0 &&<FormControl style={{width:'80%', margin:16}}>
                                     <InputLabel id="selected-cars">Select Cars</InputLabel>
                                     <Select
                                         labelId="selected-cars"
@@ -697,12 +696,12 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         defaultValue={vehicle}
                                         onChange={e => onChangeVehicleInfo(e.target.value)}>
                                         {
-                                            vehicleList && vehicleList.map(vehicle => (
+                                            carList && carList.map(vehicle => (
                                                 <MenuItem key={vehicle._id} value={vehicle}>{vehicle.vehicleType} / {vehicle.vehicleNo} / {vehicle.capacity}</MenuItem>
                                             ))
                                         }
                                     </Select>
-                                </FormControl>:null}
+                                </FormControl>}
                                 <FormControl style={{width:'80%', margin:16}}>
                                     <InputLabel id="selected-cars">Select driver</InputLabel>
                                     <Select

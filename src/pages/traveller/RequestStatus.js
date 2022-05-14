@@ -50,6 +50,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                             {requestRideData?.requestStatus ==='APPROVED' ? 'Accepted Status':null}
                             {requestRideData?.requestStatus ==='REJECTED' ? 'Rejected Status':null}
                             {requestRideData?.requestStatus ==='CANCEL' ? 'Canceled Status':null}
+                            {requestRideData?.requestStatus === 'UNSERVICE' ? 'Canceled Status':null}
                         </Typography>
                         <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%',}}>
                             <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%', padding:12}}>
@@ -83,7 +84,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                             </Typography>
                                         </Paper>
                                         <div style={{display:'flex', flexDirection:'column', justifyContent:'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
-                                            <ImportExportIcon  sx={{fontSize:40, color: requestRideData?.requestStatus ==='PENDING' ? '#f99935': requestRideData?.requestStatus ==='ONGOING' ? '#bc9800':
+                                            <ImportExportIcon  sx={{fontSize:40, color: requestRideData?.requestStatus === 'UNSERVICE' ? '#cb7373': requestRideData?.requestStatus ==='PENDING' ? '#f99935': requestRideData?.requestStatus ==='ONGOING' ? '#bc9800':
                                                     requestRideData?.requestStatus ==='APPROVED' ? '#09984c':requestRideData?.requestStatus ==='REJECTED' ? '#f93125':'gray'}} />
                                         </div>
                                         <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
@@ -96,14 +97,14 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                             </Typography>
                                         </Paper>
                                     </Box>
-                                    <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center", margin: 10}}>
+                                    <Stack style={{display: 'flex', flexDirection: 'column', textAlign:"center", margin: 10}}>
                                         <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                             Reason
                                         </Typography>
-                                        <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                        <Typography variant='subtitle2'  component='h4' style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                                             {requestRideData.reason}
                                         </Typography>
-                                    </Box>
+                                    </Stack>
                                     <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%'}}>
                                         <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left' }}>
                                             <Typography variant='body-2' component='div'>
@@ -213,7 +214,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                                     <span>{`${userDetails.user.contactNo}`}</span>
                                                 </TableCell>
                                             </TableRow>
-                                            {requestRideData && requestRideData?.travellersDetails.map((traveller, index) => (
+                                            {requestRideData && requestRideData?.travellersDetails.length>0 && requestRideData?.travellersDetails.map((traveller, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell component="th" scope="row">
 
@@ -245,7 +246,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                 <p className={classes.itemLeftSection}>Date</p>
                                 <p className={classes.itemLeftSection}>Request</p>
                             </div>
-                            {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
+                            {requestRideData && requestRideData?.journeyStatus.length>0 && requestRideData?.journeyStatus.map((traveller, index) => (
                                 <div className={classes.travellerItem} key={index}>
                                     <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                     <div className={classes.itemRightSection}>
@@ -310,7 +311,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                     <p className={classes.itemLeftSection}>Date</p>
                                     <p className={classes.itemLeftSection}>Request</p>
                                 </div>
-                                {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
+                                {requestRideData && requestRideData?.journeyStatus.length>0 && requestRideData?.journeyStatus.map((traveller, index) => (
                                  <div className={classes.travellerItem} key={index}>
                                     <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                      <div className={classes.itemRightSection}>

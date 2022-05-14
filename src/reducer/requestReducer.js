@@ -12,7 +12,7 @@ const initialState = {
     travellersAllPreviousJourney: [],
     travellersAllUpcomingJourney: [],
     travellersLatestJourney:{},
-    vehicleListMaintenance:[],
+    identityPicURL:'',
     error: null,
 };
 
@@ -95,13 +95,12 @@ const requestReducer = (state = initialState, action) => {
                 travellerUpcomingPreviousRides:action.payload,
                 error: null,
             };
-        case 'SET_VEHICLE_MAINTENANCE':
+        case 'PROFILE_PIC_UPDATE':
             return {
                 ...state,
-                vehicleListMaintenance:action.payload,
-                error:null
+                identityPicURL:action.payload,
+                error: null,
             };
-
         case "LOGOUT": return {};
         default:
             return state
