@@ -12,6 +12,7 @@ const initialState = {
     travellersAllPreviousJourney: [],
     travellersAllUpcomingJourney: [],
     travellersLatestJourney:{},
+    vehicleListMaintenance:[],
     error: null,
 };
 
@@ -94,6 +95,13 @@ const requestReducer = (state = initialState, action) => {
                 travellerUpcomingPreviousRides:action.payload,
                 error: null,
             };
+        case 'SET_VEHICLE_MAINTENANCE':
+            return {
+                ...state,
+                vehicleListMaintenance:action.payload,
+                error:null
+            };
+
         case "LOGOUT": return {};
         default:
             return state

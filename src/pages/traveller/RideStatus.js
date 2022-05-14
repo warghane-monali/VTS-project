@@ -102,15 +102,15 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                                         Start Date & Time
                                     </Typography>
                                     <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                        {moment(requestRideData.startDateTime).format('DD/MM/YYYY hh:mm a')}
+                                        {moment(requestRideData.startDateTime).format('DD-MMMM-YYYY hh:mm a')}
                                     </Typography>
                                 </div>
-                                <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
+                                <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right',marginLeft:10}}>
                                     <Typography variant='body-2' component='div'>
                                         End Date & Time
                                     </Typography>
                                     <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                        {moment(requestRideData.endDateTime).format('DD/MM/YYYY hh:mm a')}
+                                        {moment(requestRideData.endDateTime).format('DD-MMMM-YYYY hh:mm a')}
                                     </Typography>
                                 </div>
                             </div>
@@ -222,7 +222,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                     </div>
                     {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
                         <div className={classes.travellerItem} key={index}>
-                            <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</div>
+                            <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                             <div className={classes.itemRightSection}>
                                 {traveller?.Status==='ONGOING' &&
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#bc9800'}}>
@@ -282,7 +282,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                         </div>
                         {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
                             <div className={classes.travellerItem} key={index}>
-                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</div>
+                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                 <div className={classes.itemRightSection}>  {traveller?.Status==='APPROVED'?
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#8ef976'}}>
                                         {traveller?.Status}

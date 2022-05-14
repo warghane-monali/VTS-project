@@ -78,6 +78,19 @@ export const setEndJourney = data => {
         payload: data
     }
 };
+export const setfeedback = data => {
+    return{
+        type: "SET_USER_FEEDBACK",
+        payload: data
+    }
+}
+
+export const setmaintenancelist = data => {
+    return {
+        type: "SET_VEHICLE_MAINTENANCE",
+        payload : data
+    }
+}
 
 
 export function getVehicleListData() {
@@ -158,6 +171,43 @@ export function updateVehicleListData(data) {
         };
         return fetch(BASE_URL + '/vehicle/vehicleU', requestOptions).then(response => response.json()).then(res => {
             dispatch(getVehicleListData());
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function AddMaintenanceData(data){
+
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleId", data.vehicleId);
+        urlencoded.append("vehicleName", data.vehicleName);
+        urlencoded.append("vehicleNo", data.vehicleNo);
+        urlencoded.append("maintenaceDescription", data.maintenaceDescription);
+        urlencoded.append("maintenaceCost", data.maintenaceCost);
+        urlencoded.append("maintenacePlace", data.maintenacePlace);
+        urlencoded.append("maintenacePlaceNo", data.maintenacePlaceNo);
+        urlencoded.append("maintenaceStartDate", data.maintenaceStartDate);
+        urlencoded.append("maintenaceEndDate", data.maintenaceEndDate);
+        urlencoded.append("odoMeterReading", data.odoMeterReading);
+
+        urlencoded.append("homeLocation", data.homeLocation);
+        urlencoded.append("createdBy", data.createdBy);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/vehiclemaintenance/insertvehiclemaintenance', requestOptions).then(response => response.json()).then(res => {
+            dispatch(setmaintenancelist());
+            return res
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -426,5 +476,34 @@ export function setEndJourneyData(data) {
             .catch((error) => {
                 console.error('Error:', error);
             });
+    }
+}
+
+export function setfeedbackdata(userDetails){
+    return dispatch => {
+        console.log('In set feedback')
+
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("userId", userDetails.user._id);
+
+
+        let requestOptions ={
+            method : 'PUT',
+            headers : myHeaders,
+            body : urlencoded,
+            redirect : 'follow'
+        }
+        
+        //return fetch(BASE_URL+'/journey/feedback',requestOptions).then(response => response.json())
+       // .then(res => {
+        //     dispatch(setfeedback(res));
+        //     return res;
+        // })
+        // .catch( ( error ) => {
+        //     console.log('error',error);
+        // } );
     }
 }
