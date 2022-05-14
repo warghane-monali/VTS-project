@@ -30,6 +30,8 @@ import RideStatus from "./pages/traveller/RideStatus";
 import DriverRideStatus from "./pages/driver/DriverRideStatus";
 import MapView from "./pages/traveller/MapView";
 import Reports from "./pages/admin/Reports";
+import Feedback from "./pages/traveller/Feedback";
+import VehicleMaintenancepage from "./pages/admin/VehicleMaintenancepage";
 
 function App({userDetails, adminDetails}) {
 
@@ -60,6 +62,7 @@ function App({userDetails, adminDetails}) {
             <Route path="upcoming-rides" element={<TravellerUpcomingRides/>}/>
             <Route path="previous-rides" element={<TravellerPreviousRides/>}/>
             <Route path="map-view" element={<MapView/>}/>
+            <Route path="feedback" element={ <Feedback /> } />
           </Route>
           <Route path="driver" element={<Dashboard/>}>
             <Route path="dashboard" element={<DriverDashboard/>}/>
@@ -82,6 +85,7 @@ function App({userDetails, adminDetails}) {
             <Route path='drivers' element={<AllDrivers/>}/>
             <Route path='all-vehicle' element={<AllVehicle/>}/>
             <Route path='reports' element={<Reports/>}/>
+            <Route path='VehicleMaintenancepage' element={ <VehicleMaintenancepage /> } />
           </Route>
         </Routes>
       </div>

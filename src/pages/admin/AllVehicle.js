@@ -24,6 +24,9 @@ import Select from '@mui/material/Select';
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
 import Alert from "@mui/material/Alert";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -123,7 +126,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData}) => {
+const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData,AddMaintenanceData}) => {
 
     const classes = useStyles();
     const [data, setData] = useState([]);
@@ -131,6 +134,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [isOpen, setIsOpen] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const [openMaintenance, setOpenMaintenace] = useState(false);
     const [vehicleId, setVehicleId] = useState('');
     const [agencyName, setAgencyName] = useState();
     const [agencyNumber, setAgencyNumber] = useState();
@@ -145,6 +149,13 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [searched, setSearched] = useState("");
     const [count, setCount] = useState(0);
     const [error, setError] = useState(false);
+    const [maintenaceDescription,setmaintenaceDescription] = useState("");
+    const [maintenaceCost,setmaintenaceCost] = useState("");
+    const [maintenacePlace,setmaintenacePlace] = useState(""); 
+    const [maintenacePlaceNo,setmaintenacePlaceNo] = useState("");
+    const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
+    const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
+    const [odoMeterReading,setodoMeterReading] = useState('');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -191,6 +202,23 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setHomeLocation(row.homeLocation);
         setOpenEdit(true);
     };
+
+    const handleMaintenanceClickOpen = (row) => {
+        console.log('In handle click maintainence',row)
+        setVehicleId(row._id);
+        setVehicleName(row.vehicleName);
+        setVehicleNo(row.vehicleNo);
+        setmaintenaceDescription('');
+        setmaintenaceCost('');
+        setmaintenacePlace('');
+        setmaintenacePlaceNo('');
+        setmaintenaceStartDate('');
+        setmaintenaceEndDate('');
+        setodoMeterReading('');
+
+        setOpenMaintenace(true);
+    };
+
 
     const addVehicleDetails = async (e) => {
         if (
@@ -264,6 +292,46 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
 
     };
 
+    const AddMaintenanceDetails = async (e) => {
+        if (
+            vehicleId !==' ' &&
+            vehicleName !=='' &&
+            vehicleNo !=='' &&
+            maintenaceDescription !=='' &&
+            maintenaceCost !=='' &&
+            maintenacePlace !=='' &&
+            maintenacePlaceNo !=='' &&
+            maintenaceStartDate !=='' &&
+            maintenaceEndDate !=='' &&
+            odoMeterReading !=='' &&
+            homeLocation !=='' &&
+            adminDetails?.user._id !==''
+        ) {
+            e.preventDefault();
+            const data = await AddMaintenanceData({
+                vehicleId: vehicleId,
+                vehicleName: vehicleName,
+                vehicleNo: vehicleNo,
+                maintenaceDescription : maintenaceDescription ,
+                maintenaceCost: maintenaceCost,
+                maintenacePlace : maintenacePlace ,
+                maintenacePlaceNo : maintenacePlaceNo ,
+                maintenaceStartDate : maintenaceStartDate ,
+                maintenaceEndDate : maintenaceEndDate ,
+                odoMeterReading : odoMeterReading ,
+
+                homeLocation: homeLocation,
+                createdBy: adminDetails?.user._id
+            });
+            if(data){
+                await getVehicleList()
+            }
+        }else {
+            setError(true);
+        }
+
+    };
+
     const requestSearch = (searchedVal) => {
         setSearched(searchedVal);
         let filteredRows;
@@ -323,7 +391,10 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                         <TableCell>{row.capacity}</TableCell>
                                         <TableCell>{row.vehicleNo}</TableCell>
                                         {/*<TableCell>{row.contactNo}</TableCell>*/}
+                                        <TableCell>
                                         <Button style={{margin:4, padding:2, width:40}} variant="contained" size="small" onClick={()=>handleEditClickOpen(row)}>Edit</Button>
+                                        <Button style={{margin:4, padding:2}} variant="contained" size="large" onClick={()=>handleMaintenanceClickOpen(row)}>Maintenance</Button>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
@@ -340,6 +411,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
+            {/* Add vehicle */}
             <Modal
                 className={classes.middlePosition}
                 open={isOpen} onClose={e => {
@@ -386,7 +458,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                     />
                     <TextField style={{margin:8}}
                                required
-                               error={capacity.match(/[^0-9]/g) ? 'Please enter valid capacity' : ''}
+                               error= { capacity.match(/[^0-9]/g) ? 'Please enter valid capacity' : ''}
                                helperText={capacity.match(/[^0-9]/g) ? 'Please enter valid capacity' : ''}
                                label='Capacity'
                                className={classes.textFields}
@@ -466,6 +538,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                     </div>
                 </Paper>
             </Modal>
+            {/* Edit vehicle */}
             <Modal
                 className={classes.middlePosition}
                 open={openEdit} onClose={e => {
@@ -557,7 +630,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                         />
                         <FormControl >
                             <InputLabel id="demo-simple-select-label">License</InputLabel>
-                        <Select style={{minWidth:200}}
+                        <Select style={{minWidth:200,margin:8}}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="License">
@@ -567,7 +640,6 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             <MenuItem value={30}>Motorcycles </MenuItem>
                         </Select>
                         </FormControl>
-                    </div>
                     {error? <Alert
                         severity="warning"
                         action={
@@ -590,6 +662,154 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                     }}>
                         Update Vehicle Details
                     </Button>
+                    </div>
+                </Paper>
+            </Modal>
+            {/* Add vehicle Maintenance */}
+            <Modal
+                className={classes.middlePosition}
+                open={openMaintenance} onClose={e => {
+                e.preventDefault();
+                setOpenMaintenace(false)
+            }}>
+                <Paper className={classes.form} sx={{
+                    p: 1,
+                    m: 1,
+                    borderRadius: 1,
+                    textAlign: 'center',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                }}>
+                    <div style={{display: 'flex', flexDirection: 'row',  justifyItems: 'center', justifyContent: 'space-between',  }}>
+                        <Typography style={{margin:8}}
+                                    variant='h5'
+                                    component='div'>
+                            Add Vehicle Maintenance Details
+                        </Typography>
+                        <IconButton aria-label="delete" onClick={e => {e.preventDefault(); setOpenMaintenace(false)}}>
+                            <CloseIcon />
+                        </IconButton>
+                    </div>
+                    <hr className={classes.divider}/>
+                    <div className={classes.form}>
+                        <TextField
+                            style={{margin:8}}
+                            required
+                        //    error={vehicleName.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle name' : ''}
+                        //    helperText={vehicleName.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle name' : ''}
+                            label='Vehicle Name'
+                            className={classes.textFields}
+                            value={vehicleName}
+                            onChange={e => {setVehicleName(e.target.value)}}
+                        />
+                        <TextField
+                            style={{margin:8}}
+                            label='Vehicle No'
+                            required
+                        //    error={vehicleNo.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                        //    helperText={vehicleNo.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            className={classes.textFields}
+                            value={vehicleNo}
+                            onChange={e => {setVehicleNo(e.target.value)}}
+                        />
+                        <TextField 
+                            style={{margin:8}}
+                            label='Maintenace Description'
+                            required
+                            error={maintenaceDescription.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            helperText={maintenaceDescription.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            className={classes.textFields}
+                            value={maintenaceDescription}
+                            onChange={e => {setmaintenaceDescription(e.target.value)}}
+                        />
+                        <TextField 
+                            style={{margin:8}}
+                            label='Maintenace Cost'
+                            required
+                            error={maintenaceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            helperText={maintenaceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            className={classes.textFields}
+                            value={maintenaceCost}
+                            onChange={e => {setmaintenaceCost(e.target.value)}}
+                        />
+                         <TextField 
+                            style={{margin:8}}
+                            label='Maintenace Place'
+                            required
+                            error={maintenacePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            helperText={maintenacePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            className={classes.textFields}
+                            value={maintenacePlace}
+                            onChange={e => {setmaintenacePlace(e.target.value)}}
+                        />
+                        <TextField 
+                            style={{margin:8}}
+                            label='Maintenace Place No '
+                            required
+                            error={maintenacePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            helperText={maintenacePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            className={classes.textFields}
+                            value={maintenacePlaceNo}
+                            onChange={e => {setmaintenacePlaceNo(e.target.value)}}
+                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker 
+                            value={maintenaceStartDate}
+                            label="Maintenance Start Date"
+                            onChange = { (newvalue) => {
+                                setmaintenaceStartDate(newvalue);
+                            } }
+                            renderInput={(params) => (
+                                <TextField  className={classes.textFields} style={{ margin:8 }} {...params} helperText={params?.inputProps?.placeholder} />
+                              )}
+                        />
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDateFns} >
+                        <DatePicker 
+                            style={{margin:8}}
+                            value={maintenaceEndDate}
+                            label="Maintenance Start Date"
+                            onChange = { (newvalue) => {
+                                setmaintenaceEndDate(newvalue);
+                            } }
+                            renderInput={(params) => (
+                                <TextField  className={classes.textFields} style={{ margin:8 }} {...params} helperText={params?.inputProps?.placeholder} />
+                              )}
+                        />
+                        </LocalizationProvider>
+                         <TextField
+                            style={{margin:8}}
+                            label='Odo Meter Reading'
+                            required
+                            error={ odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            helperText={ odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            className={classes.textFields}
+                            value={odoMeterReading}
+                            onChange={e => {setodoMeterReading(e.target.value)}}
+                        />
+                    {error? <Alert
+                        severity="warning"
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setError(false);
+                                }}>
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                        sx={{ mb: 2 }}>
+                        Please fill request form properly.
+                    </Alert>:null}
+                    <Button variant="contained" size="small" className={classes.button} style={{margin: 16}} onClick={(e)=>{
+                        e.preventDefault();
+                        AddMaintenanceDetails(e)
+                    }}>
+                        Add Vehicle Maintenance Details
+                    </Button>
+                    </div>
                 </Paper>
             </Modal>
         </div>
@@ -608,6 +828,7 @@ const mapDispatchToProps = dispatch => {
         getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
         addVehicleListData: (requestBody) => dispatch(ActionCreators.addVehicleListData(requestBody)),
         updateVehicleListData: (requestBody) => dispatch(ActionCreators.updateVehicleListData(requestBody)),
+        AddMaintenanceData: (requestBody) => dispatch(ActionCreators.AddMaintenanceData(requestBody)),
     }
 };
 

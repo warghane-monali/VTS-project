@@ -365,7 +365,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         onChange={(newValue) => {
                             setStartDate(newValue);
                         }}
-                        inputFormat="yyyy/MM/dd hh:mm a"
+                        inputFormat="yyyy-MMMM-dd hh:mm a"
                         mask="___/__/__ __:__ _M"
                     />
                 </LocalizationProvider>
@@ -378,6 +378,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}
+                        inputFormat="yyyy-MMMM-dd hh:mm a"
+                        mask="___/__/__ __:__ _M"
                     />
                 </LocalizationProvider>
                 <TextField

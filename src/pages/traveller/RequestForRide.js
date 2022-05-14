@@ -371,9 +371,9 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                 </IconButton>
                             </TabList>
                             <TabPanel value="0" style={{width: '95%', height:'100vh', padding:12}}>
-                                {travellersAllPreviousJourney && travellersAllPreviousJourney.length > 0 && travellersAllPreviousJourney.map((item, index) => {
+                                {travellersAllPreviousJourney && travellersAllPreviousJourney.length > 0 ? travellersAllPreviousJourney.map((item, index) => {
                                     return renderUpcomingList(item, index)
-                                })}
+                                }) : null }
                             </TabPanel>
                             <TabPanel style={{width: '95%', height:'100vh', padding:12}} value="1">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
@@ -457,9 +457,9 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                 </IconButton>
                             </TabList>
                             <TabPanel value="0">
-                                {travellersAllUpcomingJourney && travellersAllUpcomingJourney.length > 0 && travellersAllUpcomingJourney.map((item, index) => {
+                                {travellersAllUpcomingJourney && travellersAllUpcomingJourney.length > 0 ? travellersAllUpcomingJourney.map((item, index) => {
                                     return renderUpcomingList(item, index)
-                                })}
+                                }) : null}
                             </TabPanel>
                             <TabPanel value="1">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
@@ -769,6 +769,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '20px !important',
         margin: '10px 0',
         padding: '20px',
+        marginBottom : '10pxw'
     },
     upperRow: {
         display: 'flex',

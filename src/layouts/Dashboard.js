@@ -37,6 +37,8 @@ const Dashboard = ({userDetails, adminDetails, changeLang,  userLogout}) => {
             navigate('/admin/dashboard')
         }else if(userDetails && userDetails?.user.userRole==='Traveller'){
             navigate('/dashboard/request-for-ride')
+            // navigate('/dashboard/feedback')
+
         }else if(userDetails && userDetails?.user.userRole==='Driver'){
             navigate('/driver/dashboard')
         }
