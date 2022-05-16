@@ -4,6 +4,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Rating } from '@mui/material';
 import * as ActionCreators from "../../actions/requestAction";
+import ToggleSwitch from '../../components/ToggleSwitch';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const labels = {
     1: 'Not Good',
@@ -27,11 +29,14 @@ const labels = {
     const [hover2, setHover2] = React.useState(-1);
     const [hover3, setHover3] = React.useState(-1);
     const [hover4, setHover4] = React.useState(-1);
+    const [question1,setquestion1] = React.useState(false);
     const classes = useStyles();
 
     console.log(userDetails.user.firstName);
   return (
     <div className={classes.root} >
+        <div className='row justify-content-center'>
+            <div className='col-12 col-md-8 col-lg-8'>
             <div className={classes.title}>
                 <h1 className={classes.header} ><strong>Feedback Page</strong></h1>
             </div>
@@ -110,11 +115,26 @@ const labels = {
                      />
                     {value4 !== null && <Box ml={2}>{labels[hover4 !== -1 ? hover4 : value4]}</Box>}      
                     </Paper>  
-                </div>        
+                </div>   
+
+                <div style={{flexDirection:'column', justifyContent:'space-between', maxWidth:400, flex:1}} >
+                    <Paper className={classes.card}  elevation={3} >
+                         <div  style={{ display:'flex',flexDirection:'row' }}>
+                             <div style={{flex:1}}>
+                                 <Typography component="legend">Was Driver polite ?</Typography>
+                             </div>
+                             <div style={{flex:1}}>
+                             <ToggleSwitch /> 
+                             </div>
+                         </div>
+                    </Paper>
+                </div>   
             </Box>
             <div style={{ textAlign:'center',marginTop:20,marginLeft:20 }}>
             <Button onClick={ () => { setfeedbackData(userDetails) } } variant="contained" color='success' >Submit feedback</Button>
             </div>
+            </div>
+        </div>
     </div>
   )
 }

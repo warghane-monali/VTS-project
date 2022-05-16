@@ -24,6 +24,8 @@ import ImportExportIcon from "@mui/icons-material/ImportExport";
 import * as ActionCreatorsDriver from "../../actions/driverAction";
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import Feedback from "./Feedback";
 
 const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourneyData,
                             getTravellerAllUpcomingJourneyData,
@@ -523,7 +525,6 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                 <div sx={{ display: { xs: 'none', sm: 'block' }}} style={{ flexDirection:'column'}}>
 
                 </div>
-
             </Box>
 
 
@@ -541,10 +542,14 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                             } else if (newValue === 2) {
                                 getUserPreviousRides()
                             }
+                            else if (newValue === 3){
+                                navigate('/dashboard/feedback')
+                            }
                         }}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon/>}/>
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon/>}/>
                         <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon/>}/>
+                        <BottomNavigationAction label="Feedback" icon={<FeedbackIcon />} />
                     </BottomNavigation>
                     <div>
                         <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>

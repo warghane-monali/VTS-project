@@ -28,6 +28,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+
 const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100vh',
@@ -294,22 +295,32 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
 
     const AddMaintenanceDetails = async (e) => {
         if (
-            vehicleId !==' ' &&
+           
+            console.log('ID checked') &&
             vehicleName !=='' &&
+            console.log('Name checked') &&
             vehicleNo !=='' &&
+            console.log('NO checked') &&
             maintenaceDescription !=='' &&
+            console.log('desc checked') &&
             maintenaceCost !=='' &&
+            console.log('cost checked') &&
             maintenacePlace !=='' &&
+            console.log('place checked') &&
             maintenacePlaceNo !=='' &&
+            console.log('maintainplace checked') &&
             maintenaceStartDate !=='' &&
+            console.log('start checked') &&
             maintenaceEndDate !=='' &&
+            console.log('end checked') &&
             odoMeterReading !=='' &&
-            homeLocation !=='' &&
+            console.log('odometer checked') &&
+            
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
             const data = await AddMaintenanceData({
-                vehicleId: vehicleId,
+               
                 vehicleName: vehicleName,
                 vehicleNo: vehicleNo,
                 maintenaceDescription : maintenaceDescription ,
@@ -320,7 +331,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 maintenaceEndDate : maintenaceEndDate ,
                 odoMeterReading : odoMeterReading ,
 
-                homeLocation: homeLocation,
+                
                 createdBy: adminDetails?.user._id
             });
             if(data){
@@ -328,6 +339,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             }
         }else {
             setError(true);
+            console.log('something went wrong')
         }
 
     };
@@ -768,7 +780,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                         <DatePicker 
                             style={{margin:8}}
                             value={maintenaceEndDate}
-                            label="Maintenance Start Date"
+                            label="Maintenance End Date"
                             onChange = { (newvalue) => {
                                 setmaintenaceEndDate(newvalue);
                             } }

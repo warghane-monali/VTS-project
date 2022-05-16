@@ -13,6 +13,7 @@ const initialState = {
     travellersAllUpcomingJourney: [],
     travellersLatestJourney:{},
     vehicleListMaintenance:[],
+    vehiclePetrolExpense:[],
     error: null,
 };
 
@@ -101,6 +102,12 @@ const requestReducer = (state = initialState, action) => {
                 vehicleListMaintenance:action.payload,
                 error:null
             };
+        case 'SET_VEHICLE_PETROL_EXPENSE':
+            return{
+                ...state,
+                vehiclePetrolExpense:action.payload,
+                error:null
+            }
 
         case "LOGOUT": return {};
         default:
