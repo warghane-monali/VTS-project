@@ -266,13 +266,13 @@ const useStyles = makeStyles(theme => ({
             }
                 </div>
 
-                <div className='card' style={{ flex:1 }}>
+    
                 <Box style={ { marginLeft:20,marginRight:20,marginBottom:20 } } >
-                <Card variant='outlined'>
+                <Card>
                     {card}
                 </Card>
                 </Box>
-                </div>
+              
             </div>
 
         </div>

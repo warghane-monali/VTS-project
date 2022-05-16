@@ -32,7 +32,7 @@ const labels = {
     const [question1,setquestion1] = React.useState(false);
     const classes = useStyles();
 
-    console.log(userDetails.user.firstName);
+    console.log(userDetails.user._id);
   return (
     <div className={classes.root} >
         <div className='row justify-content-center'>
