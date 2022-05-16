@@ -109,7 +109,7 @@ const Dashboard = ({userDetails, adminDetails, changeLang,  userLogout}) => {
                 </Menu>
             </AppBar>
 
-            <div style={{marginTop:'52px', overflow:'auto'}}>
+            <div style={{marginTop:'52px', marginBottom:'130px'}}>
                 <Outlet/>
             </div>
         </div>

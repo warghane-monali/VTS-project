@@ -27,8 +27,6 @@ import {usePlacesWidget} from "react-google-autocomplete";
 import {trackDestinationLocation, trackLocationSuccess, trackSourceLocation} from "../../actions/trackLocationAction";
 import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
 import Geocode from "react-geocode";
-import DesktopDateTimePicker from "@mui/lab/DesktopDateTimePicker";
-import MobileDatePicker from "@mui/lab/MobileDatePicker";
 import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
 
 Geocode.setApiKey("AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo");
@@ -55,16 +53,13 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [travellerId, setTravellerId] = useState('');
     const [source, setSource] = useState(null);
     const [destination, setDestination] = useState(null);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
+    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
     const [vehicle, setVehicle] = useState('');
     const [reason, setReason] = useState('');
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState(false);
     const [tripStatus, setTripStatus] = useState('');
-    const [value, setValue] = useState(null);
-    const inputRef = useRef(null);
-    const antInputRef = useRef(null);
     const [country, setCountry] = useState("IN");
 
 
@@ -109,41 +104,40 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     }, []);
 
     useEffect(() => {
-        getLocation();
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("Latitude is :", position.coords.latitude);
-            console.log("Longitude is :", position.coords.longitude);
-            dispatch(trackLocationSuccess({lat: position.coords.latitude, lng: position.coords.longitude}));
-            getCurrentAddress(position.coords.latitude, position.coords.longitude)
-        });
+        getLocationDataList()
         // if (requestRideData === null) return;
         // if (requestRideData && requestRideData?.selfTravellerNo){
         //     navigate('/dashboard/request-status')
         // }
     }, []);
 
-    function getLocation() {
+    const getLocationDataList = async ()=> {
+        await getLocation()
+        navigator.geolocation.getCurrentPosition(function(position) {
+            console.log("Latitude is :", position.coords.latitude);
+            console.log("Longitude is :", position.coords.longitude);
+            dispatch(trackLocationSuccess({lat: position.coords.latitude, lng: position.coords.longitude}));
+            getCurrentAddress(position.coords.latitude, position.coords.longitude)
+        });
+    };
+
+    const getLocation =async ()=> {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showError);
+            await navigator.geolocation.getCurrentPosition(showError);
         } else {
             setErrorMsg("Geolocation is not supported by this browser.")
         }
     }
 
-    const showError =(error)=> {
-        switch(error.code) {
-            case error.PERMISSION_DENIED:
-                setErrorMsg("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                setErrorMsg("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                setErrorMsg("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                setErrorMsg("An unknown error occurred.");
-                break;
+    const showError = (error)=> {
+        if (error && error.code && error.code !== undefined === error.PERMISSION_DENIED) {
+            setErrorMsg("User denied the request for Geolocation.");
+        } else if (error && error.code && error.code !== undefined === error.POSITION_UNAVAILABLE) {
+            setErrorMsg("Location information is unavailable.");
+        } else if (error && error.code && error.code !== undefined === error.TIMEOUT) {
+            setErrorMsg("The request to get user location timed out.");
+        } else if (error && error.code && error.code !== undefined === error.UNKNOWN_ERROR) {
+            setErrorMsg("An unknown error occurred.");
         }
     };
 
@@ -178,7 +172,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             setTravellerList([
                 ...travellerList,
                 {
-                    id: travellerId?travellerId !== null && travellerId !== undefined && travellerId:0,
+                    id: travellerId?travellerId:0,
                     name: travellerName,
                     number: travellerNumber,
                     designation:''
@@ -213,6 +207,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             const lastName = userDetails && userDetails?.user?.lastName !== null ? userDetails && userDetails?.user?.lastName : '';
             const fullName = firstName +' '+ middleName +' '+ lastName;
             let travellerIdArray = [];
+
             travellerList.map((item, index)=>{
                 travellerIdArray.push(item.id)
             });
@@ -248,8 +243,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     };
 
     const onInputChange =(event,value) => {
-        console.log(value);
-        setTravellerName(value)
+        const xyz = value.replace(/^\s+/g, '')
+        setTravellerName(xyz)
     };
 
     const selectedNumberOnChange = (event, value)=>{
@@ -258,18 +253,13 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             const firstName = value.firstName !== null ? value.firstName : '';
             const middleName = value.middleName !== null ? value.middleName : '';
             const lastName = value.lastName !== null ? value.lastName : '';
-            const fullName = firstName +' '+ middleName +' '+ lastName;
+            const fullName = firstName.replace(/^\s+/g, '') +' '+ middleName.replace(/^\s+/g, '') +' '+ lastName.replace(/^\s+/g, '');
             setTravellerName(fullName);
             setTravellerNumber(value.contactNo);
             setTravellerId(value._id);
             setDesignation(value.designation)
         }
-        console.log(value)
     };
-
-    // const validate = (inputText) => {
-    //     setValue(validator.trim(inputText))
-    // };
 
 
     return (
@@ -326,46 +316,16 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                             </InputAdornment>
                     }}
                 />
-                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-                {/*    <TextField className={classes.textFields}*/}
-                {/*               id="datetime-local"*/}
-                {/*               label="Start Date and Time"*/}
-                {/*               type="datetime-local"*/}
-                {/*               defaultValue={startDate}*/}
-                {/*               minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 40 * 60 * 1000)}*/}
-                {/*               onChange={(newValue) => {*/}
-                {/*                   setStartDate(newValue);*/}
-                {/*               }}*/}
-                {/*               InputLabelProps={{*/}
-                {/*                   shrink: true,*/}
-                {/*               }}*/}
-                {/*    />*/}
-                {/*</LocalizationProvider>*/}
-                {/*<LocalizationProvider dateAdapter={AdapterDateFns}>*/}
-                {/*    <TextField className={classes.textFields}*/}
-                {/*               id="datetime-local"*/}
-                {/*               label="End Date and Time"*/}
-                {/*               type="datetime-local"*/}
-                {/*               defaultValue={endDate}*/}
-                {/*               minDateTime={new Date(startDate && startDate.getTime() + 15 * 60 * 1000)}*/}
-                {/*               onChange={(newValue) => {*/}
-                {/*                   setEndDate(newValue);*/}
-                {/*               }}*/}
-                {/*               InputLabelProps={{*/}
-                {/*                   shrink: true,*/}
-                {/*               }}*/}
-                {/*    />*/}
-                {/*</LocalizationProvider>*/}
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <MobileDateTimePicker
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="Start Date and Time"
                         value={startDate}
-                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 40*60*1000)}
+                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000)}
                         onChange={(newValue) => {
                             setStartDate(newValue);
                         }}
-                        inputFormat="yyyy-MMMM-dd hh:mm a"
+                        inputFormat="dd/MM/yyy hh:mm a"
                         mask="___/__/__ __:__ _M"
                     />
                 </LocalizationProvider>
@@ -378,17 +338,17 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}
-                        inputFormat="yyyy-MMMM-dd hh:mm a"
+                        inputFormat="dd/MM/yyy hh:mm a"
                         mask="___/__/__ __:__ _M"
                     />
                 </LocalizationProvider>
                 <TextField
-                    error={reason && reason.length < 20}
-                    helperText={reason && reason.length < 20 ? 'Reason should be  grater than 20': ' '}
+                    error={reason && reason.length < 100}
+                    helperText={reason && reason.length < 100 ? 'Reason should be  grater than 100': ' '}
                     required
                     inputProps={{pattern: "[a-z]"}}
                     label='Reason For Travel'
-                    placeholder="Reason should be minimum 20 character....."
+                    placeholder="Reason should be minimum 100 character....."
                     className={classes.textFields}
                     multiline
                     rows={2}
@@ -413,7 +373,6 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                                     </TableRow>
                                     {travellerList.map((traveller, index) => (
                                         <TableRow key={index}>
-
                                             <TableCell component="th" scope="row">
                                                 {traveller.name}
                                             </TableCell>
@@ -447,8 +406,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                                     <CloseIcon fontSize="inherit" />
                                 </IconButton>
                             }
-                            sx={{ mb: 2 }}
-                        >
+                            sx={{ mb: 2 }}>
                             Please fill request form properly.
                         </Alert>:null}
                     </div>
@@ -526,18 +484,25 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         />
 
                         <TextField
-                            label='Number'
+                            required
+                            error={travellerNumber.length !== 10}
+                            helperText={travellerNumber.length<=9 || travellerNumber.match(/[^0-9]/g) ? 'Please enter valid mobile No.' : ''}
+                            variant="outlined"
+                            placeholder='Mobile No.'
+                            inputProps={{maxLength: 10 , pattern: "[0-9]{0,10}"}}
                             className={classes.textField}
                             value={travellerNumber}
-                            onChange={e => {setTravellerNumber(e.target.value); setTravellerId(0)}}
+                            onChange={(e )=> {
+                                setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
+                                setTravellerId(0);
+                            }}
                         />
-                        <Alert severity="info">{errorMsg}</Alert>
+                        {errorMsg && <Alert severity="info">{errorMsg}</Alert>}
                         <Stack
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
-                            spacing={2}
-                        >
+                            spacing={2}>
                             <Button size="medium" variant="contained"
                                     onClick={addTraveller}>
                                 Add Traveller

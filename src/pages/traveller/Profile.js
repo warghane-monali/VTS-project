@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const Profile = ({ userDetails, setProfileUpdateData, setChangePasswordData }) => {
+const Profile = ({ userDetails, setProfileUpdateData, setChangePasswordData, setProfilePicUpdateData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -112,10 +112,11 @@ const Profile = ({ userDetails, setProfileUpdateData, setChangePasswordData }) =
         reader.readAsDataURL(file);
     };
 
-    const handleChange = e => {
+    const handleChange = async e => {
         if (e.target.files.length) {
             const img = URL.createObjectURL(e.target.files[0]);
             setImage(img);
+            const result = await setProfilePicUpdateData({userId: userDetails?.user._id, identityPicURL: img});
         }
     };
 
@@ -305,6 +306,7 @@ const mapDispatchToProps = dispatch => {
     return {
         setProfileUpdateData: (requestBody) => dispatch(ActionCreators.setProfileUpdateData(requestBody)),
         setChangePasswordData: (requestBody) => dispatch(ActionCreators.setChangePasswordData(requestBody)),
+        setProfilePicUpdateData: (requestBody) => dispatch(ActionCreators.setProfilePicUpdateData(requestBody)),
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)

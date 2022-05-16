@@ -8,6 +8,13 @@ export const setProfileUpdate = data => {
     }
 };
 
+export const setProfilePicUpdate = data => {
+    return {
+        type: "PROFILE_PIC_UPDATE",
+        payload: data
+    }
+};
+
 export const setChangePassword = data => {
     return {
         type: "CHANGE_PASSWORD",
@@ -42,6 +49,29 @@ export function setProfileUpdateData(data) {
         };
         return fetch(BASE_URL + '/user/useru', requestOptions).then(response => response.json()).then(res => {
             // dispatch(setProfileUpdate({user:res}));
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+export function setProfilePicUpdateData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("userId", data.userId);
+        urlencoded.append("identityPicURL", data.identityPicURL);
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/user/useruprofile', requestOptions).then(response => response.json()).then(res => {
+            dispatch(setProfilePicUpdate({user:res}));
         })
             .catch((error) => {
                 console.error('Error:', error);

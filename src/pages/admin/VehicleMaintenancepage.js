@@ -13,13 +13,6 @@ import Alert from "@mui/material/Alert";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
 
 
 const useStyles = makeStyles(theme => ({
@@ -91,7 +84,7 @@ const useStyles = makeStyles(theme => ({
     const [vehicleId, setVehicleId] = useState("");
     const [maintenaceDescription,setmaintenaceDescription] = useState("");
     const [maintenaceCost,setmaintenaceCost] = useState("");
-    const [maintenacePlace,setmaintenacePlace] = useState(""); 
+    const [maintenacePlace,setmaintenacePlace] = useState("");
     const [maintenacePlaceNo,setmaintenacePlaceNo] = useState("");
     const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
     const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
@@ -107,7 +100,7 @@ const useStyles = makeStyles(theme => ({
     useEffect(() => {
         getVehicleList();
     }, []);
-    
+
     const getVehicleList = async () => {
         const data = await getVehicleListData();
         setData(data);
@@ -126,12 +119,15 @@ const useStyles = makeStyles(theme => ({
         setmaintenaceStartDate('');
         setmaintenaceEndDate('');
         setodoMeterReading('');
-    
         setOpenMaintenace(true);
     };
-    
+
     const AddMaintenanceDetails = async (e) => {
+
         console.log('In Maintenance Details')
+
+        e.preventDefault();
+
         if (
          
           
@@ -156,8 +152,10 @@ const useStyles = makeStyles(theme => ({
             adminDetails?.user._id !==''
          
         ) {
+
             e.preventDefault();
             console.log("Assigning Value")
+
             const data = await AddMaintenanceData({
             
                 vehicleName: vehicleName,
@@ -169,8 +167,9 @@ const useStyles = makeStyles(theme => ({
                 maintenaceStartDate : maintenaceStartDate ,
                 maintenaceEndDate : maintenaceEndDate ,
                 odoMeterReading : odoMeterReading ,
+                homeLocation: homeLocation,
                 createdBy: adminDetails?.user._id
-             
+           
             });
             if(data){
                 await getVehicleList()
@@ -186,6 +185,11 @@ const useStyles = makeStyles(theme => ({
         setselectedvehicle(e.target.value)
         console.log('Selevted vehicle',selectedvehicle)
     }
+
+
+    };
+
+
 
     const card = (
        <div className="container" sx={{
@@ -253,7 +257,7 @@ const useStyles = makeStyles(theme => ({
                 <div className='select' style={ { flex:1 } }>
                 <h3>Select Vehicle:</h3>
             {
-                data.length === 0 
+                data.length === 0
                 ? " "
                 : <select value={selectedvehicle} onChange={ () => handleselect }   >
                     <option value="default">Select the vehicle</option>
@@ -325,7 +329,7 @@ const useStyles = makeStyles(theme => ({
                             value={vehicleNo}
                             onChange={e => {setVehicleNo(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Description'
                             required
@@ -333,7 +337,7 @@ const useStyles = makeStyles(theme => ({
                             value={maintenaceDescription}
                             onChange={e => {setmaintenaceDescription(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Cost'
                             required
@@ -343,7 +347,7 @@ const useStyles = makeStyles(theme => ({
                             value={maintenaceCost}
                             onChange={e => {setmaintenaceCost(e.target.value)}}
                         />
-                         <TextField 
+                         <TextField
                             style={{margin:8}}
                             label='Maintenace Place'
                             required
@@ -353,7 +357,7 @@ const useStyles = makeStyles(theme => ({
                             value={maintenacePlace}
                             onChange={e => {setmaintenacePlace(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Place No '
                             required
@@ -364,7 +368,7 @@ const useStyles = makeStyles(theme => ({
                             onChange={e => {setmaintenacePlaceNo(e.target.value)}}
                         />
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker 
+                        <DatePicker
                             value={maintenaceStartDate}
                             label="Maintenance Start Date"
                             onChange = { (newvalue) => {
@@ -376,7 +380,7 @@ const useStyles = makeStyles(theme => ({
                         />
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterDateFns} >
-                        <DatePicker 
+                        <DatePicker
                             style={{margin:8}}
                             value={maintenaceEndDate}
                             label="Maintenance End Date"
@@ -415,7 +419,6 @@ const useStyles = makeStyles(theme => ({
                         Please fill request form properly.
                     </Alert>:null}
                     <Button variant="contained" size="small" className={classes.button} style={{margin: 16}} onClick={(e)=>{
-                        e.preventDefault();
                         AddMaintenanceDetails(e)
                     }}>
                         Add Vehicle Maintenance Details

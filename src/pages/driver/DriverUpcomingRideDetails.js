@@ -38,7 +38,7 @@ const DriverUpcomingRideDetails = ({ requestRideData }) => {
                     <Typography variant='h6' component='div' style={{textAlign:'center'}}>
                         {rideDetails.vehicleName}
                     </Typography>
-                    <Typography variant='h6' component='div' style={{textAlign:'center'}}>
+                    <Typography variant='h6' component='div' style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                         {rideDetails.reason}
                     </Typography>
                     <hr />

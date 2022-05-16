@@ -381,7 +381,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                                 return renderList(item, index)
                             }):null}
                         </TabPanel>
-                        {filter?<TabPanel style={{width: '95%', height:'100vh', padding:12}} value="3">
+                        {filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
                             {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
                                 return renderList(item, index)
                             }) : null}
@@ -463,7 +463,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                                 return renderList(item, index)
                             }):null}
                         </TabPanel>
-                        { filter && value?<TabPanel style={{width: '95%', height:'100vh', padding:12}} value="3">
+                        { filter && value?<TabPanel style={{width: '95%',  padding:12}} value="3">
                             {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
                                 return renderList(item, index)
                             }) : null}
@@ -518,6 +518,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         onChange={(event, newValue) => {
                             setSelected(newValue);
                             getTabIndex(newValue);
+                            setTabValue(0)
                             if(newValue===1){
                                 getUserUpcomingRidesDataList()
                                 // getRequestDataByDate(moment().format('YYYY-MM-DD'))
