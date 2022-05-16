@@ -6,6 +6,7 @@ import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded
 import DirectionsCarRoundedIcon from '@mui/icons-material/DirectionsCarRounded'
 import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded'
 import CarRepairIcon from '@mui/icons-material/CarRepair';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import DirectionsWalkRoundedIcon from '@mui/icons-material/DirectionsWalkRounded'
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
 import React from "react";
@@ -16,7 +17,8 @@ const upperList = [
     { icon: <PersonRoundedIcon />, title: 'Employees', url:'/admin/employee-wise' },
     { icon: <ManageAccountsRoundedIcon />, title: 'Drivers', url: '/admin/drivers' },
     { icon: <DirectionsCarRoundedIcon />, title: 'Vehicles', url:'/admin/all-vehicle' },
-    { icon: <CarRepairIcon /> , title: 'Vehicle Maintenance', url : '/admin/VehicleMaintenancepage'  }
+    { icon: <CarRepairIcon /> , title: 'Vehicle Maintenance', url : '/admin/VehicleMaintenancepage'  },
+    { icon: <LocalGasStationIcon /> ,title:'Petrol Expense',url:'/admin/petrol-expense' }
 ];
 
 const lowerList = [

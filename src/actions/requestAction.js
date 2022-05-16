@@ -92,6 +92,12 @@ export const setmaintenancelist = data => {
     }
 }
 
+export const setPetrolExpenselist = data => {
+    return {
+        type: "SET_VEHICLE_PETROL_EXPENSE",
+        payload : data
+    }
+}
 
 export function getVehicleListData() {
     return dispatch => {
@@ -179,7 +185,7 @@ export function updateVehicleListData(data) {
 }
 
 export function AddMaintenanceData(data){
-
+    console.log('In Add Maintenance',data)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -212,6 +218,41 @@ export function AddMaintenanceData(data){
         .catch((error) => {
             console.error('Error:', error);
         });
+    }
+}
+
+export function AddPetrolExpenseData(data){
+    console.log('In Petrol Expense')
+    
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleName", data.vehicleName);
+        urlencoded.append("vehicleNo", data.vehicleNo);
+        urlencoded.append("petrolLiter", data.vehicleNo);
+        urlencoded.append("petrolCost", data.vehicleNo);
+        urlencoded.append("petrolFIllingPlace", data.vehicleNo);
+        urlencoded.append("Date", data.vehicleNo);
+        urlencoded.append("odoMeterReading", data.odoMeterReading);
+
+        
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        // return fetch(BASE_URL + '/vehiclemaintenance/insertvehiclemaintenance', requestOptions).then(response => response.json()).then(res => {
+        //     dispatch(setPetrolExpenselist());
+        //     return res
+        // })
+        // .catch((error) => {
+        //     console.error('Error:', error);
+        // });
+
     }
 }
 

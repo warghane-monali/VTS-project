@@ -12,6 +12,8 @@ const initialState = {
     travellersAllPreviousJourney: [],
     travellersAllUpcomingJourney: [],
     travellersLatestJourney:{},
+    vehicleListMaintenance:[],
+    vehiclePetrolExpense:[],
     identityPicURL:'',
     error: null,
 };
@@ -101,6 +103,13 @@ const requestReducer = (state = initialState, action) => {
                 identityPicURL:action.payload,
                 error: null,
             };
+
+        case 'SET_VEHICLE_PETROL_EXPENSE':
+            return{
+                ...state,
+                vehiclePetrolExpense:action.payload,
+                error:null
+            }
         case "LOGOUT": return {};
         default:
             return state

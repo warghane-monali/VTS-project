@@ -13,6 +13,13 @@ import Alert from "@mui/material/Alert";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 
 
 const useStyles = makeStyles(theme => ({
@@ -78,21 +85,19 @@ const useStyles = makeStyles(theme => ({
 
 
 
- const VehicleMaintenancepage = ({ adminDetails, vehicleList,getVehicleListData,AddMaintenanceData }) => {
+ const VehicleMaintenancepage = ({ adminDetails, vehicleList,getVehicleListData,AddPetrolExpenseData }) => {
 
     const classes = useStyles();
     const [vehicleId, setVehicleId] = useState("");
-    const [maintenaceDescription,setmaintenaceDescription] = useState("");
-    const [maintenaceCost,setmaintenaceCost] = useState("");
-    const [maintenacePlace,setmaintenacePlace] = useState("");
-    const [maintenacePlaceNo,setmaintenacePlaceNo] = useState("");
-    const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
-    const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
+    const [petrolLiter,setpetrolLiter] = useState("");
+    const [petrolCost,setpetrolCost] = useState("");
+    const [petrolFIllingPlace,setpetrolFIllingPlace] = useState("");
+    const [Date,setDate] = useState("");
     const [odoMeterReading,setodoMeterReading] = useState("");
     const [homeLocation, setHomeLocation] = useState("");
     const [vehicleName, setVehicleName] = useState("");
     const [vehicleNo, setVehicleNo] = useState("");
-    const [openMaintenance, setOpenMaintenace] = useState(false);
+    const [openPetrolExpense, setopenPetrolExpense] = useState(false);
     const [error, setError] = useState(false);
     const [data,setData] = useState([]);
     const [selectedvehicle,setselectedvehicle] = useState([]);
@@ -100,76 +105,51 @@ const useStyles = makeStyles(theme => ({
     useEffect(() => {
         getVehicleList();
     }, []);
-
+    
     const getVehicleList = async () => {
         const data = await getVehicleListData();
         setData(data);
         console.log('This is vehicle data',data)
     };
 
-    const handleMaintenanceClickOpen = () => {
-        console.log('In handle click maintainence')
-        setVehicleId('')
+    const handlePetrolExpenseClickOpen = () => {
+        console.log('In handle click Petrol Expense')
         setVehicleName('')
         setVehicleNo('')
-        setmaintenaceDescription('');
-        setmaintenaceCost('');
-        setmaintenacePlace('');
-        setmaintenacePlaceNo('');
-        setmaintenaceStartDate('');
-        setmaintenaceEndDate('');
+        setpetrolLiter('')
+        setpetrolCost('')
+        setpetrolFIllingPlace('')
+        setDate('')
         setodoMeterReading('');
-        setOpenMaintenace(true);
+        setopenPetrolExpense(true);
     };
-
-    const AddMaintenanceDetails = async (e) => {
-
-        console.log('In Maintenance Details')
-
-        e.preventDefault();
-
+    
+    const AddPetrolExpenseDetails = async (e) => {
+        console.log('In Petrol Expense Details')
         if (
-         
-          
             vehicleName !=='' &&
-          
             vehicleNo !=='' &&
-           
-            maintenaceDescription !=='' &&
-          
-            maintenaceCost !=='' &&
-     
-            maintenacePlace !=='' &&
-      
-            maintenacePlaceNo !=='' &&
-          
-            maintenaceStartDate !=='' &&
-         
-            maintenaceEndDate !=='' &&
-       
+            petrolLiter !=='' &&
+            petrolCost !=='' &&
+            petrolFIllingPlace !=='' &&
+            Date !=='' &&
             odoMeterReading !=='' &&
-
             adminDetails?.user._id !==''
          
         ) {
-
             e.preventDefault();
             console.log("Assigning Value")
-
-            const data = await AddMaintenanceData({
+            const data = await AddPetrolExpenseData({
             
                 vehicleName: vehicleName,
                 vehicleNo: vehicleNo,
-                maintenaceDescription : maintenaceDescription ,
-                maintenaceCost: maintenaceCost,
-                maintenacePlace : maintenacePlace ,
-                maintenacePlaceNo : maintenacePlaceNo ,
-                maintenaceStartDate : maintenaceStartDate ,
-                maintenaceEndDate : maintenaceEndDate ,
+                petrolLiter : petrolLiter,
+                petrolCost: petrolCost ,
+                petrolFIllingPlace : petrolFIllingPlace ,
+                Date: Date ,
                 odoMeterReading : odoMeterReading ,
-                homeLocation: homeLocation,
                 createdBy: adminDetails?.user._id
-           
+             
             });
             if(data){
                 await getVehicleList()
@@ -178,17 +158,7 @@ const useStyles = makeStyles(theme => ({
             setError(true);
         }
     
-    }; 
-    
-    function handleselect(e){
-        console.log('In Handle Select')
-        setselectedvehicle(e.target.value)
-        console.log('Selevted vehicle',selectedvehicle)
-    }
-
-
     };
-
 
 
     const card = (
@@ -238,7 +208,7 @@ const useStyles = makeStyles(theme => ({
                </div>
                 </div>
                 <CardActions style={ { justifyContent:'center' }  }>
-                <Button size='medium' variant="contained" className={classes.button} onClick={ () => handleMaintenanceClickOpen() } >Add Vehicle Maintenance</Button>
+                <Button size='medium' variant="contained" className={classes.button} onClick={ () => handlePetrolExpenseClickOpen() } >Add Petrol Expense</Button>
                 </CardActions>
              </div>
             </CardContent>
@@ -248,8 +218,7 @@ const useStyles = makeStyles(theme => ({
   return (
     <div className="container" >
         <Box sx={{display: 'flex', justifyContent: 'space-between', m: 3, bgcolor: 'background.paper',  '& button': { m: 1 } }} >
-            <div style={ { float:'left' } }><h1 >Vehicle Maintenance Details :-</h1></div>
-            {/* <div style={{ float:'right',marginTop:20 }} ><Button variant='contained' size='small' onClick={ () => handleMaintenanceClickOpen() } >Add Maintenance</Button></div> */}
+            <div style={ { float:'left' } }><h1 >Petrol Expense Details :-</h1></div>
         </Box>
         <div style={{ margin:20 }}>
             
@@ -257,26 +226,26 @@ const useStyles = makeStyles(theme => ({
                 <div className='select' style={ { flex:1 } }>
                 <h3>Select Vehicle:</h3>
             {
-                data.length === 0
+                data.length === 0 
                 ? " "
-                : <select value={selectedvehicle} onChange={ () => handleselect }   >
+                : <select value={selectedvehicle} onChange={ e => setselectedvehicle(e.target.value) }   >
                     <option value="default">Select the vehicle</option>
                     {
                         data.map( (data) => {
-                            return <option value={data} key={data._id}  >{data.vehicleNo}</option>
+                            return <option value={data} key={data._id}   >{data.vehicleNo}</option>
                         } )
                     }
                 </select>
             }
                 </div>
 
-    
+            
                 <Box style={ { marginLeft:20,marginRight:20,marginBottom:20 } } >
-                <Card>
+                <Card variant='outlined'>
                     {card}
                 </Card>
                 </Box>
-              
+
             </div>
 
         </div>
@@ -285,9 +254,9 @@ const useStyles = makeStyles(theme => ({
 
         <Modal
                 className={classes.middlePosition}
-                open={openMaintenance} onClose={e => {
+                open={openPetrolExpense} onClose={e => {
                 e.preventDefault();
-                setOpenMaintenace(false)
+                setopenPetrolExpense(false)
             }}>
                 <Paper className={classes.form} sx={{
                     p: 1,
@@ -301,9 +270,9 @@ const useStyles = makeStyles(theme => ({
                         <Typography style={{margin:8}}
                                     variant='h5'
                                     component='div'>
-                            Add Vehicle Maintenance Details
+                            Add Petrol Expense Details
                         </Typography>
-                        <IconButton aria-label="delete" onClick={e => {e.preventDefault(); setOpenMaintenace(false)}}>
+                        <IconButton aria-label="delete" onClick={e => {e.preventDefault(); setopenPetrolExpense(false)}}>
                             <CloseIcon />
                         </IconButton>
                     </div>
@@ -329,63 +298,40 @@ const useStyles = makeStyles(theme => ({
                             value={vehicleNo}
                             onChange={e => {setVehicleNo(e.target.value)}}
                         />
-                        <TextField
+                        <TextField 
                             style={{margin:8}}
-                            label='Maintenace Description'
+                            label='Petrol in Ltrs'
                             required
                             className={classes.textFields}
-                            value={maintenaceDescription}
-                            onChange={e => {setmaintenaceDescription(e.target.value)}}
+                            value={petrolLiter}
+                            onChange={e => {setpetrolLiter(e.target.value)}}
                         />
-                        <TextField
+                        <TextField 
                             style={{margin:8}}
-                            label='Maintenace Cost'
+                            label='Petrol Cost'
                             required
-                            error={maintenaceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
-                            helperText={maintenaceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            error={petrolCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            helperText={petrolCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
                             className={classes.textFields}
-                            value={maintenaceCost}
-                            onChange={e => {setmaintenaceCost(e.target.value)}}
+                            value={petrolCost}
+                            onChange={e => {setpetrolCost(e.target.value)}}
                         />
-                         <TextField
+                         <TextField 
                             style={{margin:8}}
-                            label='Maintenace Place'
+                            label='Petrol Filling Place'
                             required
-                            error={maintenacePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            helperText={maintenacePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            error={petrolFIllingPlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            helperText={petrolFIllingPlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
                             className={classes.textFields}
-                            value={maintenacePlace}
-                            onChange={e => {setmaintenacePlace(e.target.value)}}
-                        />
-                        <TextField
-                            style={{margin:8}}
-                            label='Maintenace Place No '
-                            required
-                            error={maintenacePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            helperText={maintenacePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            className={classes.textFields}
-                            value={maintenacePlaceNo}
-                            onChange={e => {setmaintenacePlaceNo(e.target.value)}}
+                            value={petrolFIllingPlace}
+                            onChange={e => {setpetrolFIllingPlace(e.target.value)}}
                         />
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
-                            value={maintenaceStartDate}
-                            label="Maintenance Start Date"
+                        <DatePicker 
+                            value={Date}
+                            label="Petrol filled Date"
                             onChange = { (newvalue) => {
-                                setmaintenaceStartDate(newvalue);
-                            } }
-                            renderInput={(params) => (
-                                <TextField  className={classes.textFields} style={{ margin:8 }} {...params} helperText={params?.inputProps?.placeholder} />
-                              )}
-                        />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDateFns} >
-                        <DatePicker
-                            style={{margin:8}}
-                            value={maintenaceEndDate}
-                            label="Maintenance End Date"
-                            onChange = { (newvalue) => {
-                                setmaintenaceEndDate(newvalue);
+                                setDate(newvalue);
                             } }
                             renderInput={(params) => (
                                 <TextField  className={classes.textFields} style={{ margin:8 }} {...params} helperText={params?.inputProps?.placeholder} />
@@ -419,9 +365,10 @@ const useStyles = makeStyles(theme => ({
                         Please fill request form properly.
                     </Alert>:null}
                     <Button variant="contained" size="small" className={classes.button} style={{margin: 16}} onClick={(e)=>{
-                        AddMaintenanceDetails(e)
+                        e.preventDefault();
+                        AddPetrolExpenseDetails(e)
                     }}>
-                        Add Vehicle Maintenance Details
+                        Add Petrol Expense Details
                     </Button>
                     </div>
                 </Paper>
@@ -441,7 +388,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
-        AddMaintenanceData: (requestBody) => dispatch(ActionCreators.AddMaintenanceData(requestBody)),
+        AddPetrolExpenseData: (requestBody) => dispatch(ActionCreators.AddPetrolExpenseData(requestBody)),
     }
 }
 

@@ -32,6 +32,7 @@ import MapView from "./pages/traveller/MapView";
 import Reports from "./pages/admin/Reports";
 import Feedback from "./pages/traveller/Feedback";
 import VehicleMaintenancepage from "./pages/admin/VehicleMaintenancepage";
+import PetrolExpense from "./pages/admin/PetrolExpense";
 
 function App({userDetails, adminDetails}) {
 
@@ -86,6 +87,7 @@ function App({userDetails, adminDetails}) {
             <Route path='all-vehicle' element={<AllVehicle/>}/>
             <Route path='reports' element={<Reports/>}/>
             <Route path='VehicleMaintenancepage' element={ <VehicleMaintenancepage /> } />
+            <Route path="petrol-expense" element={<PetrolExpense />} />
           </Route>
         </Routes>
       </div>
