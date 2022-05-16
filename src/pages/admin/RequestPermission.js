@@ -32,6 +32,8 @@ import TextareaAutosize from '@mui/base/TextareaAutosize';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
 import {useDispatch, useSelector} from "react-redux";
 import Alert from "@mui/material/Alert";
+import EditIcon from '@mui/icons-material/Edit';
+import {editDriverJourney, editVehicleJourney} from "../../actions/adminAction";
 
 
 const useStyles = makeStyles(theme => ({
@@ -301,7 +303,9 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListData, getDriverUserListData, setAcceptStatusData,
-                               getCarListData,  getDriverListData, setRejectCancelStatusData, setRejectStatusData}) => {
+                               getCarListData,  getDriverListData, setRejectCancelStatusData, setRejectStatusData,
+                               editDriverJourney,
+                               editVehicleJourney}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -319,6 +323,8 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const routeLocation = useLocation();
     const [locationData, setLocationData] = useState(routeLocation?.state);
     const [error, setError] = useState(false);
+    const [openDriverChange, setOpenDriverChange] = useState(false);
+    const [openVehicleType, setOpenVehicleType] = useState(false);
 
     useEffect(() => {
         getVehicleListData();
@@ -339,24 +345,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             const carListData = await getCarListData({userRole:'SAKAAL PAPERS LTD.', startDate: requestDetail && requestDetail.startDateTime,
                 lat: requestDetail && requestDetail.sourceLat, log: requestDetail && requestDetail.sourceLong});
             setDriverList(driverListData);
-        if (carListData && carListData.message.startsWith('NO RECORD FOUND')){
-            setCarList([{
-                agencyName: "SAKAAL PAPERS LTD.",
-                agencyNumber: null,
-                capacity: "8",
-                createdBy: [],
-                homeLocation: "null",
-                make: "TOYOTA",
-                manufactureYear: "2013",
-                model: "INNOVA",
-                status: "Active",
-                updatedBy: [],
-                vehicleName: "PVT CAR",
-                vehicleNo: "MH12JZ8545",
-                vehicleType: "PVT CAR",
-                _id: "",
-            }]);
-        }
+            setCarList(carListData);
     };
 
     const onChangeDriverInfo =(value)=>{
@@ -371,7 +360,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const acceptRequestData = async ()=>{
         if (
             driverInfo && driverInfo.firstName !==' ' && driverInfo && driverInfo.contactNo !=='' &&
-            vehicle && vehicle?._id
+            vehicle && vehicle?.vehicleId
         ) {
 
 
@@ -381,7 +370,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         const fullName = firstName +' '+ middleName +' '+ lastName;
         const result = await setAcceptStatusData({
             journeyId: requestDetails._id,
-            vehicleId: vehicle?._id,
+            vehicleId: vehicle?.vehicleId,
             agencyName: vehicle?.agencyName,
             vehicleName: vehicle?.vehicleName,
             vehicleNo: vehicle?.vehicleNo,
@@ -414,6 +403,39 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         }
     };
 
+    const changeDriverName = async ()=>{
+        const firstName = driverInfo?.firstName !== null ? driverInfo?.firstName : '';
+        const middleName = driverInfo?.middleName !== null ? driverInfo?.middleName : '';
+        const lastName = driverInfo?.lastName !== null ? driverInfo?.lastName : '';
+        const fullName = firstName +' '+ middleName +' '+ lastName;
+        const result = await editDriverJourney({
+            journeyId: requestDetails._id,
+            driverId: driverInfo._id,
+            driverName: fullName,
+            driverNo: driverInfo.contactNo,
+            updatedBy: adminDetails?.user._id,
+        });
+        setRequestDetails(result)
+        setOpenDriverChange(false)
+        console.log(result)
+
+    };
+
+    const changeVehicleType = async ()=>{
+        const result = await editVehicleJourney({
+            journeyId: requestDetails._id,
+            vehicleId: vehicle?.vehicleId,
+            agencyName: vehicle?.agencyName,
+            vehicleName: vehicle?.vehicleName,
+            vehicleNo: vehicle?.vehicleNo,
+            updatedBy: adminDetails?.user._id,
+        });
+        setRequestDetails(result)
+        setOpenVehicleType(false)
+        console.log(result)
+
+    };
+
     const goToMap = ( sourceLocationLat,sourceLocationLng, destinationLocationLat, destinationLocationLng)=> {
         let url = "https://www.google.com/maps/dir/?api=1";
         let origin = "&origin=" + sourceLocationLat + "," + sourceLocationLng;
@@ -421,6 +443,14 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         // let openMapUrl = new URL();
         window.open(url+origin+destinationL, '_blank');
     };
+
+    const openDriverNameChange =()=> {
+        setOpenDriverChange(true)
+    }
+
+    const openVehicleTypeChange =()=> {
+        setOpenVehicleType(true)
+    }
 
     return (
         <div className={classes.root}>
@@ -523,15 +553,17 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                 {(requestDetails && (requestDetails.requestStatus==='APPROVED'))?
                                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
-                                            {/*<div style={{display: 'flex', flexDirection: 'column'}}>*/}
-                                            {/*    <img style={{width: '80px'}}*/}
-                                            {/*         alt="React"*/}
-                                            {/*         src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVA_HrQLjkHiJ2Ag5RGuwbFeDKRLfldnDasw&usqp=CAU'*/}
-                                            {/*    />*/}
-                                            {/*</div>*/}
                                             <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
                                                 <Typography variant='body-1' component='h4'>
-                                                    Driver Name
+                                                    Driver Name <IconButton
+                                                    aria-label="close"
+                                                    color="inherit"
+                                                    size="small"
+                                                    onClick={() => {
+                                                        openDriverNameChange()
+                                                    }}>
+                                                    <EditIcon fontSize="inherit" />
+                                                </IconButton>
                                                 </Typography>
                                                 <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                     {requestDetails.driverName}
@@ -557,7 +589,15 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         <div style={{display: 'flex', flexDirection: 'column',}}>
                                             <div style={{display: 'flex', flexDirection: 'column', margin: '16px 0'}}>
                                                 <Typography variant='body-1' component='h4'>
-                                                    Vehicle Type Name
+                                                    Vehicle Type Name <IconButton
+                                                    aria-label="close"
+                                                    color="inherit"
+                                                    size="small"
+                                                    onClick={() => {
+                                                       openVehicleTypeChange()
+                                                    }}>
+                                                    <EditIcon fontSize="inherit" />
+                                                </IconButton>
                                                 </Typography>
                                                 <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                     {requestDetails.vehicleName}
@@ -697,7 +737,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         onChange={e => onChangeVehicleInfo(e.target.value)}>
                                         {
                                             carList && carList.map(vehicle => (
-                                                <MenuItem key={vehicle._id} value={vehicle}>{vehicle.vehicleType} / {vehicle.vehicleNo} / {vehicle.capacity}</MenuItem>
+                                                <MenuItem key={vehicle._id} value={vehicle}>{vehicle.vehicleName} / {vehicle.vehicleNo} / {vehicle.capacity}</MenuItem>
                                             ))
                                         }
                                     </Select>
@@ -755,6 +795,13 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                             </Box>
                         </Paper>
                             : null}
+                        {requestDetails && (requestDetails.requestStatus === 'APPROVED') &&
+                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Button className={classes.rejectButton} onClick={() => rejectRequestDataPopUp()}>
+                                    Reject
+                                </Button>
+                            </Box>
+                        }
                     </div>
                     <Box sx={{ display: { xs: 'none', md: 'block' }}} style={{flex:1, flexDirection:'column'}}>
                         {' '}
@@ -763,12 +810,13 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             {/*</main>*/}
             <Modal
                 className={classes.middlePosition}
+                style={{minWidth:'320px', padding:'12px'}}
                 open={isRejectPopUp}
                 onClose={e => {
                     e.preventDefault();
                     setIsRejectPopUp(false)
                 }}>
-                <Paper className={classes.form} style={{minWidth:'320px'}}>
+                <Paper className={classes.form} style={{minWidth:'320px', padding:'12px'}}>
                     <Stack direction="row" justifyContent="space-between"
                            alignItems="center" spacing={2}>
                         <Stack direction="column">
@@ -809,6 +857,113 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                     </div>
                 </Paper>
             </Modal>
+            <Modal
+                className={classes.middlePosition}
+                style={{minWidth:'320px', padding:'12px'}}
+                open={openDriverChange}
+                onClose={e => {
+                    e.preventDefault();
+                    setOpenDriverChange(false)
+                }}>
+                <Paper className={classes.form} style={{minWidth:'320px', padding:'12px'}}>
+                    <Stack direction="row" justifyContent="space-between"
+                           alignItems="center" spacing={2}>
+                        <Stack direction="column">
+                            <Typography variant='h6' component='div'>Change driver</Typography>
+                        </Stack>
+                        <IconButton aria-label="delete" onClick={e => {
+                            e.preventDefault();
+                            setOpenDriverChange(false)
+                        }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Stack>
+                    <hr/>
+                    <div style={{flex:1, flexDirection:'column'}}>
+                        <div className={classes.inputContainer}>
+                            <FormControl style={{width:'80%', margin:16}}>
+                                <InputLabel id="selected-cars">Select driver</InputLabel>
+                                <Select
+                                    labelId="selected-driver"
+                                    label="Select Driver"
+                                    className={classes.textFields}
+                                    value={driverInfo}
+                                    defaultValue={driverInfo}
+                                    onChange={e => onChangeDriverInfo(e.target.value)}>
+                                    {
+                                        driverList && driverList?.map(driver => (
+                                            <MenuItem key={driver._id} value={driver}>{driver.firstName +' '+ driver.middleName +' '+ driver.lastName}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                error={driverNumber && driverNumber.length<=9 }
+                                inputProps={{maxLength: 10 , pattern: "[0-9]{10,11}" }}
+                                helperText={driverNumber && (driverNumber.length<=9 || driverNumber.match(/[^0-9]/g) ? 'Please enter valid mobile No.' : '')}
+                                style={{width:'80%', margin:16}}
+                                placeholder="Driver Mobile no."
+                                className={classes.textFields}
+                                value={driverNumber}
+                            />
+                        </div>
+                        <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                            <Button variant="contained" onClick={() => changeDriverName()}>
+                                Submit
+                            </Button>
+                        </Box>
+                    </div>
+                </Paper>
+            </Modal>
+            <Modal
+                className={classes.middlePosition}
+                open={openVehicleType}
+                onClose={e => {
+                    e.preventDefault();
+                    setOpenVehicleType(false)
+                }}>
+                <Paper className={classes.form} style={{minWidth:'320px'}}>
+                    <Stack direction="row" justifyContent="space-between"
+                           alignItems="center" spacing={2}>
+                        <Stack direction="column">
+                            <Typography variant='h6' component='div'>Change Vehicle</Typography>
+                        </Stack>
+                        <IconButton aria-label="delete" onClick={e => {
+                            e.preventDefault();
+                            setOpenVehicleType(false)
+                        }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Stack>
+                    <hr/>
+                    <div style={{flex:1, flexDirection:'column'}}>
+                        <div className={classes.inputContainer}>
+                            {  carList && carList.length>0 &&<FormControl style={{width:'80%', margin:16}}>
+                                <InputLabel id="selected-cars">Select Cars</InputLabel>
+                                <Select
+                                    labelId="selected-cars"
+                                    label="Select Vehicle"
+                                    className={classes.textFields}
+                                    value={vehicle}
+                                    defaultValue={vehicle}
+                                    onChange={e => onChangeVehicleInfo(e.target.value)}>
+                                    {
+                                        carList && carList.map(vehicle => (
+                                            <MenuItem key={vehicle._id} value={vehicle}>{vehicle.vehicleName} / {vehicle.vehicleNo} / {vehicle.capacity}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>}
+
+                        </div>
+                        <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                            <Button variant="contained" onClick={() => changeVehicleType()}>
+                                submit
+                            </Button>
+                        </Box>
+                    </div>
+                </Paper>
+            </Modal>
         </div>
     )
 };
@@ -833,6 +988,8 @@ const mapDispatchToProps = dispatch => {
         setRejectStatusData: (requestBody) => dispatch(ActionCreatorsAdmin.setRejectStatusData(requestBody)),
         getDriverListData: (requestBody) => dispatch(ActionCreatorsAdmin.getDriverListData(requestBody)),
         getCarListData: (requestBody) => dispatch(ActionCreatorsAdmin.getCarListData(requestBody)),
+        editDriverJourney: (requestBody) => dispatch(ActionCreatorsAdmin.editDriverJourney(requestBody)),
+        editVehicleJourney: (requestBody) => dispatch(ActionCreatorsAdmin.editVehicleJourney(requestBody)),
         flushRequestState: () => dispatch(ActionCreators.flushRequestState())
     }
 };
