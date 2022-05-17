@@ -14,12 +14,13 @@ const initialState = {
     travellersLatestJourney:{},
     vehicleListMaintenance:[],
     vehiclePetrolExpense:[],
+    vehicleMaintenance:[],
+    vehiclePetrolExpenseList:[],
     identityPicURL:'',
     error: null,
 };
 
 const requestReducer = (state = initialState, action) => {
-    console.log('Reducer: ', action);
     switch (action.type) {
         case 'GET_VEHICLE_LIST':
             return {
@@ -108,6 +109,18 @@ const requestReducer = (state = initialState, action) => {
             return{
                 ...state,
                 vehiclePetrolExpense:action.payload,
+                error:null
+            }
+        case 'GET_VEHICLE_MAINTENANCE':
+            return{
+                ...state,
+                vehicleMaintenance:action.payload,
+                error:null
+            }
+        case 'GET_VEHICLE_PETROL_EXPENSE':
+            return{
+                ...state,
+                vehiclePetrolExpenseList:action.payload,
                 error:null
             }
         case "LOGOUT": return {};
