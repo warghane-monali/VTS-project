@@ -90,7 +90,7 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                                     <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                         {changeLang?'सहलीचा कारण':"   Reason"}
                                     </Typography>
-                                    <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                    <Typography variant='subtitle2'  component='h4' style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                                         {requestDetails.reason}
                                     </Typography>
                                 </Box>

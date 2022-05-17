@@ -314,7 +314,7 @@ export function getCarListData(data) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
         let urlencoded = new URLSearchParams();
-        urlencoded.append("userRole", data.userRole);
+        urlencoded.append("agencyName", data.userRole);
         urlencoded.append("startDate", data.startDate);
         urlencoded.append("lat", data.lat);
         urlencoded.append("log", data.log);
@@ -546,6 +546,7 @@ export function getEmployeeListData(requestBody) {
     }
 }
 
+
 export function getDriverattendanceListData() {
     return dispatch => {
         let myHeaders = new Headers();
@@ -553,10 +554,26 @@ export function getDriverattendanceListData() {
         let urlencoded = new URLSearchParams();
         let requestOptions = {
             method: 'GET',
+
+export function editDriverJourney(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId", requestBody.journeyId);
+        urlencoded.append("driverId", requestBody.driverId);
+        urlencoded.append("driverName", requestBody.driverName);
+        urlencoded.append("driverNo", requestBody.driverNo);
+        urlencoded.append("updatedBy", requestBody.updatedBy);
+
+        let requestOptions = {
+            method: 'PUT',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
+
         return axios.get(BASE_URL + '/driverattendance/getalldriverattendance').then(response => response.data).then(res => {
             dispatch(getDriverattendanceList(res));
             console.log("...........res......", res);
@@ -610,12 +627,37 @@ export function SetattendanceStatusData(data) {
         urlencoded.append("status",data.status);
         urlencoded.append("updatedBy",data.updatedBy);
 
+        return fetch(BASE_URL+"/journey/editdriverjourney", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+
+                return result;
+            })
+            .catch((error) => {
+                console.log("error", error)
+            });
+    }
+}
+export function editVehicleJourney(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId", requestBody.journeyId);
+        urlencoded.append("vehicleId", requestBody.vehicleId);
+        urlencoded.append("agencyName", requestBody.agencyName);
+        urlencoded.append("vehicleName", requestBody.vehicleName);
+        urlencoded.append("vehicleNo", requestBody.vehicleNo);
+        urlencoded.append("updatedBy", requestBody.updatedBy);
+
+
         let requestOptions = {
             method: 'PUT',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
+
 
         return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
             dispatch(SetattendanceStatus(res));
@@ -628,3 +670,15 @@ export function SetattendanceStatusData(data) {
             });
     }
 }
+
+        return fetch(BASE_URL+"/journey/editvehiclejounrey", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                return result;
+            })
+            .catch((error) => {
+                console.log("error", error)
+            });
+    }
+}
+

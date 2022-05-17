@@ -62,7 +62,7 @@ const Admin = ({userDetails, adminDetails, userLogout}) => {
             <Drawer anchor='left' open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
                 <AdminSidebar isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}/>
             </Drawer>
-            <div style={{marginTop:'52px', overflow:'auto'}}>
+            <div style={{marginTop:'52px', marginBottom:'130px'}}>
                 <Outlet/>
             </div>
         </div>

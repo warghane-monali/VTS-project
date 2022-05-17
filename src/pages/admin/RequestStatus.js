@@ -140,7 +140,7 @@ const RequestStatus = ({ requestRideData, flushRequestState }) => {
                         <Typography variant='h4' component='span'>
                             Reason
                         </Typography>
-                        <Typography component='span'>
+                        <Typography component='span' style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                             {requestRideData.reason}
                         </Typography>
                     </p>

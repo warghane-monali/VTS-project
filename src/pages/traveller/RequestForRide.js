@@ -24,6 +24,8 @@ import ImportExportIcon from "@mui/icons-material/ImportExport";
 import * as ActionCreatorsDriver from "../../actions/driverAction";
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import Feedback from "./Feedback";
 
 const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourneyData,
                             getTravellerAllUpcomingJourneyData,
@@ -124,7 +126,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                 }}>
                     <ImportExportIcon sx={{
                         fontSize: 40,
-                        color: item?.requestStatus === 'PENDING' ? '#f99935' : item?.requestStatus === 'ONGOING' ? '#bc9800' :item?.requestStatus === 'APPROVED' ? '#09984c' : item?.requestStatus === 'REJECTED' ? '#f93125' : 'gray'
+                        color: item?.requestStatus === 'CANCEL' ? '#dc0404': item?.requestStatus === 'UNSERVICE' ? '#cb7373': item?.requestStatus === 'PENDING' ? '#f99935' : item?.requestStatus === 'ONGOING' ? '#bc9800' :item?.requestStatus === 'APPROVED' ? '#09984c' : item?.requestStatus === 'REJECTED' ? '#f93125' : 'gray'
                     }}/>
                 </div>
                 <div className={classes.lowerRow}
@@ -195,7 +197,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                             </Typography>
                                         </div>
                                         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                                            <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%'}}>
+                                            <Box >
                                                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                                     <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center", width:'100%'}}>
                                                         {travellersLatestJourney.journeyNo !== ''?
@@ -228,7 +230,6 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                         <div style={{display:'flex', flexDirection:'column', justifyContent:'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
                                                             <ImportExportIcon  sx={{fontSize:40, color: travellersLatestJourney?.requestStatus ==='PENDING' ? '#f99935': travellersLatestJourney?.requestStatus ==='APPROVED' ? '#09984c':travellersLatestJourney?.requestStatus ==='ONGOING' ? '#bc9800':travellersLatestJourney?.requestStatus ==='REJECTED' ? '#f93125':'gray'}} />
                                                         </div>
-
                                                         <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
                                                                onClick={()=>goToMap(travellersLatestJourney.sourceLat, travellersLatestJourney.sourceLong, travellersLatestJourney.destinationLat, travellersLatestJourney.destinationLong)}>
                                                             <Typography variant='body-2' component='h4' style={{margin: 4}}>
@@ -243,9 +244,9 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                         <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                                             Reason
                                                         </Typography>
-                                                        <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                                        <p variant='subtitle2' component='h4' style={{marginTop: 4, textAlign:"center", width:'100%', wordWrap: 'break-word'}}>
                                                             {travellersLatestJourney.reason}
-                                                        </Typography>
+                                                        </p>
                                                     </Box>
                                                     <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%'}}>
                                                         <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left' }}>
@@ -370,22 +371,22 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                     <DateRangeRoundedIcon color="primary" className={classes.calendarIcon} style={{width: 24, height: 24}}/>
                                 </IconButton>
                             </TabList>
-                            <TabPanel value="0" style={{width: '95%', height:'100vh', padding:12}}>
+                            <TabPanel value="0" style={{width: '95%', padding:12}}>
                                 {travellersAllPreviousJourney && travellersAllPreviousJourney.length > 0 && travellersAllPreviousJourney.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 })}
                             </TabPanel>
-                            <TabPanel style={{width: '95%', height:'100vh', padding:12}} value="1">
+                            <TabPanel style={{width: '95%', padding:12}} value="1">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
                             </TabPanel>
-                            <TabPanel style={{width: '95%', height:'100vh', padding:12}} value="2">
+                            <TabPanel style={{width: '95%', padding:12}} value="2">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
                             </TabPanel>
-                            { filter?<TabPanel style={{width: '95%', height:'100vh', padding:12}} value="3">
+                            { filter?<TabPanel style={{width: '95%', padding:12}} value="3">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
@@ -415,7 +416,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                             onChange={(newValue) => {
                                                 setValue(newValue);
                                             }}
-                                            maxDate={new Date(moment().subtract(4, 'days').format('DD-MMM-YYYY'))}
+                                            maxDate={new Date(moment().subtract(3, 'days').format('DD-MMM-YYYY'))}
                                         />
                                     </LocalizationProvider>
                                 </div>
@@ -523,7 +524,6 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                 <div sx={{ display: { xs: 'none', sm: 'block' }}} style={{ flexDirection:'column'}}>
 
                 </div>
-
             </Box>
 
 
@@ -536,15 +536,20 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                             setFilter(false);
                             getTabIndex(newValue);
                             setSelected(newValue);
+                            setTabValue(0)
                             if (newValue === 1) {
                                 getUserUpcomingRides()
                             } else if (newValue === 2) {
                                 getUserPreviousRides()
                             }
+                            else if (newValue === 3){
+                                navigate('/dashboard/feedback')
+                            }
                         }}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon/>}/>
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon/>}/>
                         <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon/>}/>
+                        <BottomNavigationAction label="Feedback" icon={<FeedbackIcon />} />
                     </BottomNavigation>
                     <div>
                         <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
@@ -562,7 +567,8 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
 const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100%',
-        background: '#fcfcfc'
+        background: '#fcfcfc',
+        paddingBottom: '130px'
     },
     tabRoot: {
         maxWidth: '130px !important',

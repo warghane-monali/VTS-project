@@ -584,7 +584,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                                 {changeLang?'कारण':"   Reason"}
                                             </Typography>
-                                            <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                            <Typography variant='subtitle2' component='div'  style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                                                 {driversLatestJourney.reason}
                                             </Typography>
                                         </Box>
@@ -832,7 +832,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 })}
                             </div>:null}
                     </TabPanel>
-                    {filter?<TabPanel style={{width: '95%', height:'100vh', padding:12}} value="3">
+                    {filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
                         {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
                             return renderList(item, index)
                         }):null}
@@ -861,7 +861,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     onChange={(newValue) => {
                                         setValue(newValue);
                                     }}
-                                    maxDate={new Date(moment().subtract(4, 'days').format('DD-MMM-YYYY'))}
+                                    maxDate={new Date(moment().subtract(3, 'days').format('DD-MMM-YYYY'))}
                                 />
                             </LocalizationProvider>
                         </div>
@@ -921,7 +921,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             })}
                         </div>:null}
                     </TabPanel>
-                    { filter?<TabPanel style={{width: '95%', height:'100vh', padding:12}} value="3">
+                    { filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
                         {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
                             return renderList(item, index)
                         }) : null}

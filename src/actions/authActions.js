@@ -124,6 +124,7 @@ export function verifyOtp(data) {
                 if(response.user.userRole==='Driver' || response.user.userRole==='Traveller' ){
                     dispatch(verifySuccess(response))
                 }
+                return response
             })
             .catch((error) => {
                 dispatch(verifyFailure(error))

@@ -14,11 +14,14 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import * as ActionCreators from "../../actions/requestAction";
+import {createBrowserHistory} from "history";
 
-const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
+const RideStatus = ({userDetails, sourceLocation, destinationLocation, setCancelStatusData}) => {
     const [isOpen, setIsOpen] = useState(false);
     const classes = useStyles();
     const navigate = useNavigate();
+    const history = createBrowserHistory();
     const location = useLocation();
     const [requestRideData, setRequestRideData] = useState(location?.state);
 
@@ -28,6 +31,14 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
         let destinationL = "&destination=" + destinationLocationLat + "," + destinationLocationLng;
         // let openMapUrl = new URL();
         window.open(url+origin+destinationL, '_blank');
+    };
+
+    const rejectRequestData = async ()=>{
+        const result = await setCancelStatusData({
+            journeyId: requestRideData._id,
+            requestStatus: 'CANCEL',
+        });
+        history.back()
     };
 
     return (
@@ -41,6 +52,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                     {requestRideData?.requestStatus ==='PENDING' ? 'Pending Status':null}
                     {requestRideData?.requestStatus ==='APPROVED' ? 'Accepted Status':null}
                     {requestRideData?.requestStatus ==='REJECTED' ? 'Rejected Status':null}
+                    {requestRideData?.requestStatus ==='CANCEL' ? 'Canceled Status':null}
                 </Typography>
                 <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%'}}>
                     <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%', padding:12}}>
@@ -74,8 +86,8 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                                     </Typography>
                                 </Paper>
                                 <div style={{display:'flex', flexDirection:'column', justifyContent:'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
-                                    <ImportExportIcon  sx={{fontSize:40, color: requestRideData?.requestStatus ==='PENDING' ? '#f99935':
-                                            requestRideData?.requestStatus ==='ONGOING' ? '#bc9800': requestRideData?.requestStatus ==='APPROVED' ? '#09984c':requestRideData?.requestStatus ==='REJECTED' ? '#f93125':'gray'}} />
+                                    <ImportExportIcon  sx={{fontSize:40, color: requestRideData?.requestStatus === 'UNSERVICE' ? '#cb7373': requestRideData?.requestStatus ==='PENDING' ? '#f99935':
+                                            requestRideData?.requestStatus ==='ONGOING' ? '#bc9800': requestRideData?.requestStatus ==='APPROVED' ? '#09984c': requestRideData?.requestStatus === 'CANCEL' ? '#f93125':'gray'}} />
                                 </div>
 
                                 <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
@@ -92,7 +104,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                                 <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
                                     Reason
                                 </Typography>
-                                <Typography variant='subtitle2' component='div' style={{marginTop: 4}}>
+                                <Typography variant='subtitle2'  component='h4' style={{marginTop: 4, textAlign:"center", wordBreak: 'break-word'}}>
                                     {requestRideData.reason}
                                 </Typography>
                             </Box>
@@ -102,15 +114,15 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                                         Start Date & Time
                                     </Typography>
                                     <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                        {moment(requestRideData.startDateTime).format('DD/MM/YYYY hh:mm a')}
+                                        {moment(requestRideData.startDateTime).format('DD-MMMM-YYYY hh:mm a')}
                                     </Typography>
                                 </div>
-                                <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
+                                <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right',marginLeft:10}}>
                                     <Typography variant='body-2' component='div'>
                                         End Date & Time
                                     </Typography>
                                     <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                        {moment(requestRideData.endDateTime).format('DD/MM/YYYY hh:mm a')}
+                                        {moment(requestRideData.endDateTime).format('DD-MMMM-YYYY hh:mm a')}
                                     </Typography>
                                 </div>
                             </div>
@@ -222,7 +234,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                     </div>
                     {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
                         <div className={classes.travellerItem} key={index}>
-                            <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</div>
+                            <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                             <div className={classes.itemRightSection}>
                                 {traveller?.Status==='ONGOING' &&
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#bc9800'}}>
@@ -255,6 +267,11 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                             </div>
                         </div>))}
                 </Paper>
+                {requestRideData?.requestStatus ==='PENDING' || requestRideData?.requestStatus ==='APPROVED'?<Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2} style={{flex:1}}>
+                    <Button className={classes.rejectButton} onClick={() => rejectRequestData()}>
+                        Cancel ride
+                    </Button>
+                </Stack>:null}
                 <Modal
                     className={classes.middlePosition}
                     open={isOpen}
@@ -282,7 +299,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation}) => {
                         </div>
                         {requestRideData && requestRideData?.journeyStatus.map((traveller, index) => (
                             <div className={classes.travellerItem} key={index}>
-                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</div>
+                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                 <div className={classes.itemRightSection}>  {traveller?.Status==='APPROVED'?
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#8ef976'}}>
                                         {traveller?.Status}
@@ -374,6 +391,17 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         flexDirection: 'column'
     },
+    rejectButton: {
+        padding: '0.5rem 2rem !important',
+        borderRadius: '10px !important',
+        margin: '10px !important',
+        color:'white !important',
+        background: '#d12f0d !important',
+        '&:hover': {
+            background: 'white !important',
+            color: '#d12f0d !important'
+        }
+    },
     formSpacer: {
         display: 'flex',
         alignItems: 'center',
@@ -399,5 +427,11 @@ const mapStateToProps = state => {
         sourceLocation: state.trackLocation.sourceLocation,
     }
 };
-export default connect(mapStateToProps, null)(RideStatus)
+const mapDispatchToProps = dispatch => {
+    return {
+        setCancelStatusData: (requestBody) => dispatch(ActionCreators.setCancelStatusData(requestBody)),
+        // flushRequestState: () => dispatch(ActionCreators.flushRequestState())
+    }
+};
+export default connect(mapStateToProps, mapDispatchToProps)(RideStatus)
 
