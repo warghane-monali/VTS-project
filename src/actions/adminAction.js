@@ -554,6 +554,19 @@ export function getDriverattendanceListData() {
         let urlencoded = new URLSearchParams();
         let requestOptions = {
             method: 'GET',
+        }
+
+        return axios.get(BASE_URL + '/driverattendance/getalldriverattendance').then(response => response.data).then(res => {
+            dispatch(getDriverattendanceList(res));
+            console.log("...........res......", res);
+            return res
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+    
 
 export function editDriverJourney(requestBody) {
     return dispatch => {
@@ -574,16 +587,18 @@ export function editDriverJourney(requestBody) {
             redirect: 'follow'
         };
 
-        return axios.get(BASE_URL + '/driverattendance/getalldriverattendance').then(response => response.data).then(res => {
-            dispatch(getDriverattendanceList(res));
-            console.log("...........res......", res);
-            return res
+        return fetch(BASE_URL+"/journey/editdriverjourney", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+
+            return result;
         })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
+        .catch((error) => {
+            console.log("error", error)
+        });
 }
+}
+
 // export function SetattendanceStatusData(data) {
 //     console.log('In admin action',data)
 //     return dispatch => {
@@ -614,6 +629,39 @@ export function editDriverJourney(requestBody) {
 //     }
 // }
 
+// export function SetattendanceStatusData(data) {
+//     return dispatch => {
+//         // console.log("---------setDriverAttendanceData--------------",driverAttendanceId);
+//         // console.log("---------setDriverAttendanceData--------------",status);
+//         // console.log("---------setDriverAttendanceData--------------",updatedBy);
+//         let myHeaders = new Headers();
+//         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+//         let urlencoded = new URLSearchParams();
+//         urlencoded.append("driverAttendanceId",data.driverAttendanceId);
+//         urlencoded.append("status",data.status);
+//         urlencoded.append("updatedBy",data.updatedBy);
+
+        
+//         let requestOptions = {
+//             method: 'PUT',
+//             headers: myHeaders,
+//             body: urlencoded,
+//             redirect: 'follow'
+//         };
+
+//         return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
+//             dispatch(SetattendanceStatus(res));
+//             console.log('----attendance status----',res)
+//             return res
+        
+//         })
+//             .catch((error) => {
+//                 console.error('Error:', error);
+//             });
+//     }
+// }
+
 export function SetattendanceStatusData(data) {
     return dispatch => {
         // console.log("---------setDriverAttendanceData--------------",driverAttendanceId);
@@ -627,17 +675,26 @@ export function SetattendanceStatusData(data) {
         urlencoded.append("status",data.status);
         urlencoded.append("updatedBy",data.updatedBy);
 
-        return fetch(BASE_URL+"/journey/editdriverjourney", requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
 
-                return result;
-            })
+        return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
+            dispatch(SetattendanceStatus(res));
+            console.log('----attendance status----',res)
+            return res
+        
+        })
             .catch((error) => {
-                console.log("error", error)
+                console.error('Error:', error);
             });
     }
 }
+
+       
 export function editVehicleJourney(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -658,27 +715,20 @@ export function editVehicleJourney(requestBody) {
             redirect: 'follow'
         };
 
-
-        return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
-            dispatch(SetattendanceStatus(res));
-            console.log('----attendance status----',res)
-            return res
-        
-        })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
-}
-
         return fetch(BASE_URL+"/journey/editvehiclejounrey", requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-                return result;
-            })
-            .catch((error) => {
-                console.log("error", error)
-            });
+        .then((response) => response.json())
+        .then((result) => {
+            return result;
+        })
+        .catch((error) => {
+            console.log("error", error)
+        });
     }
 }
+
+
+
+
+
+     
 

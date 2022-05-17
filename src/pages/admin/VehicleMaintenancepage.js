@@ -368,8 +368,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                             style={{margin: 8}}
                             label='Maintenance Place'
                             required
-                            error={maintenancePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            helperText={maintenancePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            error={maintenancePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Place Name' : ''}
+                            helperText={maintenancePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Place Name' : ''}
                             value={maintenancePlace}
                             onChange={e => {
                                 setMaintenancePlace(e.target.value)
@@ -379,8 +379,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                             style={{margin: 8}}
                             label='Maintenace Place No '
                             required
-                            error={maintenancePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            helperText={maintenancePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            error={maintenancePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Maintenance Place no' : ''}
+                            helperText={maintenancePlaceNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Maintenance Place no' : ''}
                             value={maintenancePlaceNo}
                             onChange={e => {
                                 setMaintenancePlaceNo(e.target.value)
@@ -418,8 +418,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                             style={{margin: 8}}
                             label='Odo Meter Reading'
                             required
-                            error={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
-                            helperText={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid vehicle no' : ''}
+                            error={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                            helperText={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
                             value={odoMeterReading}
                             onChange={e => {
                                 setodoMeterReading(e.target.value)
@@ -451,6 +451,7 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
         </div>
     )
 }
+
 
 const mapStateToProps = state => {
     return {
