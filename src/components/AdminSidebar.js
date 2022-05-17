@@ -9,6 +9,7 @@ import CarRepairIcon from '@mui/icons-material/CarRepair';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import DirectionsWalkRoundedIcon from '@mui/icons-material/DirectionsWalkRounded'
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -16,9 +17,14 @@ const upperList = [
     { icon: <HomeIcon />, title: 'Home', url:'/admin/dashboard' },
     { icon: <PersonRoundedIcon />, title: 'Employees', url:'/admin/employee-wise' },
     { icon: <ManageAccountsRoundedIcon />, title: 'Drivers', url: '/admin/drivers' },
+
+    { icon: <DirectionsCarRoundedIcon />, title: 'Cars', url:'/admin/all-vehicle' },
+    { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' },
+
     { icon: <DirectionsCarRoundedIcon />, title: 'Vehicles', url:'/admin/all-vehicle' },
     { icon: <CarRepairIcon /> , title: 'Vehicle Maintenance', url : '/admin/VehicleMaintenancepage'  },
     { icon: <LocalGasStationIcon /> ,title:'Petrol Expense',url:'/admin/petrol-expense' }
+
 ];
 
 const lowerList = [

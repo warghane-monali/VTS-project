@@ -1,5 +1,8 @@
-import {BASE_URL} from "../utils/urls";
-import {getVehicleListData} from "./requestAction";
+import axios from "axios";
+import reactDom from "react-dom";
+import { BASE_URL } from "../utils/urls";
+import { getVehicleListData } from "./requestAction";
+
 
 export const adminLoginSuccess = data => {
     return {
@@ -85,6 +88,19 @@ export const getDriverList = data => {
         payload: data
     }
 };
+export const getDriverattendanceList = (payload) => {
+    return {
+        type: "GET_DRIVER_LIST",
+        payload
+    }
+};
+export const SetattendanceStatus = data => {
+    return {
+        type: "SET_DRIVER_ATTENDANCE_STATUS",
+        payload: data
+    }
+};
+
 
 export function setRequestStatusData(data) {
     return dispatch => {
@@ -93,7 +109,7 @@ export function setRequestStatusData(data) {
 
         let urlencoded = new URLSearchParams();
         urlencoded.append("userId", data.userId);
-        urlencoded.append("requestStatus",  data.requestStatus);
+        urlencoded.append("requestStatus", data.requestStatus);
         urlencoded.append("startDateTime", data.startDateTime);
 
         let requestOptions = {
@@ -106,9 +122,9 @@ export function setRequestStatusData(data) {
             dispatch(setRequestStatus(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function setAllRequestStatusData(data) {
@@ -117,7 +133,7 @@ export function setAllRequestStatusData(data) {
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus",  data.requestStatus);
+        urlencoded.append("requestStatus", data.requestStatus);
 
         let requestOptions = {
             method: 'POST',
@@ -129,9 +145,9 @@ export function setAllRequestStatusData(data) {
             dispatch(setRequestStatusAdmin(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function setRequestStatusAdminData(data) {
@@ -140,7 +156,7 @@ export function setRequestStatusAdminData(data) {
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus",  data.requestStatus);
+        urlencoded.append("requestStatus", data.requestStatus);
         urlencoded.append("startDateTime", data.startDateTime);
 
         let requestOptions = {
@@ -153,9 +169,9 @@ export function setRequestStatusAdminData(data) {
             dispatch(setRequestStatusAdmin(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function setRequestStatusAdminDataReports(startDate, endDate) {
@@ -209,9 +225,9 @@ export function setAcceptStatusData(data) {
             dispatch(setRequestStatus(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function setRejectCancelStatusData(data) {
@@ -234,9 +250,9 @@ export function setRejectCancelStatusData(data) {
             dispatch(setRequestStatus(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function setRejectStatusData(data) {
@@ -288,9 +304,9 @@ export function getDriverListData(data) {
             // dispatch(getDriverList(res));
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function getCarListData(data) {
@@ -333,15 +349,15 @@ export function getDriverUserListData(requestBody) {
             body: urlencoded,
             redirect: "follow",
         };
-        return fetch(BASE_URL+"/user/userav", requestOptions)
+        return fetch(BASE_URL + "/user/userav", requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 let filteredData = result.reduce((unique, o) => {
-                    if(!unique.some(obj => obj.contactNo === o.contactNo)) {
+                    if (!unique.some(obj => obj.contactNo === o.contactNo)) {
                         unique.push(o);
                     }
                     return unique;
-                },[]);
+                }, []);
                 dispatch(getDriverUserList(filteredData));
                 return filteredData;
             })
@@ -375,9 +391,9 @@ export function addDriverListData(data) {
             dispatch(getVehicleListData());
             return res
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function updateDriverListData(data) {
@@ -435,9 +451,9 @@ export function getUserPreviousRidesData() {
         }).then(response => response.json()).then(res => {
             dispatch(getUserPreviousRides(res));
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function getUserUpcomingRidesData() {
@@ -448,9 +464,9 @@ export function getUserUpcomingRidesData() {
             dispatch(getUserUpcomingRides(res));
 
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function getTravellerUpcomingPreviousCountJourneyData(requestBody) {
@@ -472,9 +488,9 @@ export function getTravellerUpcomingPreviousCountJourneyData(requestBody) {
         return fetch(BASE_URL + '/journey/travelerUpcomingPreviousCountJourney', requestOptions).then(response => response.json()).then(res => {
             dispatch(getTravellerUpcomingPreviousCountJourney(res));
         })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
 }
 export function getEmployeeWiseJourneysData(requestBody) {
@@ -489,7 +505,7 @@ export function getEmployeeWiseJourneysData(requestBody) {
             body: urlencoded,
             redirect: "follow",
         };
-        return fetch(BASE_URL+"/journey/empwiserides", requestOptions)
+        return fetch(BASE_URL + "/journey/empwiserides", requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 dispatch(getEmployeeWiseJourneys(result));
@@ -512,15 +528,15 @@ export function getEmployeeListData(requestBody) {
             body: urlencoded,
             redirect: "follow",
         };
-        return fetch(BASE_URL+"/user/userav", requestOptions)
+        return fetch(BASE_URL + "/user/userav", requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 let filteredData = result.reduce((unique, o) => {
-                    if(!unique.some(obj => obj.contactNo === o.contactNo)) {
+                    if (!unique.some(obj => obj.contactNo === o.contactNo)) {
                         unique.push(o);
                     }
                     return unique;
-                },[]);
+                }, []);
                 dispatch(getEmployeeList(filteredData));
                 return filteredData;
             })
@@ -529,6 +545,15 @@ export function getEmployeeListData(requestBody) {
             });
     }
 }
+
+
+export function getDriverattendanceListData() {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        let urlencoded = new URLSearchParams();
+        let requestOptions = {
+            method: 'GET',
 
 export function editDriverJourney(requestBody) {
     return dispatch => {
@@ -548,6 +573,59 @@ export function editDriverJourney(requestBody) {
             body: urlencoded,
             redirect: 'follow'
         };
+
+        return axios.get(BASE_URL + '/driverattendance/getalldriverattendance').then(response => response.data).then(res => {
+            dispatch(getDriverattendanceList(res));
+            console.log("...........res......", res);
+            return res
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+// export function SetattendanceStatusData(data) {
+//     console.log('In admin action',data)
+//     return dispatch => {
+//         let myHeaders = new Headers();
+//         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+//         let urlencoded = new URLSearchParams();
+//         urlencoded.append("driverAttendanceId",data.driverId);
+//         urlencoded.append("status",data.status);
+//         urlencoded.append("updatedBy",data.updatedBy);
+//      console.log("-----------updatedBy---",urlencoded);
+
+//      let requestOptions = {
+//         method: 'PUT',
+//         headers: myHeaders,
+//         body: urlencoded,
+//         redirect: 'follow'
+//     };
+       
+
+//         return fetch(BASE_URL +'/driverattendance/updatedriverattendancestatus',requestOptions).then(response => response.json()).then(res => {
+//             dispatch(SetattendanceStatus(res));
+//             console.log("...........res......", res);
+//             return res
+//         })
+//             .catch((error) => {
+//                 console.error('Error:', error);
+//             });
+//     }
+// }
+
+export function SetattendanceStatusData(data) {
+    return dispatch => {
+        // console.log("---------setDriverAttendanceData--------------",driverAttendanceId);
+        // console.log("---------setDriverAttendanceData--------------",status);
+        // console.log("---------setDriverAttendanceData--------------",updatedBy);
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("driverAttendanceId",data.driverAttendanceId);
+        urlencoded.append("status",data.status);
+        urlencoded.append("updatedBy",data.updatedBy);
 
         return fetch(BASE_URL+"/journey/editdriverjourney", requestOptions)
             .then((response) => response.json())
@@ -572,12 +650,27 @@ export function editVehicleJourney(requestBody) {
         urlencoded.append("vehicleNo", requestBody.vehicleNo);
         urlencoded.append("updatedBy", requestBody.updatedBy);
 
+
         let requestOptions = {
             method: 'PUT',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
+
+
+        return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
+            dispatch(SetattendanceStatus(res));
+            console.log('----attendance status----',res)
+            return res
+        
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+
         return fetch(BASE_URL+"/journey/editvehiclejounrey", requestOptions)
             .then((response) => response.json())
             .then((result) => {

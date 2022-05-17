@@ -28,6 +28,7 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
+import PersonOffTwoToneIcon from '@mui/icons-material/PersonOffTwoTone';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -298,6 +299,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         } else if(tabIndexData===2){
             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'))
         }
+        else if(tabIndexData===3){
+           navigate('/driver/attendance')
+        }
     }, []);
 
     const getUserPreviousRides = async () => {
@@ -317,6 +321,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
         } else if (selected===1 || newValue===1){
             getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
+        }
+        else if (selected===3 || newValue===3){
+            navigate('/driver/attendance')
         }
     };
 
@@ -961,6 +968,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </Modal>
             </main>
         </div>:null}
+        { selected===3 ? navigate('/driver/attendance') : null }
             <AppBar className={classes.footer}>
             <Box sx={{width: {xs:500, sm:786,md:1080, xl:'100%'}}}>
                 <BottomNavigation
@@ -974,11 +982,13 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             getRequestDataByDate(moment().format('YYYY-MM-DD'), newValue)
                         } else if(newValue===2){
                             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'), newValue)
+                        }else if(newValue===3){
+                            navigate('/driver/attendance')
                         }
                     }}>
                     <BottomNavigationAction label={changeLang?'आगामी सवारी':"Upcoming Ride"} icon={<DashboardIcon />} />
                     <BottomNavigationAction label={changeLang?'भविष्यातील राइड':"Future Ride"} icon={<DirectionsCarIcon />} />
-                    {/*<BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon />} />*/}
+                    <BottomNavigationAction label="Leave Management" icon={<PersonOffTwoToneIcon />} />
                 </BottomNavigation>
                 <div>
                     <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>

@@ -26,8 +26,8 @@ const requestReducer = (state = initialState, action) => {
             return {
                 ...state,
                 vehicleList: action.payload,
-                error: null,
-            };
+                error: null, 
+            }; 
         case 'SET_TRAVELLER_LIST':
             return {
                 ...state,
