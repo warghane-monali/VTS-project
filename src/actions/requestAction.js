@@ -66,6 +66,12 @@ export const getTravellerAllUpcomingJourney = data => {
         payload: data
     }
 };
+export const getVehicleMaintenance = data => {
+    return {
+        type: "GET_VEHICLE_MAINTENANCE",
+        payload: data
+    }
+};
 export const setStartJourney = data => {
     return {
         type: "SET_START_JOURNEY",
@@ -95,6 +101,12 @@ export const setmaintenancelist = data => {
 export const setPetrolExpenselist = data => {
     return {
         type: "SET_VEHICLE_PETROL_EXPENSE",
+        payload : data
+    }
+}
+export const getPetrolExpenseList = data => {
+    return {
+        type: "GET_VEHICLE_PETROL_EXPENSE",
         payload : data
     }
 }
@@ -185,7 +197,6 @@ export function updateVehicleListData(data) {
 }
 
 export function AddMaintenanceData(data){
-    console.log('In Add Maintenance',data)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -194,17 +205,15 @@ export function AddMaintenanceData(data){
         urlencoded.append("vehicleId", data.vehicleId);
         urlencoded.append("vehicleName", data.vehicleName);
         urlencoded.append("vehicleNo", data.vehicleNo);
-        urlencoded.append("maintenaceDescription", data.maintenaceDescription);
-        urlencoded.append("maintenaceCost", data.maintenaceCost);
-        urlencoded.append("maintenacePlace", data.maintenacePlace);
-        urlencoded.append("maintenacePlaceNo", data.maintenacePlaceNo);
-        urlencoded.append("maintenaceStartDate", data.maintenaceStartDate);
-        urlencoded.append("maintenaceEndDate", data.maintenaceEndDate);
+        urlencoded.append("maintenanceDescription", data.maintenanceDescription);
+        urlencoded.append("maintenanceCost", data.maintenanceCost);
+        urlencoded.append("maintenancePlace", data.maintenancePlace);
+        urlencoded.append("maintenancePlaceNo", data.maintenancePlaceNo);
+        urlencoded.append("maintenanceStartDate", data.maintenanceStartDate);
+        urlencoded.append("maintenanceEndDate", data.maintenanceEndDate);
         urlencoded.append("odoMeterReading", data.odoMeterReading);
-
         urlencoded.append("homeLocation", data.homeLocation);
         urlencoded.append("createdBy", data.createdBy);
-
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -212,7 +221,6 @@ export function AddMaintenanceData(data){
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/vehiclemaintenance/insertvehiclemaintenance', requestOptions).then(response => response.json()).then(res => {
-            dispatch(setmaintenancelist());
             return res
         })
         .catch((error) => {
@@ -222,22 +230,22 @@ export function AddMaintenanceData(data){
 }
 
 export function AddPetrolExpenseData(data){
-    console.log('In Petrol Expense')
-    
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleId", data.vehicleId);
         urlencoded.append("vehicleName", data.vehicleName);
         urlencoded.append("vehicleNo", data.vehicleNo);
-        urlencoded.append("petrolLiter", data.vehicleNo);
-        urlencoded.append("petrolCost", data.vehicleNo);
-        urlencoded.append("petrolFIllingPlace", data.vehicleNo);
-        urlencoded.append("Date", data.vehicleNo);
+        urlencoded.append("petrolLiter", data.petrolLiter);
+        urlencoded.append("petrolCost", data.petrolCost);
+        urlencoded.append("petrolFIllingPlace", data.petrolFIllingPlace);
+        urlencoded.append("Date", data.Date);
+        urlencoded.append("filledBy", data.filledBy);
         urlencoded.append("odoMeterReading", data.odoMeterReading);
 
-        
+
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -245,13 +253,13 @@ export function AddPetrolExpenseData(data){
             redirect: 'follow'
         };
 
-        // return fetch(BASE_URL + '/vehiclemaintenance/insertvehiclemaintenance', requestOptions).then(response => response.json()).then(res => {
-        //     dispatch(setPetrolExpenselist());
-        //     return res
-        // })
-        // .catch((error) => {
-        //     console.error('Error:', error);
-        // });
+        return fetch(BASE_URL + '/vehiclepetrolfeeling/insertvehiclepetrolfeeling', requestOptions).then(response => response.json()).then(res => {
+
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 
     }
 }
@@ -329,6 +337,7 @@ export function getAllUserListData(requestBody) {
             });
     }
 }
+
 export function getTravellerLatestJourneyData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -351,6 +360,7 @@ export function getTravellerLatestJourneyData(requestBody) {
             });
     }
 }
+
 export function getTravellerAllPreviousJourneyData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -374,6 +384,7 @@ export function getTravellerAllPreviousJourneyData(requestBody) {
             });
     }
 }
+
 export function getTravellerAllUpcomingJourneyData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -397,6 +408,7 @@ export function getTravellerAllUpcomingJourneyData(requestBody) {
             });
     }
 }
+
 export function getTravellerPreviousRidesData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -419,6 +431,7 @@ export function getTravellerPreviousRidesData(requestBody) {
         });
     }
 }
+
 export function getTravellerUpcomingPreviousRidesData(requestBody, date) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -465,6 +478,31 @@ export function getTravellerUpcomingRidesData(requestBody) {
         });
     }
 }
+
+export function getVehicleMaintenanceData(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleId", requestBody);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/vehiclemaintenance/getvehiclemaintenancebyvehicle', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getVehicleMaintenance(res));
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
 export function setStartJourneyData(data) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -492,6 +530,7 @@ export function setStartJourneyData(data) {
             });
     }
 }
+
 export function setEndJourneyData(data) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -537,7 +576,7 @@ export function setfeedbackdata(userDetails){
             body : urlencoded,
             redirect : 'follow'
         }
-        
+
         //return fetch(BASE_URL+'/journey/feedback',requestOptions).then(response => response.json())
        // .then(res => {
         //     dispatch(setfeedback(res));
@@ -546,5 +585,31 @@ export function setfeedbackdata(userDetails){
         // .catch( ( error ) => {
         //     console.log('error',error);
         // } );
+    }
+}
+
+
+export function getPetrolExpenseListData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleId", data);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/vehiclepetrolfeeling/getvehiclepetrolfeelingbyvehicle', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getPetrolExpenseList(res));
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 }
