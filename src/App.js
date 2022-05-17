@@ -13,6 +13,7 @@ import DriverPreviousRides from "./pages/driver/DriverPreviousRides";
 import DriverUpcomingRides from "./pages/driver/DriverUpcomingRides";
 import DriverPreviousRideDetails from "./pages/driver/DriverPreviousRideDetails";
 import DriverUpcomingRideDetails from "./pages/driver/DriverUpcomingRideDetails";
+import Attendance from "./pages/driver/Attendance";
 import TravellerUpcomingRides from "./pages/traveller/TravellerUpcomingRides";
 import TravellerPreviousRides from "./pages/traveller/TravellerPreviousRides";
 import Admin from "./layouts/Admin";
@@ -30,6 +31,8 @@ import RideStatus from "./pages/traveller/RideStatus";
 import DriverRideStatus from "./pages/driver/DriverRideStatus";
 import MapView from "./pages/traveller/MapView";
 import Reports from "./pages/admin/Reports";
+import AttendanceStatus from "./pages/admin/AttendanceStatus";
+
 
 function App({userDetails, adminDetails}) {
 
@@ -68,6 +71,7 @@ function App({userDetails, adminDetails}) {
             <Route path='upcoming-rides' element={<DriverUpcomingRides/>}/>
             <Route path="previous-ride-details" element={<DriverPreviousRideDetails/>}/>
             <Route path="upcoming-ride-details" element={<DriverUpcomingRideDetails/>}/>
+            <Route path='attendance' element={<Attendance/>}/>
           </Route>
           <Route path="admin" element={<Admin/>}>
             <Route path="dashboard" element={<AdminDashboard/>}/>
@@ -82,6 +86,8 @@ function App({userDetails, adminDetails}) {
             <Route path='drivers' element={<AllDrivers/>}/>
             <Route path='all-vehicle' element={<AllVehicle/>}/>
             <Route path='reports' element={<Reports/>}/>
+            <Route path='attendance-status' element={<AttendanceStatus/>}/>
+           
           </Route>
         </Routes>
       </div>

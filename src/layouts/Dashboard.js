@@ -34,11 +34,11 @@ const Dashboard = ({userDetails, adminDetails, changeLang,  userLogout}) => {
 
     useEffect(() => {
         if (adminDetails && adminDetails?.user.userRole==='Admin'){
-            navigate('/admin/dashboard')
+            navigate('/admin/attendance-status')
         }else if(userDetails && userDetails?.user.userRole==='Traveller'){
             navigate('/dashboard/request-for-ride')
         }else if(userDetails && userDetails?.user.userRole==='Driver'){
-            navigate('/driver/dashboard')
+            navigate('/driver/attendance')
         }
     }, [userDetails, adminDetails]);
 
