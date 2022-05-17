@@ -22,7 +22,7 @@ const Admin = ({userDetails, adminDetails, userLogout}) => {
 
     useEffect(() => {
         if (adminDetails && adminDetails?.user.userRole==='Admin'){
-            navigate('/admin/attendance-status')
+            navigate('/admin/dashboard')
         }else if(userDetails && userDetails?.user.userRole==='Traveller'){
             navigate('/dashboard/request-for-ride')
         }else if(userDetails && userDetails?.user.userRole==='Driver'){

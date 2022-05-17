@@ -7,6 +7,7 @@ import DirectionsCarRoundedIcon from '@mui/icons-material/DirectionsCarRounded'
 import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded'
 import DirectionsWalkRoundedIcon from '@mui/icons-material/DirectionsWalkRounded'
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
@@ -15,6 +16,7 @@ const upperList = [
     { icon: <PersonRoundedIcon />, title: 'Employees', url:'/admin/employee-wise' },
     { icon: <ManageAccountsRoundedIcon />, title: 'Drivers', url: '/admin/drivers' },
     { icon: <DirectionsCarRoundedIcon />, title: 'Cars', url:'/admin/all-vehicle' },
+    { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' },
 ];
 
 const lowerList = [
