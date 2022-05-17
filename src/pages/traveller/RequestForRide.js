@@ -25,7 +25,6 @@ import * as ActionCreatorsDriver from "../../actions/driverAction";
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
 import FeedbackIcon from '@mui/icons-material/Feedback';
-import Feedback from "./Feedback";
 
 const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourneyData,
                             getTravellerAllUpcomingJourneyData,
@@ -113,7 +112,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                         {item.source}
                     </Typography>
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
-                        {moment(item.startDateTime).format('DD MMM YYYY')}
+                        Start Date :{moment(item.startDateTime).format('DD MMM YYYY')}
                     </Typography>
 
                 </div>
@@ -137,7 +136,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                     </Typography>
 
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
-                        {moment(item.startDateTime).format('hh:mm a')}
+                        Start Time :{moment(item.startDateTime).format('hh:mm a')}
                     </Typography>
 
                     {/*{item.requestStatus==='ENDJPURNEY'?<CircleRoundedIcon sx={{ color: '#ec4510'}} />:null}*/}
@@ -254,7 +253,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                                 Start Date & Time
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                                                {moment(travellersLatestJourney.startDateTime).format('DD/MM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.startDateTime).format('DD/MMMM/YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                         <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
@@ -262,7 +261,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                                 End Date & Time
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                                                {moment(travellersLatestJourney.endDateTime).format('DD/MM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.endDateTime).format('DD/MMMM/YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                     </div>

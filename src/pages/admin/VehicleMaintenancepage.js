@@ -187,10 +187,6 @@ const useStyles = makeStyles(theme => ({
     }
 
 
-    };
-
-
-
     const card = (
        <div className="container" sx={{
             p: 1,
@@ -429,6 +425,7 @@ const useStyles = makeStyles(theme => ({
     </div>
   )
 }
+
 
 const mapStateToProps = state => {
     return{
