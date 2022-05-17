@@ -619,7 +619,7 @@ export function SetattendanceStatusData(data) {
 
         return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
             dispatch(SetattendanceStatus(res));
-            console.log('dxsds',res)
+            console.log('----attendance status----',res)
             return res
         
         })
