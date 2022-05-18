@@ -26,10 +26,10 @@ const  ToggleSwitch = () => {
     const classes = useStyles();
     const [istoggle,setistoggle] = useState(false)
 
- const   handleclick = () => {
+ const handleclick = () => {
         setistoggle(!istoggle);
     }
-    
+
   return (
     <div className={classes.ToggleSwitch} onClick={ () => handleclick()}>
         <div className={classes.knob} style={ istoggle ? { left:'0em' } : { left:'3em' } } >

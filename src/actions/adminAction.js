@@ -100,6 +100,18 @@ export const SetattendanceStatus = data => {
         payload: data
     }
 };
+export const getFeedBackQue = data => {
+    return {
+        type: "GET_FEEDBACK_QUE",
+        payload: data
+    }
+};
+export const getFeedBack = data => {
+    return {
+        type: "GET_FEEDBACK",
+        payload: data
+    }
+};
 
 
 export function setRequestStatusData(data) {
@@ -451,9 +463,9 @@ export function getUserPreviousRidesData() {
         }).then(response => response.json()).then(res => {
             dispatch(getUserPreviousRides(res));
         })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 }
 export function getUserUpcomingRidesData() {
@@ -545,29 +557,23 @@ export function getEmployeeListData(requestBody) {
             });
     }
 }
-
-
 export function getDriverattendanceListData() {
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-        let urlencoded = new URLSearchParams();
         let requestOptions = {
             method: 'GET',
         }
-
-        return axios.get(BASE_URL + '/driverattendance/getalldriverattendance').then(response => response.data).then(res => {
-            dispatch(getDriverattendanceList(res));
-            console.log("...........res......", res);
-            return res
+        return fetch(BASE_URL + '/driverattendance/getalldriverattendance', requestOptions).then((response) => response.json())
+            .then((result) => {
+            dispatch(getDriverattendanceList(result));
+            return result
         })
             .catch((error) => {
                 console.error('Error:', error);
             });
     }
 }
-    
-
 export function editDriverJourney(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -598,75 +604,8 @@ export function editDriverJourney(requestBody) {
         });
 }
 }
-
-// export function SetattendanceStatusData(data) {
-//     console.log('In admin action',data)
-//     return dispatch => {
-//         let myHeaders = new Headers();
-//         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-//         let urlencoded = new URLSearchParams();
-//         urlencoded.append("driverAttendanceId",data.driverId);
-//         urlencoded.append("status",data.status);
-//         urlencoded.append("updatedBy",data.updatedBy);
-//      console.log("-----------updatedBy---",urlencoded);
-
-//      let requestOptions = {
-//         method: 'PUT',
-//         headers: myHeaders,
-//         body: urlencoded,
-//         redirect: 'follow'
-//     };
-       
-
-//         return fetch(BASE_URL +'/driverattendance/updatedriverattendancestatus',requestOptions).then(response => response.json()).then(res => {
-//             dispatch(SetattendanceStatus(res));
-//             console.log("...........res......", res);
-//             return res
-//         })
-//             .catch((error) => {
-//                 console.error('Error:', error);
-//             });
-//     }
-// }
-
-// export function SetattendanceStatusData(data) {
-//     return dispatch => {
-//         // console.log("---------setDriverAttendanceData--------------",driverAttendanceId);
-//         // console.log("---------setDriverAttendanceData--------------",status);
-//         // console.log("---------setDriverAttendanceData--------------",updatedBy);
-//         let myHeaders = new Headers();
-//         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-//         let urlencoded = new URLSearchParams();
-//         urlencoded.append("driverAttendanceId",data.driverAttendanceId);
-//         urlencoded.append("status",data.status);
-//         urlencoded.append("updatedBy",data.updatedBy);
-
-        
-//         let requestOptions = {
-//             method: 'PUT',
-//             headers: myHeaders,
-//             body: urlencoded,
-//             redirect: 'follow'
-//         };
-
-//         return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
-//             dispatch(SetattendanceStatus(res));
-//             console.log('----attendance status----',res)
-//             return res
-        
-//         })
-//             .catch((error) => {
-//                 console.error('Error:', error);
-//             });
-//     }
-// }
-
 export function SetattendanceStatusData(data) {
     return dispatch => {
-        // console.log("---------setDriverAttendanceData--------------",driverAttendanceId);
-        // console.log("---------setDriverAttendanceData--------------",status);
-        // console.log("---------setDriverAttendanceData--------------",updatedBy);
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -682,19 +621,16 @@ export function SetattendanceStatusData(data) {
             redirect: 'follow'
         };
 
-        return axios.put(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions).then(response => response.data).then(res => {
-            dispatch(SetattendanceStatus(res));
-            console.log('----attendance status----',res)
+        return fetch(BASE_URL + '/driverattendance/updatedriverattendancestatus', requestOptions)
+            .then(response => response.data)
+            .then(res => {
+                dispatch(SetattendanceStatus(res));
+                getDriverattendanceListData()
             return res
-        
-        })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+
+        }).catch(error => console.log('error', error));
     }
 }
-
-       
 export function editVehicleJourney(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -727,8 +663,162 @@ export function editVehicleJourney(requestBody) {
 }
 
 
+export function getFeedBackQueData() {
+    return dispatch => {
+        // let requestOptions = {
+        //     method: 'GET'
+        // };
+        // return fetch('http://3.111.38.219:4001/v1/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBackQue([
+                {
+                    "feedbackEntityNo": "FE1652716433437",
+                    "entityName": "Journey",
+                    "entityType": "Journey",
+                    "questions": [
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "cleaness",
+                            "answere": [
+                                "Not Good",
+                                "Ok",
+                                "Average",
+                                "Good",
+                                "Excellent"
+                            ],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6282767d9dd30873847fd323",
+                            "facebookQuestionNo": "1",
+                            "questionType": "STARS",
+                            "createdAt": "2022-05-16T16:06:21.550Z",
+                            "updatedAt": "2022-05-16T16:06:21.550Z",
+                            "__v": 0
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "Your Opinion",
+                            "answere": [],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "62837e35f22e3719d0ee142d",
+                            "questionType": "TEXTBOX",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T10:51:33.999Z",
+                            "updatedAt": "2022-05-17T10:51:33.999Z",
+                            "__v": 0
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "Water Available ?",
+                            "answere": [
+                                "YES",
+                                "NO"
+                            ],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6283822df22e3719d0ee142e",
+                            "questionType": "YESNO",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T11:08:29.895Z",
+                            "updatedAt": "2022-05-17T11:08:29.895Z",
+                            "__v": 0
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "behavior of drivers",
+                            "answere": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6283b5e278209f4b74cd91ab",
+                            "questionType": "STARS",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T14:49:06.991Z",
+                            "updatedAt": "2022-05-17T14:49:06.991Z",
+                            "__v": 0
+                        }
+                    ]
+                }
+            ]));
+            // return
+        // })
+        // .catch((error) => {
+        //     console.error('Error:', error);
+        // });
+    }
+}
 
 
 
-     
+export function setFeedBackQueData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("feedbackQuestionId",data.feedbackQuestionId );
+        urlencoded.append("feedbackQuestionName",data.feedbackQuestionName );
+        urlencoded.append("driverId",data.driverId );
+        urlencoded.append("driverName",data.driverName );
+        urlencoded.append("driverContactNo",data.driverContactNo );
+        urlencoded.append("travelerId",data.travelerId );
+        urlencoded.append("travelerName",data.travelerName );
+        urlencoded.append("travelerContactNo",data.travelerContactNo );
+        urlencoded.append("feedbackHeaderName",data.feedbackHeaderName );
+        urlencoded.append("feedbackQuestionNameAns",data.feedbackQuestionNameAns );
+        urlencoded.append("journeyId",data.journeyId );
+        urlencoded.append("journeyNo",data.journeyNo );
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch('http://3.111.38.219:4001/v1/feedback/insertfeedback', requestOptions).then(response => response.json()).then(res => {
+
+        return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+export function getFeedBackData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId", data);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedback', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBack(res))
+            return res
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
 

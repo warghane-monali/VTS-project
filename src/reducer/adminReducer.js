@@ -11,6 +11,8 @@ const initialState = {
   employeeWiseJourney: [],
   DriverattendanceList: [],
   DriverattendanceStatus: [],
+  feedBackQueList: [],
+  feedBackResponse: [],
   carList: null,
   driverList: null,
   journeyCount: null,
@@ -101,13 +103,13 @@ const adminReducer = (state = initialState, action) => {
         carList: action.payload,
         error: null,
       };
-    case "GET_DRIVER_LIST":
-      return {
-        ...state,
-        loading: false,
-        driverList: action.payload,
-        error: null,
-      };
+    // case "GET_DRIVER_LIST":
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     driverList: action.payload,
+    //     error: null,
+    //   };
     case "GET_DRIVER_Attendance":
       return {
         ...state,
@@ -120,18 +122,23 @@ const adminReducer = (state = initialState, action) => {
         DriverattendanceList: action.payload,
         error: null,
       };
+    case "GET_FEEDBACK_QUE":
+      return {
+        ...state,
+        feedBackQueList: action.payload,
+        error: null,
+      };
     case "SET_DRIVER_ATTENDANCE_STATUS":
-      // const _attdndanceList = state.DriverattendanceList;
-      // check response in action.payload
-      // const index = _attdndanceList.indexOf(driverID);
-      // const removeedDriverList = _attdndanceList.filter(x => x._id != action.paylod.driverId)
-
-      // const newList = removeedDriverList.splice(index, 0, newdatafromresponse);
       return {
         ...state,
         DriverattendanceStatus: action.payload,
-        // DriverattendanceList:newList,
-        error: null,
+        error: null
+      };
+    case "GET_FEEDBACK":
+      return {
+        ...state,
+        feedBackResponse: action.payload,
+        error: null
       };
 
     case "LOGOUT":

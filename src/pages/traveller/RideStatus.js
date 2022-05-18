@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, IconButton, Modal, Paper, Typography} from "@mui/material";
 import moment from "moment";
 import Box from "@mui/material/Box";
@@ -15,9 +15,11 @@ import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import * as ActionCreators from "../../actions/requestAction";
+import * as ActionCreatorsAdmin from "../../actions/adminAction";
 import {createBrowserHistory} from "history";
+import {getFeedBackData} from "../../actions/adminAction";
 
-const RideStatus = ({userDetails, sourceLocation, destinationLocation, setCancelStatusData}) => {
+const RideStatus = ({userDetails, sourceLocation, destinationLocation, setCancelStatusData, getFeedBackData}) => {
     const [isOpen, setIsOpen] = useState(false);
     const classes = useStyles();
     const navigate = useNavigate();
@@ -31,6 +33,15 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation, setCancel
         let destinationL = "&destination=" + destinationLocationLat + "," + destinationLocationLng;
         // let openMapUrl = new URL();
         window.open(url+origin+destinationL, '_blank');
+    };
+    useEffect(() => {
+        getFeedBack()
+    }, []);
+
+
+    const getFeedBack = async ()=>{
+        const result = await getFeedBackData(requestRideData._id);
+
     };
 
     const rejectRequestData = async ()=>{
@@ -430,6 +441,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setCancelStatusData: (requestBody) => dispatch(ActionCreators.setCancelStatusData(requestBody)),
+        getFeedBackData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackData(requestBody)),
         // flushRequestState: () => dispatch(ActionCreators.flushRequestState())
     }
 };

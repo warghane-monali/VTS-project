@@ -14,9 +14,6 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
-import * as ActionCreators from "../../actions/requestAction";
-import moment from "moment";
-import { textAlign } from "@mui/system";
 
 const AttedanceStatus = ({
   adminDetails,
@@ -70,13 +67,8 @@ const AttedanceStatus = ({
       updatedBy: updatedBy,
       status:status,
     });
+    getDriverList()
   };
-
-  // useEffect(() => {
-  //   setSelectedFilter(FIlterHandlers[driverstatus])
-  // }, [
-  //   driverstatus
-  // ])
 
   const getDriverList = async () => {
     const data = await getDriverattendanceListData();
@@ -85,15 +77,13 @@ const AttedanceStatus = ({
     setCount(data.length);
   };
 
-  const handleAprooved = (userId, driverId, status) => {
-
+  const handleAprooved = (driverId, userId,  status) => {
     setstatus("APPROVED");
-    console.log(driverId, status)
     DriverStatus(driverId, userId, status);
   };
-  const handleReject = (userId, driverId, status) => {
+  const handleReject = ( driverId, userId, status) => {
     setstatus("REJECT");
-    DriverStatus(driverId, status);
+    DriverStatus(driverId, userId, status);
   };
 
   return (
@@ -186,9 +176,8 @@ const AttedanceStatus = ({
                               variant="contained"
                               size="small"
                               onClick={() =>
-                                handleAprooved(
+                                handleAprooved(row._id,
                                   adminDetails.user._id,
-                                  row._id,
                                  "APPROVED"
                                 )
                               }
@@ -204,11 +193,12 @@ const AttedanceStatus = ({
                               }}
                               variant="contained"
                               size="small"
-                              onClick={() => handleReject( adminDetails.user._id,
+                              onClick={() => handleReject(
                                 row._id,
+                                  adminDetails.user._id,
                                 "REJECT")}
                             >
-                              Cancel
+                              REJECT
                             </Button>
                           </TableCell>
                         </TableRow>

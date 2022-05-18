@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper'
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar'
 import {connect, useDispatch} from "react-redux";
 import * as ActionCreators from "../../actions/requestAction";
-import {AppBar, Box, IconButton, Modal} from "@mui/material";
+import {AppBar, Box, Card, IconButton, Modal, Rating} from "@mui/material";
 import moment from "moment";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -22,20 +22,48 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import * as ActionCreatorsDriver from "../../actions/driverAction";
+import * as ActionCreatorsAdmin from "../../actions/adminAction";
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import CloseIcon from "@mui/icons-material/Close";
+import Switch from "@mui/material/Switch";
 
-const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourneyData,
+const labels = {
+    1: 'Not Good',
+
+    2: 'Ok',
+
+    3: 'Average',
+
+    4: 'Good',
+
+    5: 'Excellent',
+
+};
+
+const RequestForRide = ({
+                            tabIndexData,
+                            getTabIndex,
+                            getTravellerAllPreviousJourneyData,
                             getTravellerAllUpcomingJourneyData,
                             travellersAllPreviousJourney,
                             travellersAllUpcomingJourney,
-                            getTravellerLatestJourneyData, getTravellerUpcomingPreviousRidesData,
-                            travellerUpcomingPreviousRides, setStartJourneyData, setEndJourneyData, userDetails, travellersLatestJourney}) => {
+                            getTravellerLatestJourneyData,
+                            getTravellerUpcomingPreviousRidesData,
+                            travellerUpcomingPreviousRides,
+                            setStartJourneyData,
+                            setEndJourneyData,
+                            userDetails,
+                            travellersLatestJourney,
+                            getFeedBackQueData,
+                            feedBackQueList,
+                            setFeedBackQueData
+                        }) => {
     const classes = useStyles();
     const navigate = useNavigate();
     let dispatch = useDispatch();
-    const [selected, setSelected] = useState(tabIndexData?(tabIndexData):0);
+    const [selected, setSelected] = useState(tabIndexData ? (tabIndexData) : 0);
     const [selectedUpDate, setSelectedUpDate] = useState(0);
     const [selectedDate, setSelectedDate] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -44,9 +72,18 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
+    const [openFeedBackList, setOpenFeedBackList] = useState(false);
+    const [checked, setChecked] = useState(false);
+
+
+    const [value1, setValue1] = React.useState(2);
+    const [hover1, setHover1] = React.useState(-1);
+    const [question1, setquestion1] = React.useState(false);
+    const [question2, setquestion2] = React.useState(false);
+    const [question3, setquestion3] = React.useState(false);
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(function(position) {
+        navigator.geolocation.getCurrentPosition(function (position) {
             console.log("Latitude is :", position.coords.latitude);
             console.log("Longitude is :", position.coords.longitude);
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
@@ -104,8 +141,9 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
 
 
     const renderUpcomingList = (item, index) => {
-        return <Paper className={classes.displayForm} key={index} onClick={() => navigate('/dashboard/ride-status', {state: item})}>
-            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width:'100%'}}>
+        return <Paper className={classes.displayForm} key={index}
+                      onClick={() => navigate('/dashboard/ride-status', {state: item})}>
+            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%'}}>
                 <div className={classes.upperRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>
                     <Typography variant='h6' style={{textAlign: "center"}}>
@@ -125,7 +163,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                 }}>
                     <ImportExportIcon sx={{
                         fontSize: 40,
-                        color: item?.requestStatus === 'CANCEL' ? '#dc0404': item?.requestStatus === 'UNSERVICE' ? '#cb7373': item?.requestStatus === 'PENDING' ? '#f99935' : item?.requestStatus === 'ONGOING' ? '#bc9800' :item?.requestStatus === 'APPROVED' ? '#09984c' : item?.requestStatus === 'REJECTED' ? '#f93125' : 'gray'
+                        color: item?.requestStatus === 'CANCEL' ? '#dc0404' : item?.requestStatus === 'UNSERVICE' ? '#cb7373' : item?.requestStatus === 'PENDING' ? '#f99935' : item?.requestStatus === 'ONGOING' ? '#bc9800' : item?.requestStatus === 'APPROVED' ? '#09984c' : item?.requestStatus === 'REJECTED' ? '#f93125' : 'gray'
                     }}/>
                 </div>
                 <div className={classes.lowerRow}
@@ -148,22 +186,59 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
         </Paper>
     };
 
-    const goToMap = ( sourceLocationLat,sourceLocationLng, destinationLocationLat, destinationLocationLng)=> {
+    const goToMap = (sourceLocationLat, sourceLocationLng, destinationLocationLat, destinationLocationLng) => {
         let url = "https://www.google.com/maps/dir/?api=1";
         let origin = "&origin=" + sourceLocationLat + "," + sourceLocationLng;
         let destinationL = "&destination=" + destinationLocationLat + "," + destinationLocationLng;
         // let openMapUrl = new URL();
-        window.open(url+origin+destinationL, '_blank');
+        window.open(url + origin + destinationL, '_blank');
     };
+
+    const openFeedBackQue = async () => {
+        setOpenFeedBackList(true)
+        await getFeedBackQueData()
+    }
+
+    const updateFeedBackAns = async (data) => {
+        await setFeedBackQueData(data)
+    }
+
+    const handelAns = async (item) => {
+        setChecked(!checked);
+        await updateFeedBackAns({
+            feedbackQuestionId: item._id,
+            feedbackQuestionName: item.question,
+            driverId: travellersLatestJourney.driverId,
+            driverName: travellersLatestJourney.driverName,
+            driverContactNo: travellersLatestJourney.driverNo,
+            travelerId: travellersLatestJourney.selfTravellerId,
+            travelerName: travellersLatestJourney.selfTravellerName,
+            travelerContactNo: travellersLatestJourney.selfTravellerNo,
+            feedbackHeaderName: item.feedbackEntityName,
+            feedbackQuestionNameAns: !checked?1:0,
+            journeyId: travellersLatestJourney._id,
+            journeyNo: travellersLatestJourney.journeyNo,
+        })
+    }
+    // const handleEditItem = (editedItem, id, fname, seletedIndex) => {
+    //     const newData = selectedProduct.map( (item, index) => {
+    //         if (index === seletedIndex ) {
+    //             const newItem = {...item, [fname]:editedItem};
+    //             return newItem;
+    //         }
+    //         return item
+    //     });
+    //     setSelectedProduct(newData)
+    // };
 
     return (
         <div className={classes.root}>
-            <Box sx={{display: 'flex', flexDirection: 'row', justifyContent:'space-between',}}>
-                <div sx={{ display: { xs: 'none', sm: 'block' }}} style={{flexDirection:'column'}}>
+            <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',}}>
+                <div sx={{display: {xs: 'none', sm: 'block'}}} style={{flexDirection: 'column'}}>
 
                 </div>
                 {selected === 0 &&
-                    <div style={{flexDirection:'column', justifyContent:'space-between', maxWidth:400, flex:1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
                         <Paper className={classes.leftSection} elevation={3}
                                onClick={() => navigate('/dashboard/request')}>
                             <Typography variant='body-1' component='div' style={{width: '100%', textAlign: "center"}}>
@@ -183,84 +258,159 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                            travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING'))&&
+                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING')) &&
                             <Paper className={classes.rightSection} elevation={4}>
                                 {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING')) ?
                                     <div className={classes.topicRow}>
                                         <div>
-                                            <Typography variant='h6' component='div' style={{textAlign:'center', margin: 16}} >
-                                                {travellersLatestJourney?.requestStatus ==='PENDING' ? 'Pending Status':null}
-                                                {travellersLatestJourney?.requestStatus ==='APPROVED' ? 'Accepted Status':null}
-                                                {travellersLatestJourney?.requestStatus ==='REJECTED' ? 'Rejected Status':null}
-                                                {travellersLatestJourney?.requestStatus ==='CANCEL' ? 'Canceled Status':null}
+                                            <Typography variant='h6' component='div'
+                                                        style={{textAlign: 'center', margin: 16}}>
+                                                {travellersLatestJourney?.requestStatus === 'PENDING' ? 'Pending Status' : null}
+                                                {travellersLatestJourney?.requestStatus === 'APPROVED' ? 'Accepted Status' : null}
+                                                {travellersLatestJourney?.requestStatus === 'REJECTED' ? 'Rejected Status' : null}
+                                                {travellersLatestJourney?.requestStatus === 'CANCEL' ? 'Canceled Status' : null}
                                             </Typography>
                                         </div>
-                                        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                                            <Box >
-                                                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                                                    <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center", width:'100%'}}>
-                                                        {travellersLatestJourney.journeyNo !== ''?
-                                                            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                                                                <Typography variant='subtitle2' component='h4' style={{marginTop: 4}}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'space-between'
+                                        }}>
+                                            <Box>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'space-between'
+                                                }}>
+                                                    <Box style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        textAlign: "center",
+                                                        width: '100%'
+                                                    }}>
+                                                        {travellersLatestJourney.journeyNo !== '' ?
+                                                            <div style={{
+                                                                display: 'flex',
+                                                                flexDirection: 'row',
+                                                                justifyContent: 'space-between'
+                                                            }}>
+                                                                <Typography variant='subtitle2' component='h4'
+                                                                            style={{marginTop: 4}}>
                                                                     Journey No.
                                                                 </Typography>
-                                                                <Typography variant='body-1' component='h4' style={{marginTop: 4}}>
+                                                                <Typography variant='body-1' component='h4'
+                                                                            style={{marginTop: 4}}>
                                                                     {travellersLatestJourney.journeyNo}
                                                                 </Typography>
-                                                            </div>:null}
-                                                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                                                            <Typography variant='subtitle2' component='h4' style={{marginTop: 4}}>
+                                                            </div> : null}
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'space-between'
+                                                        }}>
+                                                            <Typography variant='subtitle2' component='h4'
+                                                                        style={{marginTop: 4}}>
                                                                 Trip Type
                                                             </Typography>
-                                                            <Typography variant='body-1' component='div' style={{marginTop: 4}}>
-                                                                {travellersLatestJourney.oneWayOrRoundTrip==='OneWay'? 'One Way': 'Round Trip'}
+                                                            <Typography variant='body-1' component='div'
+                                                                        style={{marginTop: 4}}>
+                                                                {travellersLatestJourney.oneWayOrRoundTrip === 'OneWay' ? 'One Way' : 'Round Trip'}
                                                             </Typography>
                                                         </div>
 
-                                                        <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
-                                                               onClick={()=>goToMap(travellersLatestJourney.sourceLat, travellersLatestJourney.sourceLong, travellersLatestJourney.destinationLat, travellersLatestJourney.destinationLong)}>
-                                                            <Typography variant='body-1' component='h4' style={{margin: 4}}>
+                                                        <Paper style={{padding: 8, margin: 4, cursor: 'pointer'}}
+                                                               elevation={4}
+                                                               onClick={() => goToMap(travellersLatestJourney.sourceLat, travellersLatestJourney.sourceLong, travellersLatestJourney.destinationLat, travellersLatestJourney.destinationLong)}>
+                                                            <Typography variant='body-1' component='h4'
+                                                                        style={{margin: 4}}>
                                                                 From
                                                             </Typography>
-                                                            <Typography variant='subtitle2' component='div' style={{margin: 4, textDecoration: "underline", color:'blue'}}>
+                                                            <Typography variant='subtitle2' component='div' style={{
+                                                                margin: 4,
+                                                                textDecoration: "underline",
+                                                                color: 'blue'
+                                                            }}>
                                                                 {travellersLatestJourney.source}
                                                             </Typography>
                                                         </Paper>
-                                                        <div style={{display:'flex', flexDirection:'column', justifyContent:'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
-                                                            <ImportExportIcon  sx={{fontSize:40, color: travellersLatestJourney?.requestStatus ==='PENDING' ? '#f99935': travellersLatestJourney?.requestStatus ==='APPROVED' ? '#09984c':travellersLatestJourney?.requestStatus ==='ONGOING' ? '#bc9800':travellersLatestJourney?.requestStatus ==='REJECTED' ? '#f93125':'gray'}} />
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            justifyContent: 'center',
+                                                            transform: "rotate(180deg)",
+                                                            alignSelf: 'center'
+                                                        }}>
+                                                            <ImportExportIcon sx={{
+                                                                fontSize: 40,
+                                                                color: travellersLatestJourney?.requestStatus === 'PENDING' ? '#f99935' : travellersLatestJourney?.requestStatus === 'APPROVED' ? '#09984c' : travellersLatestJourney?.requestStatus === 'ONGOING' ? '#bc9800' : travellersLatestJourney?.requestStatus === 'REJECTED' ? '#f93125' : 'gray'
+                                                            }}/>
                                                         </div>
-                                                        <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
-                                                               onClick={()=>goToMap(travellersLatestJourney.sourceLat, travellersLatestJourney.sourceLong, travellersLatestJourney.destinationLat, travellersLatestJourney.destinationLong)}>
-                                                            <Typography variant='body-2' component='h4' style={{margin: 4}}>
+                                                        <Paper style={{padding: 8, margin: 4, cursor: 'pointer'}}
+                                                               elevation={4}
+                                                               onClick={() => goToMap(travellersLatestJourney.sourceLat, travellersLatestJourney.sourceLong, travellersLatestJourney.destinationLat, travellersLatestJourney.destinationLong)}>
+                                                            <Typography variant='body-2' component='h4'
+                                                                        style={{margin: 4}}>
                                                                 To
                                                             </Typography>
-                                                            <Typography variant='subtitle2' component='div' style={{margin: 4, textDecoration: "underline", color:'blue'}}>
+                                                            <Typography variant='subtitle2' component='div' style={{
+                                                                margin: 4,
+                                                                textDecoration: "underline",
+                                                                color: 'blue'
+                                                            }}>
                                                                 {travellersLatestJourney.destination}
                                                             </Typography>
                                                         </Paper>
                                                     </Box>
-                                                    <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center", margin: 10}}>
-                                                        <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
+                                                    <Box style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        textAlign: "center",
+                                                        margin: 10
+                                                    }}>
+                                                        <Typography variant='body-2' component='h4'
+                                                                    style={{marginTop: 4}}>
                                                             Reason
                                                         </Typography>
-                                                        <p variant='subtitle2' component='h4' style={{marginTop: 4, textAlign:"center", width:'100%', wordWrap: 'break-word'}}>
+                                                        <p variant='subtitle2' component='h4' style={{
+                                                            marginTop: 4,
+                                                            textAlign: "center",
+                                                            width: '100%',
+                                                            wordWrap: 'break-word'
+                                                        }}>
                                                             {travellersLatestJourney.reason}
                                                         </p>
                                                     </Box>
-                                                    <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%'}}>
-                                                        <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left' }}>
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                        width: '100%'
+                                                    }}>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            marginTop: 16,
+                                                            textAlign: 'left'
+                                                        }}>
                                                             <Typography variant='body-2' component='div'>
                                                                 Start Date & Time
                                                             </Typography>
-                                                            <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
+                                                            <Typography variant='subtitle2' component='div'
+                                                                        style={{marginTop: 8}}>
                                                                 {moment(travellersLatestJourney.startDateTime).format('DD/MMMM/YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
-                                                        <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            marginTop: 16,
+                                                            textAlign: 'right'
+                                                        }}>
                                                             <Typography variant='body-2' component='div'>
                                                                 End Date & Time
                                                             </Typography>
-                                                            <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
+                                                            <Typography variant='subtitle2' component='div'
+                                                                        style={{marginTop: 8}}>
                                                                 {moment(travellersLatestJourney.endDateTime).format('DD/MMMM/YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
@@ -269,9 +419,15 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus==='APPROVED' || travellersLatestJourney.requestStatus==='STARTJPURNEY' || travellersLatestJourney.requestStatus==='ONGOING'))&&
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING')) &&
                                     <>
-                                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            width: '100%',
+                                            margin: '16px 0'
+                                        }}>
                                             <div style={{display: 'flex', flexDirection: 'column'}}>
                                                 <div style={{display: 'flex', flexDirection: 'column'}}>
                                                     <img style={{width: '80px'}}
@@ -279,7 +435,11 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                          src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVA_HrQLjkHiJ2Ag5RGuwbFeDKRLfldnDasw&usqp=CAU'
                                                     />
                                                 </div>
-                                                <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '12px 0'
+                                                }}>
                                                     <Typography variant='body-1' component='h4'>
                                                         Driver Name
                                                     </Typography>
@@ -287,7 +447,11 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                         {travellersLatestJourney.driverName}
                                                     </Typography>
                                                 </div>
-                                                <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '12px 0'
+                                                }}>
                                                     <Typography variant='body-1' component='h4'>
                                                         Mobile No.
                                                     </Typography>
@@ -297,15 +461,23 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                 </div>
                                             </div>
                                             <div style={{display: 'flex', flexDirection: 'column',}}>
-                                                <div style={{display: 'flex', flexDirection: 'column', margin: '6px 0'}}>
-                                                    <Typography variant='body-1' component='h4' style={{margin: '6px 0'}}>
+                                                <div
+                                                    style={{display: 'flex', flexDirection: 'column', margin: '6px 0'}}>
+                                                    <Typography variant='body-1' component='h4'
+                                                                style={{margin: '6px 0'}}>
                                                         Start OTP : {travellersLatestJourney.startOTP}
                                                     </Typography>
-                                                    {travellersLatestJourney.requestStatus==='STARTJPURNEY'|| travellersLatestJourney.requestStatus==='ONGOING' &&<Typography variant='body-1' component='h4' style={{margin: '6px 0'}}>
-                                                        End OTP : {travellersLatestJourney.endOTP}
-                                                    </Typography>}
+                                                    {travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' &&
+                                                        <Typography variant='body-1' component='h4'
+                                                                    style={{margin: '6px 0'}}>
+                                                            End OTP : {travellersLatestJourney.endOTP}
+                                                        </Typography>}
                                                 </div>
-                                                <div style={{display: 'flex', flexDirection: 'column', margin: '16px 0'}}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '16px 0'
+                                                }}>
                                                     <Typography variant='body-1' component='h4'>
                                                         Vehicle Type Name
                                                     </Typography>
@@ -313,7 +485,11 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                         {travellersLatestJourney.vehicleName}
                                                     </Typography>
                                                 </div>
-                                                <div style={{display: 'flex', flexDirection: 'column', margin: '16px 0'}}>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '16px 0'
+                                                }}>
                                                     <Typography variant='body-1' component='h4'>
                                                         Vehicle NO.
                                                     </Typography>
@@ -323,73 +499,100 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
-                                            {travellersLatestJourney.requestStatus==='STARTJPURNEY'&&
-                                            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-                                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                                    <Typography variant='body-1' component='h4'>
-                                                        Start Meter Reading
-                                                    </Typography>
-                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                        {travellersLatestJourney.startOdoMeter}
-                                                    </Typography>
-                                                </div>
-                                                <div style={{display: 'flex', flexDirection: 'column'}}>
-                                                    <Typography variant='body-1' component='h4'>
-                                                        End Meter Reading
-                                                    </Typography>
-                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                        {travellersLatestJourney.endOdoMeter}
-                                                    </Typography>
-                                                </div>
-                                            </div>}
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            width: '100%',
+                                            margin: '16px 0'
+                                        }}>
+                                            {travellersLatestJourney.requestStatus === 'STARTJPURNEY' &&
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    justifyContent: 'space-between',
+                                                    width: '100%'
+                                                }}>
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                        <Typography variant='body-1' component='h4'>
+                                                            Start Meter Reading
+                                                        </Typography>
+                                                        <Typography variant='body-2' component='div'
+                                                                    style={{marginTop: 8}}>
+                                                            {travellersLatestJourney.startOdoMeter}
+                                                        </Typography>
+                                                    </div>
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                        <Typography variant='body-1' component='h4'>
+                                                            End Meter Reading
+                                                        </Typography>
+                                                        <Typography variant='body-2' component='div'
+                                                                    style={{marginTop: 8}}>
+                                                            {travellersLatestJourney.endOdoMeter}
+                                                        </Typography>
+                                                    </div>
+                                                </div>}
                                         </div>
                                     </>
                                 }
                             </Paper>
                         }
-                        <div style={{height: 100, width: '100%'}}></div>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={() => openFeedBackQue()}>
+                                Feedback
+                            </Button>
+                        </div>
+
                     </div>}
                 {selected === 2 ?
-                    <div style={{flexDirection:'column', justifyContent:'space-between', maxWidth:400, flex:1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList
                                 onChange={(e, value) => {
-                                setSelectedTab(Number(value));
-                                getChangeDatePreviousRides(Number(value));
-                                setFilter(false);
-                            }}>
-                                <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={'All Rides'} value="0"/>
-                                <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={moment().subtract(1, 'days').format('DD-MMM')} value="1"/>
-                                <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={moment().subtract(2, 'days').format('DD-MMM')} value="2"/>
-                                { filter && value?<Tab style={{minWidth: 115, padding: '12px 8px'}} label={moment(value && value.toString()).format('DD-MMM-YYYY')} value="3"/>:null}
+                                    setSelectedTab(Number(value));
+                                    getChangeDatePreviousRides(Number(value));
+                                    setFilter(false);
+                                }}>
+                                <Tab style={{minWidth: filter ? 75 : 115, padding: '12px 8px'}} label={'All Rides'}
+                                     value="0"/>
+                                <Tab style={{minWidth: filter ? 75 : 115, padding: '12px 8px'}}
+                                     label={moment().subtract(1, 'days').format('DD-MMM')} value="1"/>
+                                <Tab style={{minWidth: filter ? 75 : 115, padding: '12px 8px'}}
+                                     label={moment().subtract(2, 'days').format('DD-MMM')} value="2"/>
+                                {filter && value ? <Tab style={{minWidth: 115, padding: '12px 8px'}}
+                                                        label={moment(value && value.toString()).format('DD-MMM-YYYY')}
+                                                        value="3"/> : null}
                                 <IconButton onClick={e => {
                                     e.preventDefault();
                                     setIsOpen(pState => !pState)
                                 }}>
-                                    <DateRangeRoundedIcon color="primary" className={classes.calendarIcon} style={{width: 24, height: 24}}/>
+                                    <DateRangeRoundedIcon color="primary" className={classes.calendarIcon}
+                                                          style={{width: 24, height: 24}}/>
                                 </IconButton>
                             </TabList>
-                            <TabPanel value="0" style={{width: '95%', padding:12}}>
+                            <TabPanel value="0" style={{width: '95%', padding: 12}}>
                                 {travellersAllPreviousJourney && travellersAllPreviousJourney.length > 0 && travellersAllPreviousJourney.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 })}
                             </TabPanel>
-                            <TabPanel style={{width: '95%', padding:12}} value="1">
+                            <TabPanel style={{width: '95%', padding: 12}} value="1">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
                             </TabPanel>
-                            <TabPanel style={{width: '95%', padding:12}} value="2">
+                            <TabPanel style={{width: '95%', padding: 12}} value="2">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
                             </TabPanel>
-                            { filter?<TabPanel style={{width: '95%', padding:12}} value="3">
+                            {filter ? <TabPanel style={{width: '95%', padding: 12}} value="3">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
-                            </TabPanel>:null}
+                            </TabPanel> : null}
                         </TabContext>
                         <Modal
                             className={classes.middlePosition}
@@ -407,7 +610,8 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                 <div style={{margin: 10}}>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
-                                            renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                                            renderInput={(props) => <TextField
+                                                className={classes.textFields} {...props} />}
                                             label="Select Date"
                                             mask="__/__/____"
                                             format="dd-MM-yyyy"
@@ -427,7 +631,7 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                     <Button variant="contained" onClick={e => {
                                         e.preventDefault();
                                         setIsOpen(pState => !pState);
-                                        if(value){
+                                        if (value) {
                                             getRequestDataByDate(value)
                                         }
                                     }}>Submit</Button>
@@ -437,17 +641,21 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                         </Modal>
                     </div> : null}
                 {selected === 1 ?
-                    <div style={{flexDirection:'column', justifyContent:'space-between', maxWidth:400, flex:1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList onChange={(e, value) => {
                                 setSelectedTab(Number(value));
                                 getChangeDateUpcomingRides(Number(value));
                                 setFilter(false);
                             }}>
-                                <Tab style={{minWidth: filter?75:115}} label={ 'All Rides'} value="0"/>
-                                <Tab style={{minWidth: filter?75:115}} label={ moment().add(0, 'days').format('DD-MMM')} value="1"/>
-                                <Tab style={{minWidth: filter?75:115}} label={ moment().add(1, 'days').format('DD-MMM')} value="2"/>
-                                {filter && value?<Tab style={{minWidth: 115, padding: '12px 8px'}} label={moment(value && value.toString()).format('DD-MMM-YYYY')} value="3"/>:null}
+                                <Tab style={{minWidth: filter ? 75 : 115}} label={'All Rides'} value="0"/>
+                                <Tab style={{minWidth: filter ? 75 : 115}}
+                                     label={moment().add(0, 'days').format('DD-MMM')} value="1"/>
+                                <Tab style={{minWidth: filter ? 75 : 115}}
+                                     label={moment().add(1, 'days').format('DD-MMM')} value="2"/>
+                                {filter && value ? <Tab style={{minWidth: 115, padding: '12px 8px'}}
+                                                        label={moment(value && value.toString()).format('DD-MMM-YYYY')}
+                                                        value="3"/> : null}
                                 <IconButton onClick={e => {
                                     e.preventDefault();
                                     setIsOpen(pState => !pState)
@@ -471,11 +679,11 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                     return renderUpcomingList(item, index)
                                 }) : null}
                             </TabPanel>
-                            { filter?<TabPanel value="3">
+                            {filter ? <TabPanel value="3">
                                 {travellerUpcomingPreviousRides && travellerUpcomingPreviousRides.length > 0 ? travellerUpcomingPreviousRides.map((item, index) => {
                                     return renderUpcomingList(item, index)
                                 }) : null}
-                            </TabPanel>:null}
+                            </TabPanel> : null}
                         </TabContext>
                         <Modal
                             className={classes.middlePosition}
@@ -493,7 +701,8 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                 <div style={{margin: 10}}>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
-                                            renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                                            renderInput={(props) => <TextField
+                                                className={classes.textFields} {...props} />}
                                             mask="__/__/____"
                                             format="dd-MM-yyyy"
                                             label="Select Date"
@@ -520,14 +729,140 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                             </Paper>
                         </Modal>
                     </div> : null}
-                <div sx={{ display: { xs: 'none', sm: 'block' }}} style={{ flexDirection:'column'}}>
+                <div sx={{display: {xs: 'none', sm: 'block'}}} style={{flexDirection: 'column'}}>
 
                 </div>
+                <Modal
+                    className={classes.middlePosition}
+                    open={openFeedBackList}
+                    onClose={e => {
+                        e.preventDefault();
+                        setOpenFeedBackList(false)
+                    }}>
+                    <Paper className={classes.form}
+                           sx={{p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700'}}>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyItems: 'center',
+                            justifyContent: 'space-between',
+                        }}>
+                            <Typography style={{margin: 8}} variant='h5' component='div'>
+                                Feedback
+                            </Typography>
+                            <IconButton aria-label="delete" onClick={e => {
+                                e.preventDefault();
+                                setOpenFeedBackList(false)
+                            }}>
+                                <CloseIcon/>
+                            </IconButton>
+                        </div>
+                        <hr className={classes.divider}/>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flexWrap: 'wrap',
+                            justifyItems: 'center',
+                            justifyContent: 'space-between'
+                        }}>
+                            <Box className={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}>
+                                <div style={{
+                                    flexDirection: 'column',
+                                    justifyContent: 'space-between',
+                                    maxWidth: 400,
+                                    flex: 1
+                                }}>
+                                    {feedBackQueList && feedBackQueList[0].questions.map((item, index) => {
+                                        return <Card style={{margin: 16}} elevation={3} key={index}>
+                                            <Typography component="legend">{item.question} ?</Typography>
+                                            {item.questionType === 'STARS' &&
+                                                <>
+                                                    <Rating name="hover-feedback"
+                                                            value={item.answere}
+                                                            onChange={(event, newValue1) => {
+                                                                updateFeedBackAns({
+                                                                    feedbackQuestionId: item._id,
+                                                                    feedbackQuestionName: item.question,
+                                                                    driverId: travellersLatestJourney.driverId,
+                                                                    driverName: travellersLatestJourney.driverName,
+                                                                    driverContactNo: travellersLatestJourney.driverNo,
+                                                                    travelerId: travellersLatestJourney.selfTravellerId,
+                                                                    travelerName: travellersLatestJourney.selfTravellerName,
+                                                                    travelerContactNo: travellersLatestJourney.selfTravellerNo,
+                                                                    feedbackHeaderName: item.feedbackEntityName,
+                                                                    feedbackQuestionNameAns: newValue1,
+                                                                    journeyId: travellersLatestJourney._id,
+                                                                    journeyNo: travellersLatestJourney.journeyNo,
+                                                                })
+                                                            }}
+                                                            onChangeActive={(event, newHover) => {
+                                                                setHover1(newHover);
+                                                            }}
+                                                            defaultValue={item.answere}
+                                                            size="large"
+                                                    />
+                                                </>
+                                            }
+                                            {item.questionType === 'TEXTBOX' &&
+                                                <TextField
+                                                    style={{margin:16}}
+                                                    value={item.answere}
+                                                    id="outlined-password-input"
+                                                    onChange={()=>{}}
+                                                    onBlur={()=> updateFeedBackAns({
+                                                        feedbackQuestionId: item._id,
+                                                        feedbackQuestionName: item.question,
+                                                        driverId: travellersLatestJourney.driverId,
+                                                        driverName: travellersLatestJourney.driverName,
+                                                        driverContactNo: travellersLatestJourney.driverNo,
+                                                        travelerId: travellersLatestJourney.selfTravellerId,
+                                                        travelerName: travellersLatestJourney.selfTravellerName,
+                                                        travelerContactNo: travellersLatestJourney.selfTravellerNo,
+                                                        feedbackHeaderName: item.feedbackEntityName,
+                                                        feedbackQuestionNameAns: travellersLatestJourney,
+                                                        journeyId: travellersLatestJourney._id,
+                                                        journeyNo: travellersLatestJourney.journeyNo,
+                                                    })}
+                                                    type="text"
+                                                />
+                                            }
+                                            {item.questionType === 'YESNO' &&
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'row',
+                                                    justifyContent:'center',
+                                                    alignItems: 'center',
+                                                    alignContent:'center'
+                                                }}>
+                                                    <Typography>No</Typography>
+                                                    <Switch
+                                                        checked={checked}
+                                                        onChange={()=> {
+                                                            handelAns(item)
+                                                        }}
+                                                        inputProps={{ 'aria-label': 'controlled' }}
+                                                    />
+                                                    <Typography>Yes</Typography>
+                                                </div>
+                                            }
+                                        </Card>
+                                    })}
+                                </div>
+                            </Box>
+                        </div>
+                    </Paper>
+
+                </Modal>
             </Box>
 
 
             <AppBar className={classes.footer}>
-                <Box sx={{width: {xs:500, sm:786,md:1080, xl:'100%'}}}>
+                <Box sx={{width: {xs: 500, sm: 786, md: 1080, xl: '100%'}}}>
                     <BottomNavigation
                         showLabels
                         value={selected}
@@ -540,19 +875,21 @@ const RequestForRide = ({tabIndexData, getTabIndex, getTravellerAllPreviousJourn
                                 getUserUpcomingRides()
                             } else if (newValue === 2) {
                                 getUserPreviousRides()
-                            }
-                            else if (newValue === 3){
+                            } else if (newValue === 3) {
                                 navigate('/dashboard/feedback')
                             }
                         }}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon/>}/>
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon/>}/>
                         <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon/>}/>
-                        <BottomNavigationAction label="Feedback" icon={<FeedbackIcon />} />
+                        <BottomNavigationAction label="Feedback" icon={<FeedbackIcon/>}/>
                     </BottomNavigation>
                     <div>
-                        <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
-                            Powered By <a style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}} href="https://www.foxberry.in/" target="_blank"> Foxberry Technologies </a> &copy; {new Date().getFullYear()}
+                        <Typography variant='body-2' component='div'
+                                    style={{color: 'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
+                            Powered By <a style={{color: 'white', textAlign: "center", marginTop: 8, marginBottom: 8}}
+                                          href="https://www.foxberry.in/" target="_blank"> Foxberry
+                            Technologies </a> &copy; {new Date().getFullYear()}
                         </Typography>
                     </div>
                 </Box>
@@ -621,7 +958,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        flex:0.5
+        flex: 0.5
     },
     carIcon: {
         fontSize: '40px !important',
@@ -779,7 +1116,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flex:0.5
+        flex: 0.5
     },
     formSpacer: {
         display: 'flex',
@@ -804,6 +1141,7 @@ const mapStateToProps = state => {
         travellerUpcomingPreviousRides: state.request.travellerUpcomingPreviousRides,
         travellersAllPreviousJourney: state.request.travellersAllPreviousJourney,
         travellersAllUpcomingJourney: state.request.travellersAllUpcomingJourney,
+        feedBackQueList: state.admin.feedBackQueList,
     }
 };
 const mapDispatchToProps = dispatch => {
@@ -815,6 +1153,8 @@ const mapDispatchToProps = dispatch => {
         getTravellerAllUpcomingJourneyData: (requestBody) => dispatch(ActionCreators.getTravellerAllUpcomingJourneyData(requestBody)),
         setStartJourneyData: (requestBody) => dispatch(ActionCreators.setStartJourneyData(requestBody)),
         setEndJourneyData: (requestBody) => dispatch(ActionCreators.setEndJourneyData(requestBody)),
+        getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
+        setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
     }
 };
 
