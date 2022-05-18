@@ -343,12 +343,12 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                     />
                 </LocalizationProvider>
                 <TextField
-                    error={reason && reason.length < 100}
-                    helperText={reason && reason.length < 100 ? 'Reason should be  grater than 100': ' '}
+                    error={reason && reason.length < 20}
+                    helperText={reason && reason.length < 20 ? 'Reason should be  grater than 20': ' '}
                     required
                     inputProps={{pattern: "[a-z]"}}
                     label='Reason For Travel'
-                    placeholder="Reason should be minimum 100 character....."
+                    placeholder="Reason should be minimum 20 character....."
                     className={classes.textFields}
                     multiline
                     rows={2}

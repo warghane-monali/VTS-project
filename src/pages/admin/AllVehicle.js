@@ -127,6 +127,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
+    const fuel = [
+        {
+            value:'Petrol',
+            label:'Petrol',
+        },
+        {
+            value:'Disel',
+            label:'Disel',
+        },
+        {
+            value:'CNG',
+            label:'CNG',
+        },
+    ]
+
 const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData,AddMaintenanceData}) => {
 
     const classes = useStyles();
@@ -157,6 +172,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
     const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
     const [odoMeterReading,setodoMeterReading] = useState('');
+    const [fueltype,setfueltype] = useState("")
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -188,6 +204,8 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setModel('');
         setMaking('');
         setHomeLocation('');
+        setfueltype('')
+
         setIsOpen(true);
     };
 
@@ -231,6 +249,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             model !=='' &&
             making !=='' &&
             homeLocation !=='' &&
+            fueltype !== '' &&
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
@@ -244,6 +263,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 model: model,
                 make: making,
                 homeLocation: homeLocation,
+                fueltype: fueltype,
                 createdBy: adminDetails?.user._id
             });
             if(data){
@@ -452,14 +472,14 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
 
                     </div>
                     <hr className={classes.divider}/>
-                    <div style={{display: 'flex', flexDirection: 'row',  flexWrap: 'wrap', justifyItems: 'center', justifyContent: 'space-between',  }}>
-                    <TextField style={{margin:8}}
+                    <div className={classes.form}>
+                        <TextField style={{margin:8}}
                                label='Vehicle Type'
                                className={classes.textFields}
                                value={vehicleType}
                                onChange={e => {setVehicleType(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                        <TextField style={{margin:8}}
                                // required
                                // error={vehicleName.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle name' : ''}
                                // helperText={vehicleName.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle name' : ''}
@@ -467,8 +487,8 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                className={classes.textFields}
                                value={vehicleName}
                                onChange={e => {setVehicleName(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                         />
+                        <TextField style={{margin:8}}
                                required
                                error= { capacity.match(/[^0-9]/g) ? 'Please enter valid capacity' : ''}
                                helperText={capacity.match(/[^0-9]/g) ? 'Please enter valid capacity' : ''}
@@ -476,8 +496,8 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                className={classes.textFields}
                                value={capacity}
                                onChange={e => {setCapacity(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                        <TextField style={{margin:8}}
                                required
                                error={vehicleNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
                                helperText={vehicleNo.match(/[^A-Za-z0-9]/g) ? 'Please enter valid vehicle no' : ''}
@@ -485,8 +505,8 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                className={classes.textFields}
                                value={vehicleNo}
                                onChange={e => {setVehicleNo(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                        <TextField style={{margin:8}}
                                required
                                error={manufactureYear.match(/[^0-9]/g) ? 'Please enter valid manufacture year' : ''}
                                helperText={manufactureYear.match(/[^0-9]/g) ? 'Please enter valid manufacture year' : ''}
@@ -494,28 +514,44 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                className={classes.textFields}
                                value={manufactureYear}
                                onChange={e => {setManufactureYear(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                        <TextField style={{margin:8}}
                                label='Modal'
                                className={classes.textFields}
                                value={model}
                                onChange={e => {setModel(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                         <TextField style={{margin:8}}
                                label='make'
                                className={classes.textFields}
                                value={making}
                                onChange={e => {setMaking(e.target.value)}}
-                    />
-                    <TextField style={{margin:8}}
+                        />
+                        <TextField style={{margin:8}}
                                label='Home Location'
                                className={classes.textFields}
                                value={homeLocation}
                                onChange={e => {setHomeLocation(e.target.value)}}
-                    />
-                    <FormControl >
+                        />
+                        <TextField
+                            style={{margin:8}}  
+                            id="outlined-select-currency"
+                            select
+                            label="Select"
+                            helperText="Please select Vehicle fuel Type"
+                            value={fueltype}
+                            className={classes.textFields}
+                            onChange={ e => { setfueltype(e.target.value) } }
+                        >
+                            {fuel.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                            </MenuItem>
+                            ))}
+                        </TextField>
+                        {/* <FormControl >
                         <InputLabel id="demo-simple-select-label">License</InputLabel>
-                        <Select style={{minWidth:200}}
+                        <Select style={{minWidth:210,margin:8}}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="License">
@@ -524,8 +560,8 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             <MenuItem value={30}>Taxi and Livery </MenuItem>
                             <MenuItem value={30}>Motorcycles </MenuItem>
                         </Select>
-                    </FormControl>
-                    {error? <Alert
+                        </FormControl> */}
+                        {error? <Alert
                         severity="warning"
                         action={
                             <IconButton
@@ -540,13 +576,13 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                         }
                         sx={{ mb: 2 }}>
                         Please fill request form properly.
-                    </Alert>:null}
-                    <Button  variant="contained" size="small" className={classes.button} style={{margin: 16}} onClick={(e)=>{
+                        </Alert>:null}
+                        <Button  variant="contained" size="small" className={classes.button} style={{margin: 16}} onClick={(e)=>{
                         e.preventDefault();
                         addVehicleDetails(e)
-                    }}>
-                        Add vehicle Details
-                    </Button>
+                        }}>
+                            Add vehicle Details
+                        </Button>
                     </div>
                 </Paper>
             </Modal>

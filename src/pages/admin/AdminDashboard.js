@@ -290,8 +290,30 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
         <>
             {selected===0?<div className={classes.root}>
                 <main className={classes.main}>
-                    <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
 
+                <Box className={classes.smallCardContainer}>
+                        <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
+                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <img style={{width: '50%'}}
+                                     alt="React"
+                                     src="/static/img/cab_ongoing.png"/>
+                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
+                                    Ongoing Request
+                                </Typography>
+                            </Box>
+                        </Paper>
+                        <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
+                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <img style={{width: '50%'}}
+                                     alt="React"
+                                     src="/static/img/cab_unserviced.png"/>
+                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
+                                    Unserviced Request
+                                </Typography>
+                            </Box>
+                        </Paper>
+                    </Box>
+                    <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
                         <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
                             <img style={{width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
                                  alt="React"
@@ -319,28 +341,6 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                                      src="/static/img/cab_rejected.png"/>
                                 <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
                                     Rejected Request
-                                </Typography>
-                            </Box>
-                        </Paper>
-                    </Box>
-                    <Box className={classes.smallCardContainer}>
-                        <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
-                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <img style={{width: '50%'}}
-                                     alt="React"
-                                     src="/static/img/cab_ongoing.png"/>
-                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
-                                    Ongoing Request
-                                </Typography>
-                            </Box>
-                        </Paper>
-                        <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
-                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <img style={{width: '50%'}}
-                                     alt="React"
-                                     src="/static/img/cab_unserviced.png"/>
-                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
-                                    Unserviced Request
                                 </Typography>
                             </Box>
                         </Paper>

@@ -547,6 +547,24 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                                     {requestDetails.reason}
                                                 </Typography>
                                             </Box>
+                                            <Box style={ { display:'flex',flexDirection:'row' } }>
+                                                <Box style={ { display:'flex', flexDirection:'column',marginTop:10,marginRight:120 ,textAlign:"left", } }>
+                                                <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
+                                                    Start Date and Time
+                                                </Typography>
+                                                <Typography variant='subtitle2' component='div'  style={{marginTop: 4, textAlign:"left", wordBreak: 'break-word'}}>
+                                                    { moment(requestDetails.startDateTime).format('DD MMM YYYY hh:mm:a') }
+                                                </Typography>
+                                                </Box>
+                                                <Box style={ { display:'flex', flexDirection:'column',margin:10,textAlign:"right" } }>
+                                                <Typography variant='body-2' component='h4' style={{marginTop: 4}}>
+                                                    End Date and Time
+                                                </Typography>
+                                                <Typography variant='subtitle2' component='div'  style={{marginTop: 4, textAlign:"right", wordBreak: 'break-word'}}>
+                                                    {moment(requestDetails.endDateTime).format('DD MMM YYYY hh:mm:a')}
+                                                </Typography>
+                                                </Box>
+                                            </Box>
                                         </div>
                                     </Box>
                                 </div>

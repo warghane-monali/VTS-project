@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height:600
+        height:700
     },
     group: {
         marginTop: '30px',
@@ -454,7 +454,6 @@ const AllDrivers = ({getDriverUserListData, userList, addDriverListData, updateD
                                                </InputAdornment>
                                        }}
                             />
-                        </div>
                         <div style={{flexDirection:'row' ,justifyItems: 'center', justifyContent: 'center'}}>
                             <img src={imageLic} className={classes.profilePicture} />
                         </div>
@@ -480,6 +479,7 @@ const AllDrivers = ({getDriverUserListData, userList, addDriverListData, updateD
                         }}>
                             Submit
                         </Button>
+                        </div>
                     </div>
                 </Paper>
             </Modal>
@@ -564,13 +564,13 @@ const AllDrivers = ({getDriverUserListData, userList, addDriverListData, updateD
                                 sx={{ mb: 2 }}>
                                 Please fill request form properly.
                             </Alert>:null}
-                            <Button className={classes.button} variant="contained" style={{margin: 16}} onClick={(e)=>{
+                        </div>
+                        <Button className={classes.button} variant="contained" style={{margin: 16}} onClick={(e)=>{
                                 e.preventDefault();
                                 updateDriverDetails({})
                             }}>
                                 Submit
                             </Button>
-                        </div>
                     </div>
                 </Paper>
 

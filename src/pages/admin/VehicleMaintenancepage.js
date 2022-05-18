@@ -278,8 +278,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                                 <TableCell>{row.vehicleName}</TableCell>
                                                 <TableCell>{row.maintenanceCost}</TableCell>
                                                 <TableCell>{row.maintenanceDescription}</TableCell>
-                                                <TableCell>{row.maintenanceStartDate}</TableCell>
-                                                <TableCell>{row.maintenanceEndDate} - {row.make}</TableCell>
+                                                <TableCell>{ moment(row.maintenanceStartDate).format('DD-MMM-YYYY hh:mm:a') }</TableCell>
+                                                <TableCell>{ moment(row.maintenanceEndDate).format('DD-MMM-YYYY hh:mm:a') }  {row.make}</TableCell>
                                                 <TableCell>{row.odoMeterReading}</TableCell>
                                                 {/*<TableCell>{row.contactNo}</TableCell>*/}
                                             </TableRow>

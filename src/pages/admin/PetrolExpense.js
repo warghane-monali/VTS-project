@@ -311,7 +311,7 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                         <TableCell>Petrol Cost</TableCell>
                                         <TableCell>Petrol Liter</TableCell>
                                         <TableCell>Petrol Filling Place</TableCell>
-                                        <TableCell>Date</TableCell>
+                                        <TableCell style={{textAlign:'center'}}>Date</TableCell>
                                         <TableCell>Filled By</TableCell>
                                         <TableCell>Odo Meter Reading</TableCell>
                                     </TableRow>
@@ -325,7 +325,7 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                                 <TableCell>{row.petrolCost}</TableCell>
                                                 <TableCell>{row.petrolLiter}</TableCell>
                                                 <TableCell>{row.petrolFIllingPlace}</TableCell>
-                                                <TableCell>{row.Date}</TableCell>
+                                                <TableCell>{ moment(row.Date).format('DD-MMM-YYYY hh:mm:a') }</TableCell>
                                                 <TableCell>{row.filledBy}</TableCell>
                                                 <TableCell>{row.odoMeterReading}</TableCell>
                                                 {/*<TableCell>{row.contactNo}</TableCell>*/}
