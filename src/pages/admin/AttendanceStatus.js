@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import TablePagination from "@mui/material/TablePagination";
+import moment from "moment";
 
 const AttedanceStatus = ({
   adminDetails,
@@ -162,8 +163,8 @@ const AttedanceStatus = ({
                         >
                           <TableCell>{row && row.driverName}</TableCell>
                           <TableCell>{row && row.driverNo}</TableCell>
-                          <TableCell>{row && row.startDateTime}</TableCell>
-                          <TableCell>{row && row.endDateTime}</TableCell>
+                          <TableCell>{row && moment(row.startDateTime).format('DD-MMM-YYYY hh:mm:a')}</TableCell>
+                          <TableCell>{row && moment(row.endDateTime).format('DD-MMM-YYYY hh:mm:a')}</TableCell>
                           <TableCell>{row && row.status}</TableCell>
                           <TableCell>
                             <Button

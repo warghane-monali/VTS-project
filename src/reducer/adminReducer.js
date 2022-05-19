@@ -13,6 +13,7 @@ const initialState = {
   DriverattendanceStatus: [],
   feedBackQueList: [],
   feedBackResponse: [],
+  getjourneyallcount:[],
   carList: null,
   driverList: null,
   journeyCount: null,
@@ -140,6 +141,13 @@ const adminReducer = (state = initialState, action) => {
         feedBackResponse: action.payload,
         error: null
       };
+    case "GET_ALL_JOURNEY_COUNT":
+      console.log('payload',action.payload)
+      return{
+        ...state,
+        getjourneyallcount:action.payload,
+        error:null
+      }
 
     case "LOGOUT":
       return {};

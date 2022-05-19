@@ -145,7 +145,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }))
 ;
-const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, AddPetrolExpenseData, getPetrolExpenseListData, vehiclePetrolExpenseList}) => {
+const PetrolExpense = ({adminDetails, vehicleList, getVehicleListData, AddPetrolExpenseData, getPetrolExpenseListData, vehiclePetrolExpenseList}) => {
 
     const classes = useStyles();
     const [vehicleId, setVehicleId] = useState("");
@@ -520,4 +520,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VehicleMaintenancepage)
+export default connect(mapStateToProps, mapDispatchToProps)(PetrolExpense)

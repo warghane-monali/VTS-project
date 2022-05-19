@@ -140,6 +140,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
             value:'CNG',
             label:'CNG',
         },
+        {
+            value:'Petrol/CNG',
+            label:'Petrol/CNG',
+        },
     ]
 
 const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData,AddMaintenanceData}) => {
@@ -219,6 +223,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setModel(row.model);
         setMaking(row.making);
         setHomeLocation(row.homeLocation);
+        setfueltype(row.fueltype)
         setOpenEdit(true);
     };
 
@@ -287,6 +292,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             model !=='' &&
             making !=='' &&
             homeLocation !=='' &&
+            fueltype !== '' &&
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
@@ -302,6 +308,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 model: model,
                 make: making,
                 homeLocation: homeLocation,
+                fueltype: fueltype,
                 updatedBy: adminDetails?.user._id
             });
             if(data){
@@ -676,7 +683,23 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                    value={homeLocation}
                                    onChange={e => {setHomeLocation(e.target.value)}}
                         />
-                        <FormControl >
+                        <TextField
+                            style={{margin:8}}  
+                            id="outlined-select-currency"
+                            select
+                            label="Select"
+                            helperText="Please select Vehicle fuel Type"
+                            value={fueltype}
+                            className={classes.textFields}
+                            onChange={ e => { setfueltype(e.target.value) } }
+                        >
+                            {fuel.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                            </MenuItem>
+                            ))}
+                        </TextField>
+                        {/* <FormControl >
                             <InputLabel id="demo-simple-select-label">License</InputLabel>
                         <Select style={{minWidth:200,margin:8}}
                             labelId="demo-simple-select-label"
@@ -687,7 +710,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             <MenuItem value={30}>Taxi and Livery </MenuItem>
                             <MenuItem value={30}>Motorcycles </MenuItem>
                         </Select>
-                        </FormControl>
+                        </FormControl> */}
                     {error? <Alert
                         severity="warning"
                         action={

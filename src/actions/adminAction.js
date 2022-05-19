@@ -112,6 +112,12 @@ export const getFeedBack = data => {
         payload: data
     }
 };
+export const getJourneyAllCount = data => {
+    return{
+        type:"GET_ALL_JOURNEY_COUNT",
+        payload:data
+    }
+}
 
 
 export function setRequestStatusData(data) {
@@ -822,3 +828,17 @@ export function getFeedBackData(data) {
     }
 }
 
+export function getJourneyAllCountData() {
+    console.log('In getJourneyAllCountData')
+    return dispatch => {
+        return fetch(BASE_URL + '/journey/requeststatusdateadmincount', {
+            method: 'GET',
+        }).then(response => response.json()).then(res => {
+            console.log('-----API RES-----',res)
+            dispatch(getJourneyAllCount(res));
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
