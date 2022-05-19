@@ -223,6 +223,11 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                                         return renderList(item, index)
                                     }):null}
                                 </TabPanel>
+                                <TabPanel value="4">
+                                    {requestStatusList && requestStatusList.length > 0 ? requestStatusList.map((item, index)=>{
+                                        return renderList(item, index)
+                                    }):null}
+                                </TabPanel>
                                 { filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
                                     {requestStatusList && requestStatusList.length > 0 ? requestStatusList.map((item, index) => {
                                         return renderList(item, index)

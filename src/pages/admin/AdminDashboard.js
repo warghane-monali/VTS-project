@@ -25,8 +25,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import * as ActionCreatorsDriver from "../../actions/driverAction";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
-
-
+import { Badge } from "@mui/material";
+import { Grid } from "@mui/material";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -169,7 +169,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPreviousRidesAdminData, getUserUpcomingRidesData, getUserPreviousRidesData, previousRides, upcomingRides, upcomingPreviousRides}) => {
+const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPreviousRidesAdminData, getUserUpcomingRidesData, getUserPreviousRidesData, previousRides, upcomingRides, upcomingPreviousRides,getJourneyAllCountData,getjourneyallcount}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -181,6 +181,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
     const [tabValue, setTabValue] = useState(0);
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
+    const [countdata,setcountdata] = useState([]);
 
     // const handleChange = (event, newValue) => {
     //     if(selected===2){
@@ -199,6 +200,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
         // } else if(tabIndexData===2){
         //     getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'))
         // }
+        getJourneyAllCountlist();
     }, []);
 
     const getUserPreviousRidesDataList = async () => {
@@ -219,6 +221,12 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
        await getUpcomingPreviousRidesAdminData(moment().format('YYYY-MM-DD'));
     };
 
+    const getJourneyAllCountlist = async () => {
+        console.log('In Journey count function')
+        const count = await getJourneyAllCountData();
+        setcountdata(count)
+    }
+
     const getRequestDataByDate = (date, newValue)=> {
         if (newValue==='filter'){
             setFilter(true);
@@ -230,6 +238,8 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
             getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
         }
     };
+
+    
 
     const getChangeDateUpcomingRides = (selection)=> {
         setSelectedUpDate(selection);
@@ -285,7 +295,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
             </div>
         </Paper>
     };
-
+    console.log('Journey Count',getjourneyallcount)
     return (
         <>
             {selected===0?<div className={classes.root}>
@@ -294,6 +304,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={getjourneyallcount.ONGOING} color="primary" style={ { justifyContent:'right',alignItems:'right' } } >
+                                    <DirectionsCarIcon color="action" />
+                                </Badge>
+                                </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
                                      src="/static/img/cab_ongoing.png"/>
@@ -304,6 +319,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         </Paper>
                         <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={getjourneyallcount.UNSERVICE} color="primary" style={ { justifyContent:'right',alignItems:'right' } } >
+                                    <DirectionsCarIcon color="action" />
+                                </Badge>
+                                </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
                                      src="/static/img/cab_unserviced.png"/>
@@ -315,6 +335,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                     </Box>
                     <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
                         <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                            <Grid container justify="flex-end"  >
+                            <Badge badgeContent={getjourneyallcount.PENDING} color="primary" style={ { justifyContent:'right',alignItems:'right' } } >
+                                <DirectionsCarIcon color="action" />
+                             </Badge>
+                            </Grid>
                             <img style={{width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
                                  alt="React"
                                  src="/static/img/cab_pending.png"/>
@@ -326,6 +351,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                     <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'APPROVED'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={getjourneyallcount.APPROVED} color="primary" style={ { justifyContent:'right',alignItems:'right' } } >
+                                    <DirectionsCarIcon color="action" />
+                                </Badge>
+                                </Grid>    
                                 <img style={{width: '50%'}}
                                      alt="React"
                                      src="/static/img/cab_accepted.png"/>
@@ -336,6 +366,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         </Paper>
                         <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'REJECTED'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={getjourneyallcount.REJECTED} color="primary" style={ { justifyContent:'right',alignItems:'right' } } >
+                                    <DirectionsCarIcon color="action" />
+                                </Badge>
+                                </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
                                      src="/static/img/cab_rejected.png"/>
@@ -549,6 +584,7 @@ const mapStateToProps = state => {
         tabIndexData: state.driver.tabIndexData,
         upcomingPreviousRides: state.admin.upcomingPreviousRides,
         adminDetails: state.admin.adminDetails,
+        getjourneyallcount:state.admin.getjourneyallcount,
     }
 };
 const mapDispatchToProps = dispatch => {
@@ -557,6 +593,7 @@ const mapDispatchToProps = dispatch => {
         getUpcomingPreviousRidesAdminData: (requestBody) => dispatch(ActionCreators.getUpcomingPreviousRidesAdminData(requestBody)),
         getUserPreviousRidesData: (requestBody) => dispatch(ActionCreators.getUserPreviousRidesData(requestBody)),
         getUserUpcomingRidesData: (requestBody) => dispatch(ActionCreators.getUserUpcomingRidesData(requestBody)),
+        getJourneyAllCountData: () => dispatch(ActionCreators.getJourneyAllCountData())
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AdminDashboard)

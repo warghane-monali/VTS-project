@@ -230,7 +230,6 @@ const RequestForRide = ({
     //     });
     //     setSelectedProduct(newData)
     // };
-
     return (
         <div className={classes.root}>
             <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',}}>
