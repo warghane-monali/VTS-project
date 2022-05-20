@@ -29,6 +29,7 @@ import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import PersonOffTwoToneIcon from '@mui/icons-material/PersonOffTwoTone';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -968,7 +969,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </Modal>
             </main>
         </div>:null}
-        { selected===3 ? navigate('/driver/attendance') : null }
+        {selected===3 ? navigate('/driver/attendance') : null}
             <AppBar className={classes.footer}>
             <Box sx={{width: {xs:500, sm:786,md:1080, xl:'100%'}}}>
                 <BottomNavigation
@@ -982,13 +983,16 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             getRequestDataByDate(moment().format('YYYY-MM-DD'), newValue)
                         } else if(newValue===2){
                             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'), newValue)
-                        }else if(newValue===3){
+                        } else if(newValue===3){
                             navigate('/driver/attendance')
+                        } else if(newValue===4){
+                            navigate('/driver/petrol-expense')
                         }
                     }}>
                     <BottomNavigationAction label={changeLang?'आगामी सवारी':"Upcoming Ride"} icon={<DashboardIcon />} />
                     <BottomNavigationAction label={changeLang?'भविष्यातील राइड':"Future Ride"} icon={<DirectionsCarIcon />} />
-                    <BottomNavigationAction label="Leave Management" icon={<PersonOffTwoToneIcon />} />
+                    <BottomNavigationAction label={changeLang? 'व्छुट्टी यवस्थापन':"Leave Management"} icon={<PersonOffTwoToneIcon />} />
+                    <BottomNavigationAction label={changeLang? 'व्छुट्टी यवस्थापन':"petrol expense"} icon={<LocalGasStationIcon />} />
                 </BottomNavigation>
                 <div>
                     <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>

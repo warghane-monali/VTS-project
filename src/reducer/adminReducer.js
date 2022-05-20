@@ -142,10 +142,9 @@ const adminReducer = (state = initialState, action) => {
         error: null
       };
     case "GET_ALL_JOURNEY_COUNT":
-      console.log('payload',action.payload)
       return{
         ...state,
-        getjourneyallcount:action.payload,
+        getjourneyllcount: action.payload,
         error:null
       }
 

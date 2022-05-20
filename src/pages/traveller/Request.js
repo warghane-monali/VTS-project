@@ -123,21 +123,32 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
 
     const getLocation =async ()=> {
         if (navigator.geolocation) {
-            await navigator.geolocation.getCurrentPosition(showError);
+           const res = await navigator.geolocation.getCurrentPosition(success, showError);
+           console.log(res)
         } else {
             setErrorMsg("Geolocation is not supported by this browser.")
         }
     }
 
+    const success =(pos)=> {
+        let crd = pos.coords;
+        console.log('Your current position is:');
+        console.log(`Latitude : ${crd.latitude}`);
+        console.log(`Longitude: ${crd.longitude}`);
+        console.log(`More or less ${crd.accuracy} meters.`);
+    }
+
     const showError = (error)=> {
-        if (error && error.code && error.code !== undefined === error.PERMISSION_DENIED) {
+        if (error && error.code && error.PERMISSION_DENIED) {
             setErrorMsg("User denied the request for Geolocation.");
-        } else if (error && error.code && error.code !== undefined === error.POSITION_UNAVAILABLE) {
+        } else if (error && error.code && error.POSITION_UNAVAILABLE) {
             setErrorMsg("Location information is unavailable.");
-        } else if (error && error.code && error.code !== undefined === error.TIMEOUT) {
+        } else if (error && error.code && error.TIMEOUT) {
             setErrorMsg("The request to get user location timed out.");
-        } else if (error && error.code && error.code !== undefined === error.UNKNOWN_ERROR) {
+        } else if (error && error.code && error.UNKNOWN_ERROR) {
             setErrorMsg("An unknown error occurred.");
+        }else {
+            setErrorMsg("User denied the request for Geolocation.");
         }
     };
 
@@ -192,8 +203,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
         e.preventDefault();
         if (
             tripStatus !==' ' && tripStatus !=='' &&
-            source !=='' &&
-            destination !=='' &&
+            source !=='' && source !== null && source !== undefined &&
+            destination !=='' && destination !==null && destination !==undefined &&
             startDate !=='' &&
             endDate !=='' &&
             reason !==''
@@ -275,6 +286,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         <FormControlLabel value="RoundTrip" control={<Radio />} label="Round Trip" />
                     </RadioGroup>
                 </FormControl>
+                {errorMsg && <Alert style={{maxWidth:340}} severity="info">{errorMsg}</Alert>}
                 <TextField
                     inputRef={sourceRef}
                     error={source === ""}
@@ -287,7 +299,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                     InputProps={{
                         endAdornment:
                             <InputAdornment position="end">
-                                <IconButton onClick={e => {
+                                <IconButton onClick={(e )=> {
                                     navigate('/dashboard/map-view', {state: 'source'})
                                 }}>
                                     <AddLocationIcon/>
@@ -497,7 +509,6 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                                 setTravellerId(0);
                             }}
                         />
-                        {errorMsg && <Alert severity="info">{errorMsg}</Alert>}
                         <Stack
                             direction="row"
                             justifyContent="center"

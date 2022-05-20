@@ -171,7 +171,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [error, setError] = useState(false);
     const [maintenaceDescription,setmaintenaceDescription] = useState("");
     const [maintenaceCost,setmaintenaceCost] = useState("");
-    const [maintenacePlace,setmaintenacePlace] = useState(""); 
+    const [maintenacePlace,setmaintenacePlace] = useState("");
     const [maintenacePlaceNo,setmaintenacePlaceNo] = useState("");
     const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
     const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
@@ -221,7 +221,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setVehicleNo(row.vehicleNo);
         setManufactureYear(row.manufactureYear);
         setModel(row.model);
-        setMaking(row.making);
+        setMaking(row.make);
         setHomeLocation(row.homeLocation);
         setfueltype(row.fueltype)
         setOpenEdit(true);
@@ -242,7 +242,6 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
 
         setOpenMaintenace(true);
     };
-
 
     const addVehicleDetails = async (e) => {
         if (
@@ -322,7 +321,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
 
     const AddMaintenanceDetails = async (e) => {
         if (
-           
+
             console.log('ID checked') &&
             vehicleName !=='' &&
             console.log('Name checked') &&
@@ -342,12 +341,12 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             console.log('end checked') &&
             odoMeterReading !=='' &&
             console.log('odometer checked') &&
-            
+
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
             const data = await AddMaintenanceData({
-               
+
                 vehicleName: vehicleName,
                 vehicleNo: vehicleNo,
                 maintenaceDescription : maintenaceDescription ,
@@ -358,7 +357,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 maintenaceEndDate : maintenaceEndDate ,
                 odoMeterReading : odoMeterReading ,
 
-                
+
                 createdBy: adminDetails?.user._id
             });
             if(data){
@@ -376,7 +375,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         let filteredRows;
         if(searchedVal !== '' && searchedVal !== null && searchedVal !== undefined){
             filteredRows = vehicleList.filter((row) => {
-                const itemData = `${row.agencyName.toUpperCase()} ${row.vehicleName.toUpperCase()} ${row.vehicleNo.toUpperCase()}`;
+                const itemData = `${row.agencyName.toUpperCase()} ${row.vehicleName.toUpperCase()} ${row.vehicleNo.toUpperCase()} ${row.model.toUpperCase()}  ${row.capacity.toUpperCase()}`;
                 const textData = searchedVal.toUpperCase();
                 return itemData.indexOf(textData) > -1;
             });
@@ -541,7 +540,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                onChange={e => {setHomeLocation(e.target.value)}}
                         />
                         <TextField
-                            style={{margin:8}}  
+                            style={{margin:8}}
                             id="outlined-select-currency"
                             select
                             label="Select"
@@ -783,7 +782,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             value={vehicleNo}
                             onChange={e => {setVehicleNo(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Description'
                             required
@@ -793,7 +792,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             value={maintenaceDescription}
                             onChange={e => {setmaintenaceDescription(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Cost'
                             required
@@ -803,7 +802,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             value={maintenaceCost}
                             onChange={e => {setmaintenaceCost(e.target.value)}}
                         />
-                         <TextField 
+                         <TextField
                             style={{margin:8}}
                             label='Maintenace Place'
                             required
@@ -813,7 +812,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             value={maintenacePlace}
                             onChange={e => {setmaintenacePlace(e.target.value)}}
                         />
-                        <TextField 
+                        <TextField
                             style={{margin:8}}
                             label='Maintenace Place No '
                             required
@@ -824,7 +823,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             onChange={e => {setmaintenacePlaceNo(e.target.value)}}
                         />
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker 
+                        <DatePicker
                             value={maintenaceStartDate}
                             label="Maintenance Start Date"
                             onChange = { (newvalue) => {
@@ -836,7 +835,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                         />
                         </LocalizationProvider>
                         <LocalizationProvider dateAdapter={AdapterDateFns} >
-                        <DatePicker 
+                        <DatePicker
                             style={{margin:8}}
                             value={maintenaceEndDate}
                             label="Maintenance End Date"

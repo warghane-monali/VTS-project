@@ -671,99 +671,16 @@ export function editVehicleJourney(requestBody) {
 
 export function getFeedBackQueData() {
     return dispatch => {
-        // let requestOptions = {
-        //     method: 'GET'
-        // };
-        // return fetch('http://3.111.38.219:4001/v1/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getFeedBackQue([
-                {
-                    "feedbackEntityNo": "FE1652716433437",
-                    "entityName": "Journey",
-                    "entityType": "Journey",
-                    "questions": [
-                        {
-                            "feedbackEntityId": "628273915c723c7a101abd58",
-                            "feedbackEntityName": "Journey",
-                            "question": "cleaness",
-                            "answere": [
-                                "Not Good",
-                                "Ok",
-                                "Average",
-                                "Good",
-                                "Excellent"
-                            ],
-                            "status": "Active",
-                            "createdBy": [],
-                            "updatedBy": [],
-                            "_id": "6282767d9dd30873847fd323",
-                            "facebookQuestionNo": "1",
-                            "questionType": "STARS",
-                            "createdAt": "2022-05-16T16:06:21.550Z",
-                            "updatedAt": "2022-05-16T16:06:21.550Z",
-                            "__v": 0
-                        },
-                        {
-                            "feedbackEntityId": "628273915c723c7a101abd58",
-                            "feedbackEntityName": "Journey",
-                            "question": "Your Opinion",
-                            "answere": [],
-                            "status": "Active",
-                            "createdBy": [],
-                            "updatedBy": [],
-                            "_id": "62837e35f22e3719d0ee142d",
-                            "questionType": "TEXTBOX",
-                            "feedbackQuestionNo": 4,
-                            "createdAt": "2022-05-17T10:51:33.999Z",
-                            "updatedAt": "2022-05-17T10:51:33.999Z",
-                            "__v": 0
-                        },
-                        {
-                            "feedbackEntityId": "628273915c723c7a101abd58",
-                            "feedbackEntityName": "Journey",
-                            "question": "Water Available ?",
-                            "answere": [
-                                "YES",
-                                "NO"
-                            ],
-                            "status": "Active",
-                            "createdBy": [],
-                            "updatedBy": [],
-                            "_id": "6283822df22e3719d0ee142e",
-                            "questionType": "YESNO",
-                            "feedbackQuestionNo": 4,
-                            "createdAt": "2022-05-17T11:08:29.895Z",
-                            "updatedAt": "2022-05-17T11:08:29.895Z",
-                            "__v": 0
-                        },
-                        {
-                            "feedbackEntityId": "628273915c723c7a101abd58",
-                            "feedbackEntityName": "Journey",
-                            "question": "behavior of drivers",
-                            "answere": [
-                                1,
-                                2,
-                                3,
-                                4,
-                                5
-                            ],
-                            "status": "Active",
-                            "createdBy": [],
-                            "updatedBy": [],
-                            "_id": "6283b5e278209f4b74cd91ab",
-                            "questionType": "STARS",
-                            "feedbackQuestionNo": 4,
-                            "createdAt": "2022-05-17T14:49:06.991Z",
-                            "updatedAt": "2022-05-17T14:49:06.991Z",
-                            "__v": 0
-                        }
-                    ]
-                }
-            ]));
-            // return
-        // })
-        // .catch((error) => {
-        //     console.error('Error:', error);
-        // });
+        let requestOptions = {
+            method: 'GET'
+        };
+        return fetch('http://3.111.38.219:4001/v1/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBackQue(res));
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 }
 
@@ -836,6 +753,7 @@ export function getJourneyAllCountData() {
         }).then(response => response.json()).then(res => {
             console.log('-----API RES-----',res)
             dispatch(getJourneyAllCount(res));
+            return res;
         })
         .catch((error) => {
             console.error('Error:', error);

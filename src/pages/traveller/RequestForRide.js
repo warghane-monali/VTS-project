@@ -35,6 +35,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from "@mui/material/Alert";
+import {getFeedBackQue} from "../../actions/adminAction";
 
 const labels = {
     1: 'Not Good',
@@ -82,17 +83,20 @@ const RequestForRide = ({
     const [openFeedBackList, setOpenFeedBackList] = useState(false);
     const [checked, setChecked] = useState(false);
     const [popup,setpopup] = useState(false);
-    const [password,setpassword] = useState("");
-    const [confirmpassword,setconfirmpassword] = useState("");
+    const [password,setpassword] = useState(null);
+    const [confirmpassword,setconfirmpassword] = useState(null);
     const [isvisible1,setisvisible1] = useState(false);
     const [isvisible2,setisvisible2] = useState(false);
     const [error,seterror] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState([]);
+
 
     const [value1, setValue1] = React.useState(2);
     const [hover1, setHover1] = React.useState(-1);
     const [question1, setquestion1] = React.useState(false);
     const [question2, setquestion2] = React.useState(false);
     const [question3, setquestion3] = React.useState(false);
+    const [textValue, setTextValue] = React.useState('');
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
@@ -153,7 +157,6 @@ const RequestForRide = ({
         }
     };
 
-
     const renderUpcomingList = (item, index) => {
         return <Paper className={classes.displayForm} key={index}
                       onClick={() => navigate('/dashboard/ride-status', {state: item})}>
@@ -210,29 +213,17 @@ const RequestForRide = ({
 
     const openFeedBackQue = async () => {
         setOpenFeedBackList(true)
-        await getFeedBackQueData()
+        const rse = await getFeedBackQueData()
+        setSelectedProduct(rse)
     }
+
 
     const updateFeedBackAns = async (data) => {
         await setFeedBackQueData(data)
     }
 
-    const handelAns = async (item) => {
+    const handelAns = async () => {
         setChecked(!checked);
-        await updateFeedBackAns({
-            feedbackQuestionId: item._id,
-            feedbackQuestionName: item.question,
-            driverId: travellersLatestJourney.driverId,
-            driverName: travellersLatestJourney.driverName,
-            driverContactNo: travellersLatestJourney.driverNo,
-            travelerId: travellersLatestJourney.selfTravellerId,
-            travelerName: travellersLatestJourney.selfTravellerName,
-            travelerContactNo: travellersLatestJourney.selfTravellerNo,
-            feedbackHeaderName: item.feedbackEntityName,
-            feedbackQuestionNameAns: !checked?1:0,
-            journeyId: travellersLatestJourney._id,
-            journeyNo: travellersLatestJourney.journeyNo,
-        })
     }
     // const handleEditItem = (editedItem, id, fname, seletedIndex) => {
     //     const newData = selectedProduct.map( (item, index) => {
@@ -258,8 +249,14 @@ const RequestForRide = ({
     }
 
     const handlesetpassword = () => {
-        if( password === confirmpassword )
+        if( password === null && confirmpassword === null ){
+            console.log("Password is null");
+            seterror(true)
+            console.log(error)
+        }
+        else if( password === confirmpassword )
             {
+                console.log("Password Matched")
                 handlepassword();
                 togglepopup();
             }
@@ -267,6 +264,26 @@ const RequestForRide = ({
             seterror(true)
         }
     }
+    const handleEditItem = (editedItem, id, fname, seletedIndex) => {
+        const newData = selectedProduct[0].questions.map( (item, index) => {
+            if (index === seletedIndex ) {
+                const newItem = {...item, [fname]:editedItem};
+                return newItem;
+            }
+            return item
+        });
+        const newArray = [{
+                "feedbackEntityNo": selectedProduct[0].feedbackEntityNo,
+                "entityName": selectedProduct[0].entityName,
+                "entityType": selectedProduct[0].entityType,
+                "questions": newData
+            }]
+
+        setSelectedProduct(newArray)
+        dispatch(getFeedBackQue(newArray));
+    };
+
+    console.log('Question list',feedBackQueList)
 
     return (
         <div className={classes.root}>
@@ -893,27 +910,13 @@ const RequestForRide = ({
                                             {item.questionType === 'STARS' &&
                                                 <>
                                                     <Rating name="hover-feedback"
-                                                            value={item.answere}
-                                                            onChange={(event, newValue1) => {
-                                                                updateFeedBackAns({
-                                                                    feedbackQuestionId: item._id,
-                                                                    feedbackQuestionName: item.question,
-                                                                    driverId: travellersLatestJourney.driverId,
-                                                                    driverName: travellersLatestJourney.driverName,
-                                                                    driverContactNo: travellersLatestJourney.driverNo,
-                                                                    travelerId: travellersLatestJourney.selfTravellerId,
-                                                                    travelerName: travellersLatestJourney.selfTravellerName,
-                                                                    travelerContactNo: travellersLatestJourney.selfTravellerNo,
-                                                                    feedbackHeaderName: item.feedbackEntityName,
-                                                                    feedbackQuestionNameAns: newValue1,
-                                                                    journeyId: travellersLatestJourney._id,
-                                                                    journeyNo: travellersLatestJourney.journeyNo,
-                                                                })
-                                                            }}
+                                                            value={item.ans}
+                                                            onChange={(event,newValue1) =>
+                                                                handleEditItem(newValue1, item._id, 'ans', index)}
                                                             onChangeActive={(event, newHover) => {
                                                                 setHover1(newHover);
                                                             }}
-                                                            defaultValue={item.answere}
+                                                            defaultValue={item.ans}
                                                             size="large"
                                                     />
                                                 </>
@@ -921,23 +924,13 @@ const RequestForRide = ({
                                             {item.questionType === 'TEXTBOX' &&
                                                 <TextField
                                                     style={{margin:16}}
-                                                    value={item.answere}
+                                                    value={textValue}
+                                                    defaultValue={item.ans}
                                                     id="outlined-password-input"
-                                                    onChange={()=>{}}
-                                                    onBlur={()=> updateFeedBackAns({
-                                                        feedbackQuestionId: item._id,
-                                                        feedbackQuestionName: item.question,
-                                                        driverId: travellersLatestJourney.driverId,
-                                                        driverName: travellersLatestJourney.driverName,
-                                                        driverContactNo: travellersLatestJourney.driverNo,
-                                                        travelerId: travellersLatestJourney.selfTravellerId,
-                                                        travelerName: travellersLatestJourney.selfTravellerName,
-                                                        travelerContactNo: travellersLatestJourney.selfTravellerNo,
-                                                        feedbackHeaderName: item.feedbackEntityName,
-                                                        feedbackQuestionNameAns: travellersLatestJourney,
-                                                        journeyId: travellersLatestJourney._id,
-                                                        journeyNo: travellersLatestJourney.journeyNo,
-                                                    })}
+                                                    onChange={(e) => setTextValue(e.target.value)}
+                                                    onBlur={(event)=> {
+                                                        handleEditItem(textValue, item._id, 'ans', index)
+                                                    }}
                                                     type="text"
                                                 />
                                             }
@@ -951,9 +944,10 @@ const RequestForRide = ({
                                                 }}>
                                                     <Typography>No</Typography>
                                                     <Switch
-                                                        checked={checked}
-                                                        onChange={()=> {
-                                                            handelAns(item)
+                                                        checked={item.ans}
+                                                        onChange={async () => {
+                                                            await handelAns()
+                                                            handleEditItem(!checked, item._id, 'ans', index)
                                                         }}
                                                         inputProps={{ 'aria-label': 'controlled' }}
                                                     />
@@ -962,6 +956,14 @@ const RequestForRide = ({
                                             }
                                         </Card>
                                     })}
+                                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={() => updateFeedBackAns(selectedProduct)}>
+                                            Submit
+                                        </Button>
+                                    </div>
                                 </div>
                             </Box>
                         </div>
