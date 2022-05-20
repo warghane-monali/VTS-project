@@ -79,6 +79,7 @@ function App({userDetails, adminDetails}) {
             <Route path="previous-ride-details" element={<DriverPreviousRideDetails/>}/>
             <Route path="upcoming-ride-details" element={<DriverUpcomingRideDetails/>}/>
             <Route path='attendance' element={<Attendance/>}/>
+            <Route path="petrol-expense" element={<PetrolExpense />} />
           </Route>
           <Route path="admin" element={<Admin/>}>
             <Route path="dashboard" element={<AdminDashboard/>}/>
@@ -95,7 +96,7 @@ function App({userDetails, adminDetails}) {
             <Route path='reports' element={<Reports/>}/>
 
             <Route path='attendance-status' element={<AttendanceStatus/>}/>
-           
+
 
             <Route path='VehicleMaintenancepage' element={ <VehicleMaintenancepage /> } />
             <Route path="petrol-expense" element={<PetrolExpense />} />
