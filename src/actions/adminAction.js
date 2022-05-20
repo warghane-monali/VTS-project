@@ -685,13 +685,7 @@ export function getFeedBackQueData() {
                             "feedbackEntityId": "628273915c723c7a101abd58",
                             "feedbackEntityName": "Journey",
                             "question": "cleaness",
-                            "answere": [
-                                "Not Good",
-                                "Ok",
-                                "Average",
-                                "Good",
-                                "Excellent"
-                            ],
+                            "answere": [],
                             "status": "Active",
                             "createdBy": [],
                             "updatedBy": [],
@@ -700,7 +694,15 @@ export function getFeedBackQueData() {
                             "questionType": "STARS",
                             "createdAt": "2022-05-16T16:06:21.550Z",
                             "updatedAt": "2022-05-16T16:06:21.550Z",
-                            "__v": 0
+                            "__v": 0,
+                            "predefineAnswere": [
+                                "Not Good",
+                                "Ok",
+                                "Average",
+                                "Good",
+                                "Excellent"
+                            ],
+                            "ans": ""
                         },
                         {
                             "feedbackEntityId": "628273915c723c7a101abd58",
@@ -715,16 +717,15 @@ export function getFeedBackQueData() {
                             "feedbackQuestionNo": 4,
                             "createdAt": "2022-05-17T10:51:33.999Z",
                             "updatedAt": "2022-05-17T10:51:33.999Z",
-                            "__v": 0
+                            "__v": 0,
+                            "predefineAnswere": [],
+                            "ans": ""
                         },
                         {
                             "feedbackEntityId": "628273915c723c7a101abd58",
                             "feedbackEntityName": "Journey",
                             "question": "Water Available ?",
-                            "answere": [
-                                "YES",
-                                "NO"
-                            ],
+                            "answere": [],
                             "status": "Active",
                             "createdBy": [],
                             "updatedBy": [],
@@ -733,19 +734,18 @@ export function getFeedBackQueData() {
                             "feedbackQuestionNo": 4,
                             "createdAt": "2022-05-17T11:08:29.895Z",
                             "updatedAt": "2022-05-17T11:08:29.895Z",
-                            "__v": 0
+                            "__v": 0,
+                            "predefineAnswere": [
+                                "YES",
+                                "NO"
+                            ],
+                            "ans": ""
                         },
                         {
                             "feedbackEntityId": "628273915c723c7a101abd58",
                             "feedbackEntityName": "Journey",
                             "question": "behavior of drivers",
-                            "answere": [
-                                1,
-                                2,
-                                3,
-                                4,
-                                5
-                            ],
+                            "answere": [],
                             "status": "Active",
                             "createdBy": [],
                             "updatedBy": [],
@@ -754,12 +754,111 @@ export function getFeedBackQueData() {
                             "feedbackQuestionNo": 4,
                             "createdAt": "2022-05-17T14:49:06.991Z",
                             "updatedAt": "2022-05-17T14:49:06.991Z",
-                            "__v": 0
+                            "__v": 0,
+                            "predefineAnswere": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "ans": ""
                         }
                     ]
                 }
             ]));
-            // return
+            return [
+                {
+                    "feedbackEntityNo": "FE1652716433437",
+                    "entityName": "Journey",
+                    "entityType": "Journey",
+                    "questions": [
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "cleaness",
+                            "answere": [],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6282767d9dd30873847fd323",
+                            "facebookQuestionNo": "1",
+                            "questionType": "STARS",
+                            "createdAt": "2022-05-16T16:06:21.550Z",
+                            "updatedAt": "2022-05-16T16:06:21.550Z",
+                            "__v": 0,
+                            "predefineAnswere": [
+                                "Not Good",
+                                "Ok",
+                                "Average",
+                                "Good",
+                                "Excellent"
+                            ],
+                            "ans": ""
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "Your Opinion",
+                            "answere": [],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "62837e35f22e3719d0ee142d",
+                            "questionType": "TEXTBOX",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T10:51:33.999Z",
+                            "updatedAt": "2022-05-17T10:51:33.999Z",
+                            "__v": 0,
+                            "predefineAnswere": [],
+                            "ans": ""
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "Water Available ?",
+                            "answere": [],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6283822df22e3719d0ee142e",
+                            "questionType": "YESNO",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T11:08:29.895Z",
+                            "updatedAt": "2022-05-17T11:08:29.895Z",
+                            "__v": 0,
+                            "predefineAnswere": [
+                                "YES",
+                                "NO"
+                            ],
+                            "ans": ""
+                        },
+                        {
+                            "feedbackEntityId": "628273915c723c7a101abd58",
+                            "feedbackEntityName": "Journey",
+                            "question": "behavior of drivers",
+                            "answere": [],
+                            "status": "Active",
+                            "createdBy": [],
+                            "updatedBy": [],
+                            "_id": "6283b5e278209f4b74cd91ab",
+                            "questionType": "STARS",
+                            "feedbackQuestionNo": 4,
+                            "createdAt": "2022-05-17T14:49:06.991Z",
+                            "updatedAt": "2022-05-17T14:49:06.991Z",
+                            "__v": 0,
+                            "predefineAnswere": [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5
+                            ],
+                            "ans": ""
+                        }
+                    ]
+                }
+            ]
         // })
         // .catch((error) => {
         //     console.error('Error:', error);

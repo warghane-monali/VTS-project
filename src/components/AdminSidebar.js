@@ -7,8 +7,6 @@ import DirectionsCarRoundedIcon from '@mui/icons-material/DirectionsCarRounded'
 import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded'
 import CarRepairIcon from '@mui/icons-material/CarRepair';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import DirectionsWalkRoundedIcon from '@mui/icons-material/DirectionsWalkRounded'
-import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded'
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import React from "react";
 import {useNavigate} from "react-router-dom";

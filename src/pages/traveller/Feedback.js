@@ -20,7 +20,7 @@ const labels = {
 
   };
 
- const Feedback = ( { userDetails,setfeedbackData } ) => {
+ const Feedback = ( { userDetails, setfeedbackData } ) => {
     const [value1, setValue1] = React.useState(2);
     const [value2, setValue2] = React.useState(2);
     const [value3, setValue3] = React.useState(2);
@@ -67,10 +67,10 @@ const labels = {
                          name="hover-feedback"
                          value={value2}
                         onChange={(event, newValue2) => {
-                        setValue2(newValue2);
+                            setValue2(newValue2);
                         }}
                         onChangeActive={(event, newHover2) => {
-                         setHover2(newHover2);
+                             setHover2(newHover2);
                          }}
                          defaultValue={2}
                          size="large"
