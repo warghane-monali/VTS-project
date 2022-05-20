@@ -28,6 +28,13 @@ import {trackLocationSuccess} from "../../actions/trackLocationAction";
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import CloseIcon from "@mui/icons-material/Close";
 import Switch from "@mui/material/Switch";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import Alert from "@mui/material/Alert";
 import {getFeedBackQue} from "../../actions/adminAction";
 
 const labels = {
@@ -75,6 +82,12 @@ const RequestForRide = ({
     const [selectedTab, setSelectedTab] = useState(null);
     const [openFeedBackList, setOpenFeedBackList] = useState(false);
     const [checked, setChecked] = useState(false);
+    const [popup,setpopup] = useState(false);
+    const [password,setpassword] = useState(null);
+    const [confirmpassword,setconfirmpassword] = useState(null);
+    const [isvisible1,setisvisible1] = useState(false);
+    const [isvisible2,setisvisible2] = useState(false);
+    const [error,seterror] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState([]);
 
 
@@ -90,6 +103,8 @@ const RequestForRide = ({
             console.log("Latitude is :", position.coords.latitude);
             console.log("Longitude is :", position.coords.longitude);
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
+            if(userDetails.user.status === 'NewLogin')
+                togglepopup();
         });
     }, []);
 
@@ -210,6 +225,45 @@ const RequestForRide = ({
     const handelAns = async () => {
         setChecked(!checked);
     }
+    // const handleEditItem = (editedItem, id, fname, seletedIndex) => {
+    //     const newData = selectedProduct.map( (item, index) => {
+    //         if (index === seletedIndex ) {
+    //             const newItem = {...item, [fname]:editedItem};
+    //             return newItem;
+    //         }
+    //         return item
+    //     });
+    //     setSelectedProduct(newData)
+    // };
+
+    const togglepopup = () => {
+        setpopup(!popup)
+    }
+
+      const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+      };
+
+    const handlepassword = () => {
+        
+    }
+
+    const handlesetpassword = () => {
+        if( password === null && confirmpassword === null ){
+            console.log("Password is null");
+            seterror(true)
+            console.log(error)
+        }
+        else if( password === confirmpassword )
+            {
+                console.log("Password Matched")
+                handlepassword();
+                togglepopup();
+            }
+        else {
+            seterror(true)
+        }
+    }
     const handleEditItem = (editedItem, id, fname, seletedIndex) => {
         const newData = selectedProduct[0].questions.map( (item, index) => {
             if (index === seletedIndex ) {
@@ -229,8 +283,80 @@ const RequestForRide = ({
         dispatch(getFeedBackQue(newArray));
     };
 
+    console.log('Question list',feedBackQueList)
+
     return (
         <div className={classes.root}>
+            { popup ?
+                <div className={classes.popupbox}>
+                <div className={classes.box}>
+                  {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
+                  <h2>Create Password</h2>
+                  <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={isvisible1 ? 'text' : 'password'}
+                        value={password}
+                        onChange={ e => setpassword(e.target.value) }
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={ () => setisvisible1(!isvisible1)}
+                                onMouseDown={ () => handleMouseDownPassword}
+                                edge="end"
+                             >
+                            {isvisible1 ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                        }
+                        label="Password"
+                        />
+                    </FormControl>
+                    <br />
+                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+                        <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={isvisible2 ? 'text' : 'password'}
+                        value={confirmpassword}
+                        onChange={ e => setconfirmpassword(e.target.value) }
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={ () => setisvisible2(!isvisible2)}
+                                onMouseDown={ () => handleMouseDownPassword}
+                                edge="end"
+                             >
+                            {isvisible2 ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                        }
+                        label="Password"
+                        />
+                    </FormControl>
+                  <br />
+                  {error ? <Alert
+                            severity="warning"
+                            action={<IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    seterror(false);
+                                }}>
+                                <CloseIcon fontSize="inherit"/>
+                            </IconButton>}
+                            sx={{mb: 2}}>
+                            Password does not match
+                        </Alert> : null}
+                  <br/>
+                  <Button className={classes.button} onClick={ () => handlesetpassword() } >Set Password</Button>
+                </div>
+                </div> : ''
+            }
             <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',}}>
                 <div sx={{display: {xs: 'none', sm: 'block'}}} style={{flexDirection: 'column'}}>
 
@@ -535,14 +661,17 @@ const RequestForRide = ({
                                 }
                             </Paper>
                         }
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                        {
+                            popup ? '' : 
+                            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                             <Button
                                 variant="contained"
                                 size="small"
                                 onClick={() => openFeedBackQue()}>
                                 Feedback
                             </Button>
-                        </div>
+                            </div>
+                        }
 
                     </div>}
                 {selected === 2 ?
@@ -1115,6 +1244,43 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid black',
         marginBottom: '10px'
     },
+    popupbox :{
+        position: 'fixed',
+        background: '#00000050',
+        width: '100%',
+        height: '100vh',
+        top: 0,
+        left: 0,
+      },
+      box :{
+        position: 'relative',
+        width: '30%',
+        margin: '0 auto',
+        height: 'auto',
+        maxHeight: '70vh',
+        marginTop: 'calc(100vh - 85vh - 20px)',
+        background: 'white',
+        borderRadius: '4px',
+        padding: '20px',
+        border: '1px solid #999',
+        overflow: 'auto',
+        textAlign:'center',
+      },
+      closeicon :{
+        content: 'x',
+        cursor: 'pointer',
+        position: 'fixed',
+        right: 'calc(35% - 30px)',
+        top: 'calc(100vh - 85vh - 33px)',
+        background: '#ededed',
+        width: '25px',
+        height: '25px',
+        borderRadius: '50%',
+        lineHeight: '20px',
+        textAlign: 'center',
+        border: '1px solid #999',
+        fontSize: '20px',
+      }
 }));
 const mapStateToProps = state => {
     return {
