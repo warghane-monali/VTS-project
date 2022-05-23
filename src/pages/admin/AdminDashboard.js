@@ -307,7 +307,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
+                                <Grid  justify="flex-end" style={ { marginLeft:120 } }  >
                                 <Badge badgeContent={countData['ONGOING']=== 0 ? '0' : countData['ONGOING'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
@@ -320,7 +320,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         </Paper>
                         <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
+                                <Grid  justify="flex-end" style={ { marginLeft:120 } }>
                                 <Badge badgeContent={countData['UNSERVICE']=== 0 ? '0' : countData['UNSERVICE']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
@@ -334,7 +334,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                     </Box>
                     <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
                         <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                            <Grid container justify="flex-end"  >
+                            <Grid  justify="flex-end" style={ { marginLeft:320 } }>
                             <Badge badgeContent={countData['PENDING']=== 0 ? '0' : countData['PENDING']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                             </Grid>
                             <img style={{width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
@@ -348,7 +348,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                     <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'APPROVED'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
+                                <Grid  justify="flex-end" style={ { marginLeft:120 } } >
                                 <Badge badgeContent={countData['APPROVED']=== 0 ? '0' : countData['APPROVED'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
@@ -361,7 +361,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         </Paper>
                         <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'REJECTED'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
+                                <Grid  justify="flex-end" style={ { marginLeft:120 } }>
                                 <Badge badgeContent={countData['REJECTED']=== 0 ? '0' : countData['REJECTED']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
