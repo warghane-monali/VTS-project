@@ -477,7 +477,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                   {changeLang?'आगामी सवारी':"Upcoming Rides"}
                 </Typography>
             </div>
-            {driversLatestJourney? <main className={classes.main}>
+            {driversLatestJourney && driversLatestJourney.requestStatus!=='ENDJPURNEY'? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
 
                 </Box>

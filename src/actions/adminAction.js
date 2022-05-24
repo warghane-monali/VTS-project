@@ -118,6 +118,12 @@ export const getJourneyAllCount = data => {
         payload:data
     }
 }
+export const setPassword = data => {
+    return{
+        type:"SET_PASSWORD",
+        payload:data
+    }
+}
 
 
 export function setRequestStatusData(data) {
@@ -353,7 +359,6 @@ export function getCarListData(data) {
             });
     }
 }
-
 export function getDriverUserListData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -667,8 +672,6 @@ export function editVehicleJourney(requestBody) {
         });
     }
 }
-
-
 export function getFeedBackQueData() {
     return dispatch => {
         let requestOptions = {
@@ -683,36 +686,21 @@ export function getFeedBackQueData() {
         });
     }
 }
-
-
-
 export function setFeedBackQueData(data) {
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("feedbackQuestionId",data.feedbackQuestionId );
-        urlencoded.append("feedbackQuestionName",data.feedbackQuestionName );
-        urlencoded.append("driverId",data.driverId );
-        urlencoded.append("driverName",data.driverName );
-        urlencoded.append("driverContactNo",data.driverContactNo );
-        urlencoded.append("travelerId",data.travelerId );
-        urlencoded.append("travelerName",data.travelerName );
-        urlencoded.append("travelerContactNo",data.travelerContactNo );
-        urlencoded.append("feedbackHeaderName",data.feedbackHeaderName );
-        urlencoded.append("feedbackQuestionNameAns",data.feedbackQuestionNameAns );
-        urlencoded.append("journeyId",data.journeyId );
-        urlencoded.append("journeyNo",data.journeyNo );
+        let raw = JSON.stringify(data[0]);
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: raw,
             redirect: 'follow'
         };
-        return fetch('http://3.111.38.219:4001/v1/feedback/insertfeedback', requestOptions).then(response => response.json()).then(res => {
-
+        return fetch('http://3.111.38.219:4001/v1/feedback/insertfeedbacka', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBackQue(data));
         return res
         })
         .catch((error) => {
@@ -744,7 +732,6 @@ export function getFeedBackData(data) {
             });
     }
 }
-
 export function getJourneyAllCountData() {
     console.log('In getJourneyAllCountData')
     return dispatch => {
@@ -753,6 +740,30 @@ export function getJourneyAllCountData() {
         }).then(response => response.json()).then(res => {
             console.log('-----API RES-----',res)
             dispatch(getJourneyAllCount(res));
+            return res;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function setPasswordData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("userId", data.userId);
+        urlencoded.append("newPassword", data.password);
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/user/updateuserpasswordnewuser', requestOptions).then(response => response.json()).then(res => {
+            dispatch(setPassword(res));
             return res;
         })
         .catch((error) => {
