@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {AppBar, Box, Button, IconButton, InputBase, Modal, Paper, Typography} from '@mui/material'
+import {AppBar, Box, Button, IconButton, InputBase, Modal, Paper, Table, Typography} from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import * as ActionCreatorsDriver from "../../actions/driverAction";
@@ -30,6 +30,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import DesktopDatePicker from "@mui/lab/DesktopDatePicker";
 import PersonOffTwoToneIcon from '@mui/icons-material/PersonOffTwoTone';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -271,7 +276,7 @@ const useStyles = makeStyles(theme => ({
 
 const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpcomingRidesData, driverAllUpcomingRides,
                              getDriverLatestJourneyData, userDetails, upcomingPreviousRides, driversLatestJourney,
-                             setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout}) => {
+                             setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -290,6 +295,15 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const [tabValue, setTabValue] = useState(0);
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
+    const [ischeckin,setischeckin] = useState(false);
+    const [showcheckin,setshowcheckin] = useState(true);
+    const [chekinodometer,setchekinodometer] = useState('');
+    const [checkinLocation,setcheckinLocation] = useState('');
+    const [checkOutTime,setcheckOutTime] = useState('');
+    const [ischeckOut,setischeckOut] = useState(false);
+    const [chekoutodometer,setchekoutodometer] = useState('');
+    const [checkoutLocation,setcheckoutLocation] = useState('');
+    const [checkinTime,setcheckinTime] = useState('');
 
     useEffect(() => {
         getDriverLatestRides();
@@ -389,6 +403,29 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setSelectedFileUrl(null);
     };
 
+    const setCheckInvehicle = () => {
+        setischeckin(false)
+        setshowcheckin(false)
+        setJourneyCheckInData({
+            checkinLocation:checkinLocation,
+            vehicleCheckinOdoMeter:chekinodometer,
+            vehicleCheckinOdoMeterImgURL:"",
+            journeyId:driversLatestJourney._id,
+            driverId:driversLatestJourney.driverId,
+            driverName:driversLatestJourney.driverName,
+            driverNo:driversLatestJourney.driverNo,
+            vehicleId:driversLatestJourney.vehicleId,
+            vehicleNo:driversLatestJourney.vehicleNo,
+            vehicleName:driversLatestJourney.vehicleName,
+        })
+
+    }
+
+    const setCheckOutvehicle = () => {
+        setischeckOut(false)
+        setshowcheckin(true)
+    }
+
     const uploadImageToS3 = (event, type) => {
         setSpinner(true);
         const config = {
@@ -477,7 +514,41 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                   {changeLang?'आगामी सवारी':"Upcoming Rides"}
                 </Typography>
             </div>
-            {driversLatestJourney && driversLatestJourney.requestStatus!=='ENDJPURNEY'? <main className={classes.main}>
+            <div>
+                { showcheckin ? 
+                <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
+                    Check in
+                </Button> 
+                : 
+                    <TableContainer component={Paper}>
+                        <Table sx={{ maxWidth:320,width:'100%'  }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Vehicle Name</TableCell>
+                                    <TableCell>Vehicle No</TableCell>
+                                    <TableCell>Vehicle Check In Time</TableCell>
+                                    <TableCell>Vehicle Check In Location</TableCell>
+                                    <TableCell>Action</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>{driversLatestJourney.vehicleName}</TableCell>
+                                    <TableCell>{driversLatestJourney.vehicleNo}</TableCell>
+                                    <TableCell>Check In Time</TableCell>
+                                    <TableCell>{checkinLocation}</TableCell>
+                                    <TableCell>
+                                    <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
+                                         Check Out
+                                    </Button> 
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                 }
+            </div>
+            {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY'? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
 
                 </Box>
@@ -638,6 +709,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                         :null}
                         <div style={{height:100}}></div>
                     <Paper>
+                        {/* start journey */}
                         <Modal
                             className={classes.middlePosition}
                             open={isOpen}
@@ -696,6 +768,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Box>
                             </Paper>
                         </Modal>
+                        {/* End journey */}
                         <Modal
                             className={classes.middlePosition}
                             open={isEndOpen}
@@ -753,6 +826,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Box>
                             </Paper>
                         </Modal>
+                        {/* Absent */}
                         <Modal
                             className={classes.middlePosition}
                             open={isAbsentOpen}
@@ -783,6 +857,124 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         Submit
                                         {changeLang?'समाप्तीची तारीख आणि वेळ':"Submit"}
                                     </Button>
+                                </Box>
+                            </Paper>
+                        </Modal>
+                        {/* Check In */}
+                        <Modal
+                            className={classes.middlePosition}
+                            open={ischeckin}
+                            onClose={e => {
+                                e.preventDefault();
+                                setischeckin(false)
+                            }}>
+                            <Paper className={classes.modal}>
+                                <Stack direction="row" justifyContent="space-between"
+                                       alignItems="center" spacing={2}>
+                                    <Stack direction="column">
+                                        <Typography variant='h6' component='div'> {changeLang?'प्रवास सुरू करा':"  Check IN"}</Typography>
+                                    </Stack>
+                                    <IconButton aria-label="delete" onClick={e => {
+                                        e.preventDefault();
+                                        setischeckin(false)
+                                    }}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Stack>
+                                <Box className={classes.middlePosition}>
+                                    <InputBase
+                                    type='text'
+                                    placeholder='Meter Reading / मीटर रीडिंग'
+                                    className={classes.input}
+                                    value={chekinodometer}
+                                    onChange={e => setchekinodometer(e.target.value)}
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    <InputBase 
+                                        type='text'
+                                        placeholder='Check In Location'
+                                        className={classes.input}
+                                        value={checkinLocation}
+                                        onChange={e => setcheckinLocation(e.target.value) }
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
+                                    <InputBase capture
+                                               type='file'
+                                               placeholder='ODO Image'
+                                               className={classes.input}
+                                               onChange={(event)=>changeHandler(event, "SJ")}
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    {spinner?<CircularProgress color="success" />:
+                                        <Button variant="contained" className={classes.button} onClick={e => {
+                                            e.preventDefault();
+                                            setCheckInvehicle();
+                                        }}>
+                                            {changeLang?'प्रवास सुरू करा':"  Check In Vehicle"}
+                                        </Button>}
+                                </Box>
+                            </Paper>
+                        </Modal>
+                        {/* Check Out */}
+                        <Modal
+                            className={classes.middlePosition}
+                            open={ischeckOut}
+                            onClose={e => {
+                                e.preventDefault();
+                                setischeckOut(false)
+                            }}>
+                            <Paper className={classes.modal}>
+                                <Stack direction="row" justifyContent="space-between"
+                                       alignItems="center" spacing={2}>
+                                    <Stack direction="column">
+                                        <Typography variant='h6' component='div'> {changeLang?'प्रवास सुरू करा':"  Check Out"}</Typography>
+                                    </Stack>
+                                    <IconButton aria-label="delete" onClick={e => {
+                                        e.preventDefault();
+                                    setischeckOut(false)
+                                    }}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Stack>
+                                <Box className={classes.middlePosition}>
+                                    <InputBase
+                                    type='text'
+                                    placeholder='Meter Reading / मीटर रीडिंग'
+                                    className={classes.input}
+                                    value={chekoutodometer}
+                                    onChange={e => setchekoutodometer(e.target.value)}
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    <InputBase 
+                                        type='text'
+                                        placeholder='Check Out Location'
+                                        className={classes.input}
+                                        value={checkoutLocation}
+                                        onChange={e => setcheckoutLocation(e.target.value) }
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
+                                    <InputBase capture
+                                               type='file'
+                                               placeholder='ODO Image'
+                                               className={classes.input}
+                                               onChange={(event)=>changeHandler(event, "SJ")}
+                                    />
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                    {spinner?<CircularProgress color="success" />:
+                                        <Button variant="contained" className={classes.button} onClick={e => {
+                                            e.preventDefault();
+                                            setCheckOutvehicle();
+                                        }}>
+                                            {changeLang?'प्रवास सुरू करा':"  Check Out Vehicle"}
+                                        </Button>}
                                 </Box>
                             </Paper>
                         </Modal>
@@ -1025,6 +1217,7 @@ const mapDispatchToProps = dispatch => {
         getTabIndex: (requestBody) => dispatch(ActionCreatorsDriver.getTabIndex(requestBody)),
         setStartJourneyData: (requestBody) => dispatch(ActionCreatorsDriver.setStartJourneyData(requestBody)),
         setEndJourneyData: (requestBody) => dispatch(ActionCreatorsDriver.setEndJourneyData(requestBody)),
+        setJourneyCheckInData : (requestBody) => dispatch(ActionCreatorsDriver.setJourneyCheckInData(requestBody)),
         userLogout: () => dispatch(ActionCreators.userLogout()),
     }
 };

@@ -55,6 +55,12 @@ export const getDriverAttendance = data => {
         payload: data
     }
 };
+export const setJourneyCheckIn = data => {
+    return{
+        type:"SET_DRIVER_CHECK_IN",
+        payload:data
+    }
+}
 
 export function getDriverLatestJourneyData(requestBody) {
     return dispatch => {
@@ -73,6 +79,7 @@ export function getDriverLatestJourneyData(requestBody) {
 
         return fetch(BASE_URL + '/journey/driversLatestJourney', requestOptions).then(response => response.json()).then(res => {
             dispatch(getDriverLatestJourney(res));
+            console.log('------Latest jorney API-----',res)
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -183,6 +190,43 @@ export function setEndJourneyData(data) {
         });
     }
 }
+
+export function setJourneyCheckInData(data){
+    console.log('In set Journey Checkin',data)
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("checkinLocation",data.checkinLocation);
+        urlencoded.append("vehicleCheckinOdoMeter",data.vehicleCheckinOdoMeter);
+        urlencoded.append("vehicleCheckinOdoMeterImgURL",data.vehicleCheckinOdoMeterImgURL);
+        urlencoded.append("journeyId",data.journeyId);
+        urlencoded.append("driverId",data.driverId);
+        urlencoded.append("driverName",data.driverName);
+        urlencoded.append("driverNo",data.driverNo);
+        urlencoded.append("vehicleId",data.vehicleId);
+        urlencoded.append("vehicleNo",data.vehicleNo);
+        urlencoded.append("vehicleName",data.vehicleName);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        
+        return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckin',requestOptions).then(response => response.json()).then(res => {
+            dispatch(setJourneyCheckIn(res));
+            console.log('----API RES-------',res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
 export function setDriverAttendanceData(userDetails,startDateTime, endDateTime) {
     return dispatch => {
         console.log("---------setDriverAttendanceData--------------",userDetails.user);
