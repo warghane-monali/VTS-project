@@ -147,6 +147,12 @@ const adminReducer = (state = initialState, action) => {
         getjourneyllcount: action.payload,
         error:null
       }
+    case "SET_PASSWORD":
+      return{
+        ...state,
+        userDetails: action.payload,
+        error:null
+      }
 
     case "LOGOUT":
       return {};

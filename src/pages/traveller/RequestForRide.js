@@ -25,7 +25,6 @@ import * as ActionCreatorsDriver from "../../actions/driverAction";
 import * as ActionCreatorsAdmin from "../../actions/adminAction";
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import {trackLocationSuccess} from "../../actions/trackLocationAction";
-import FeedbackIcon from '@mui/icons-material/Feedback';
 import CloseIcon from "@mui/icons-material/Close";
 import Switch from "@mui/material/Switch";
 import Visibility from '@mui/icons-material/Visibility';
@@ -62,6 +61,7 @@ const RequestForRide = ({
                             travellerUpcomingPreviousRides,
                             setStartJourneyData,
                             setEndJourneyData,
+                            setPasswordData,
                             userDetails,
                             travellersLatestJourney,
                             getFeedBackQueData,
@@ -82,12 +82,11 @@ const RequestForRide = ({
     const [selectedTab, setSelectedTab] = useState(null);
     const [openFeedBackList, setOpenFeedBackList] = useState(false);
     const [checked, setChecked] = useState(false);
-    const [popup,setpopup] = useState(false);
-    const [password,setpassword] = useState(null);
-    const [confirmpassword,setconfirmpassword] = useState(null);
-    const [isvisible1,setisvisible1] = useState(false);
-    const [isvisible2,setisvisible2] = useState(false);
-    const [error,seterror] = useState(false);
+    const [password, setpassword] = useState(null);
+    const [confirmpassword, setconfirmpassword] = useState(null);
+    const [isvisible1, setisvisible1] = useState(false);
+    const [isvisible2, setisvisible2] = useState(false);
+    const [error, seterror] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState([]);
 
 
@@ -100,11 +99,7 @@ const RequestForRide = ({
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
-            console.log("Latitude is :", position.coords.latitude);
-            console.log("Longitude is :", position.coords.longitude);
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
-            if(userDetails.user.status === 'NewLogin')
-                togglepopup();
         });
     }, []);
 
@@ -193,11 +188,6 @@ const RequestForRide = ({
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
                         Start Time :{moment(item.startDateTime).format('hh:mm a')}
                     </Typography>
-
-                    {/*{item.requestStatus==='ENDJPURNEY'?<CircleRoundedIcon sx={{ color: '#ec4510'}} />:null}*/}
-                    {/*{item.requestStatus==='PENDING'?<CircleRoundedIcon sx={{ color: '#fbfb0b'}} />:null}*/}
-                    {/*{item.requestStatus==='APPROVED'?<CircleRoundedIcon sx={{ color: '#09984c'}} />:null}*/}
-                    {/*{item.requestStatus==='REJECTED'?<CircleRoundedIcon sx={{ color: '#fb0909'}} />:null}*/}
                 </div>
             </div>
         </Paper>
@@ -217,128 +207,102 @@ const RequestForRide = ({
         setSelectedProduct(rse)
     }
 
-
     const updateFeedBackAns = async (data) => {
-        await setFeedBackQueData(data)
+        const res = await setFeedBackQueData(data)
+        setOpenFeedBackList(false)
     }
 
     const handelAns = async () => {
         setChecked(!checked);
     }
-    // const handleEditItem = (editedItem, id, fname, seletedIndex) => {
-    //     const newData = selectedProduct.map( (item, index) => {
-    //         if (index === seletedIndex ) {
-    //             const newItem = {...item, [fname]:editedItem};
-    //             return newItem;
-    //         }
-    //         return item
-    //     });
-    //     setSelectedProduct(newData)
-    // };
 
-    const togglepopup = () => {
-        setpopup(!popup)
-    }
-
-      const handleMouseDownPassword = (event) => {
+    const handleMouseDownPassword = (event) => {
         event.preventDefault();
-      };
+    };
 
-    const handlepassword = () => {
-        
-    }
-
-    const handlesetpassword = () => {
-        if( password === null && confirmpassword === null ){
-            console.log("Password is null");
+    const updatePassword = async () => {
+        if (password === null && confirmpassword === null) {
             seterror(true)
-            console.log(error)
-        }
-        else if( password === confirmpassword )
-            {
-                console.log("Password Matched")
-                handlepassword();
-                togglepopup();
-            }
-        else {
-            seterror(true)
+        } else if (password === confirmpassword) {
+            await setPasswordData({password: password, userId: userDetails && userDetails.user && userDetails.user._id})
         }
     }
+
     const handleEditItem = (editedItem, id, fname, seletedIndex) => {
-        const newData = selectedProduct[0].questions.map( (item, index) => {
-            if (index === seletedIndex ) {
-                const newItem = {...item, [fname]:editedItem};
+        const newData = selectedProduct[0].questions.map((item, index) => {
+            if (index === seletedIndex) {
+                const newItem = {...item, [fname]: editedItem};
                 return newItem;
             }
             return item
         });
         const newArray = [{
-                "feedbackEntityNo": selectedProduct[0].feedbackEntityNo,
-                "entityName": selectedProduct[0].entityName,
-                "entityType": selectedProduct[0].entityType,
-                "questions": newData
-            }]
+            "journeyId": travellersLatestJourney._id,
+            "feedbackEntityNo": selectedProduct[0].feedbackEntityNo,
+            "entityName": selectedProduct[0].entityName,
+            "entityType": selectedProduct[0].entityType,
+            "questions": newData
+        }]
 
         setSelectedProduct(newArray)
         dispatch(getFeedBackQue(newArray));
     };
 
-    console.log('Question list',feedBackQueList)
 
     return (
         <div className={classes.root}>
-            { popup ?
+            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' &&
                 <div className={classes.popupbox}>
-                <div className={classes.box}>
-                  {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
-                  <h2>Create Password</h2>
-                  <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                        <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={isvisible1 ? 'text' : 'password'}
-                        value={password}
-                        onChange={ e => setpassword(e.target.value) }
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={ () => setisvisible1(!isvisible1)}
-                                onMouseDown={ () => handleMouseDownPassword}
-                                edge="end"
-                             >
-                            {isvisible1 ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="Password"
-                        />
-                    </FormControl>
-                    <br />
-                    <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
-                        <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={isvisible2 ? 'text' : 'password'}
-                        value={confirmpassword}
-                        onChange={ e => setconfirmpassword(e.target.value) }
-                        endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={ () => setisvisible2(!isvisible2)}
-                                onMouseDown={ () => handleMouseDownPassword}
-                                edge="end"
-                             >
-                            {isvisible2 ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                        }
-                        label="Password"
-                        />
-                    </FormControl>
-                  <br />
-                  {error ? <Alert
+                    <div className={classes.box}>
+                        {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
+                        <h2>Create Password</h2>
+                        <FormControl sx={{m: 1, width: '25ch'}} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={isvisible1 ? 'text' : 'password'}
+                                value={password}
+                                onChange={e => setpassword(e.target.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setisvisible1(!isvisible1)}
+                                            onMouseDown={() => handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {isvisible1 ? <VisibilityOff/> : <Visibility/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+                        <br/>
+                        <FormControl sx={{m: 1, width: '25ch'}} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={isvisible2 ? 'text' : 'password'}
+                                value={confirmpassword}
+                                onChange={e => setconfirmpassword(e.target.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setisvisible2(!isvisible2)}
+                                            onMouseDown={() => handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {isvisible2 ? <VisibilityOff/> : <Visibility/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+                        <br/>
+                        {error ? <Alert
                             severity="warning"
                             action={<IconButton
                                 aria-label="close"
@@ -352,10 +316,10 @@ const RequestForRide = ({
                             sx={{mb: 2}}>
                             Password does not match
                         </Alert> : null}
-                  <br/>
-                  <Button className={classes.button} onClick={ () => handlesetpassword() } >Set Password</Button>
+                        <br/>
+                        <Button className={classes.button} onClick={() => updatePassword()}>Set Password</Button>
+                    </div>
                 </div>
-                </div> : ''
             }
             <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between',}}>
                 <div sx={{display: {xs: 'none', sm: 'block'}}} style={{flexDirection: 'column'}}>
@@ -382,9 +346,9 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING')) &&
+                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
                             <Paper className={classes.rightSection} elevation={4}>
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING')) ?
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) ?
                                     <div className={classes.topicRow}>
                                         <div>
                                             <Typography variant='h6' component='div'
@@ -543,7 +507,7 @@ const RequestForRide = ({
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING')) &&
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
                                     <>
                                         <div style={{
                                             display: 'flex',
@@ -659,20 +623,19 @@ const RequestForRide = ({
                                         </div>
                                     </>
                                 }
+
                             </Paper>
                         }
-                        {
-                            popup ? '' : 
+                        {travellersLatestJourney && (travellersLatestJourney.requestStatus === 'ENDJPURNEY') &&
                             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => openFeedBackQue()}>
-                                Feedback
-                            </Button>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => openFeedBackQue()}>
+                                    Feedback
+                                </Button>
                             </div>
                         }
-
                     </div>}
                 {selected === 2 ?
                     <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
@@ -859,14 +822,11 @@ const RequestForRide = ({
                 <div sx={{display: {xs: 'none', sm: 'block'}}} style={{flexDirection: 'column'}}>
 
                 </div>
-                <Modal
-                    className={classes.middlePosition}
-                    open={openFeedBackList}
-                    onClose={e => {
-                        e.preventDefault();
-                        setOpenFeedBackList(false)
-                    }}>
-                    <Paper className={classes.form}
+                <Modal className={classes.middlePosition} open={openFeedBackList} onClose={e => {
+                    e.preventDefault();
+                    setOpenFeedBackList(false)
+                }}>
+                    {openFeedBackList && <Paper className={classes.form}
                            sx={{p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700'}}>
                         <div style={{
                             display: 'flex',
@@ -911,7 +871,7 @@ const RequestForRide = ({
                                                 <>
                                                     <Rating name="hover-feedback"
                                                             value={item.ans}
-                                                            onChange={(event,newValue1) =>
+                                                            onChange={(event, newValue1) =>
                                                                 handleEditItem(newValue1, item._id, 'ans', index)}
                                                             onChangeActive={(event, newHover) => {
                                                                 setHover1(newHover);
@@ -923,12 +883,12 @@ const RequestForRide = ({
                                             }
                                             {item.questionType === 'TEXTBOX' &&
                                                 <TextField
-                                                    style={{margin:16}}
+                                                    style={{margin: 16}}
                                                     value={textValue}
                                                     defaultValue={item.ans}
                                                     id="outlined-password-input"
                                                     onChange={(e) => setTextValue(e.target.value)}
-                                                    onBlur={(event)=> {
+                                                    onBlur={(event) => {
                                                         handleEditItem(textValue, item._id, 'ans', index)
                                                     }}
                                                     type="text"
@@ -938,9 +898,9 @@ const RequestForRide = ({
                                                 <div style={{
                                                     display: 'flex',
                                                     flexDirection: 'row',
-                                                    justifyContent:'center',
+                                                    justifyContent: 'center',
                                                     alignItems: 'center',
-                                                    alignContent:'center'
+                                                    alignContent: 'center'
                                                 }}>
                                                     <Typography>No</Typography>
                                                     <Switch
@@ -949,7 +909,7 @@ const RequestForRide = ({
                                                             await handelAns()
                                                             handleEditItem(!checked, item._id, 'ans', index)
                                                         }}
-                                                        inputProps={{ 'aria-label': 'controlled' }}
+                                                        inputProps={{'aria-label': 'controlled'}}
                                                     />
                                                     <Typography>Yes</Typography>
                                                 </div>
@@ -967,12 +927,9 @@ const RequestForRide = ({
                                 </div>
                             </Box>
                         </div>
-                    </Paper>
-
+                    </Paper>}
                 </Modal>
             </Box>
-
-
             <AppBar className={classes.footer}>
                 <Box sx={{width: {xs: 500, sm: 786, md: 1080, xl: '100%'}}}>
                     <BottomNavigation
@@ -987,14 +944,12 @@ const RequestForRide = ({
                                 getUserUpcomingRides()
                             } else if (newValue === 2) {
                                 getUserPreviousRides()
-                            } else if (newValue === 3) {
-                                navigate('/dashboard/feedback')
                             }
                         }}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon/>}/>
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon/>}/>
                         <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon/>}/>
-                        <BottomNavigationAction label="Feedback" icon={<FeedbackIcon/>}/>
+                        {/*<BottomNavigationAction label="Feedback" icon={<FeedbackIcon/>}/>*/}
                     </BottomNavigation>
                     <div>
                         <Typography variant='body-2' component='div'
@@ -1007,7 +962,6 @@ const RequestForRide = ({
                 </Box>
 
             </AppBar>
-
         </div>
     )
 };
@@ -1244,15 +1198,15 @@ const useStyles = makeStyles(theme => ({
         border: '1px solid black',
         marginBottom: '10px'
     },
-    popupbox :{
+    popupbox: {
         position: 'fixed',
         background: '#00000050',
         width: '100%',
         height: '100vh',
         top: 0,
         left: 0,
-      },
-      box :{
+    },
+    box: {
         position: 'relative',
         width: '30%',
         margin: '0 auto',
@@ -1264,9 +1218,9 @@ const useStyles = makeStyles(theme => ({
         padding: '20px',
         border: '1px solid #999',
         overflow: 'auto',
-        textAlign:'center',
-      },
-      closeicon :{
+        textAlign: 'center',
+    },
+    closeicon: {
         content: 'x',
         cursor: 'pointer',
         position: 'fixed',
@@ -1280,7 +1234,7 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center',
         border: '1px solid #999',
         fontSize: '20px',
-      }
+    }
 }));
 const mapStateToProps = state => {
     return {
@@ -1304,6 +1258,7 @@ const mapDispatchToProps = dispatch => {
         setEndJourneyData: (requestBody) => dispatch(ActionCreators.setEndJourneyData(requestBody)),
         getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
         setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
+        setPasswordData: (requestBody) => dispatch(ActionCreatorsAdmin.setPasswordData(requestBody)),
     }
 };
 
