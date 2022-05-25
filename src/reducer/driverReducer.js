@@ -8,7 +8,9 @@ const initialState = {
     driversLatestJourney:{},
     driverattendance:[],
     setDriverAttendance:{},
-    setVehicleCheckIn:{},
+    vehicleCheckIn:{},
+    vehicleCheckOut:{},
+    vehicleCheckInOut:{},
     error: null,
 };
 
@@ -59,7 +61,19 @@ const driverReducer = (state = initialState, action) => {
             case 'SET_DRIVER_CHECK_IN':
                 return{
                     ...state,
-                    setVehicleCheckIn:action.payload,
+                    vehicleCheckIn:action.payload,
+                    error:null
+                };
+            case 'SET_DRIVER_CHECK_OUT':
+                return{
+                    ...state,
+                    vehicleCheckOut:action.payload,
+                    error:null
+                };
+            case 'GET_DRIVER_CHECK_IN_OUT':
+                return{
+                    ...state,
+                    vehicleCheckInOut:action.payload,
                     error:null
                 }
         case "LOGOUT": return {};

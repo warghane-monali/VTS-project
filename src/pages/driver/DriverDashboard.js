@@ -35,6 +35,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import {getCheckinVehicleData, setJourneyCheckOutData} from "../../actions/driverAction";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -276,7 +277,11 @@ const useStyles = makeStyles(theme => ({
 
 const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpcomingRidesData, driverAllUpcomingRides,
                              getDriverLatestJourneyData, userDetails, upcomingPreviousRides, driversLatestJourney,
-                             setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData}) => {
+                             setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData,
+                             setJourneyCheckOutData,
+                             getCheckinVehicleData, vehicleCheckIn,
+                             vehicleCheckOut,
+                             vehicleCheckInOut}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -309,6 +314,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         getDriverLatestRides();
         getUserPreviousRides();
         getUserUpcomingRides();
+        getCheckinVehicle();
         if(tabIndexData===1){
             getRequestDataByDate(moment().format('YYYY-MM-DD'))
         } else if(tabIndexData===2){
@@ -321,6 +327,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
 
     const getUserPreviousRides = async () => {
         await getUpcomingPreviousRidesAdminData(moment().subtract(1,'days').format('YYYY-MM-DD'));
+    };
+    const getCheckinVehicle = async () => {
+        await getCheckinVehicleData(userDetails && userDetails.user && userDetails.user._id);
     };
 
     const getUserUpcomingRides = async () => {
@@ -405,11 +414,10 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
 
     const setCheckInvehicle = () => {
         setischeckin(false)
-        setshowcheckin(false)
-        setJourneyCheckInData({
+        const res = setJourneyCheckInData({
             checkinLocation:checkinLocation,
             vehicleCheckinOdoMeter:chekinodometer,
-            vehicleCheckinOdoMeterImgURL:"",
+            vehicleCheckinOdoMeterImgURL: selectedFileUrl,
             journeyId:driversLatestJourney._id,
             driverId:driversLatestJourney.driverId,
             driverName:driversLatestJourney.driverName,
@@ -418,12 +426,20 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             vehicleNo:driversLatestJourney.vehicleNo,
             vehicleName:driversLatestJourney.vehicleName,
         })
+        setshowcheckin(false)
+        getCheckinVehicle()
 
     }
 
-    const setCheckOutvehicle = () => {
+    const setCheckOutvehicle = async () => {
         setischeckOut(false)
         setshowcheckin(true)
+       const res = await setJourneyCheckOutData({
+           checkoutLocation:checkoutLocation,
+           vehicleCheckinCheckOutId: vehicleCheckIn._id,
+           vehicleCheckoutOdoMeter: chekoutodometer,
+           vehicleCheckoutOdoMeterImgURL: selectedFileUrl,
+        })
     }
 
     const uploadImageToS3 = (event, type) => {
@@ -515,11 +531,11 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </Typography>
             </div>
             <div>
-                { showcheckin ? 
+                { showcheckin ?
                 <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
                     Check in
-                </Button> 
-                : 
+                </Button>
+                :
                     <TableContainer component={Paper}>
                         <Table sx={{ maxWidth:320,width:'100%'  }} aria-label="simple table">
                             <TableHead>
@@ -540,7 +556,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     <TableCell>
                                     <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
                                          Check Out
-                                    </Button> 
+                                    </Button>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
@@ -891,7 +907,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase 
+                                    <InputBase
                                         type='text'
                                         placeholder='Check In Location'
                                         className={classes.input}
@@ -905,7 +921,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                                type='file'
                                                placeholder='ODO Image'
                                                className={classes.input}
-                                               onChange={(event)=>changeHandler(event, "SJ")}
+                                               onChange={(event)=>changeHandler(event, "CIN")}
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
@@ -950,7 +966,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase 
+                                    <InputBase
                                         type='text'
                                         placeholder='Check Out Location'
                                         className={classes.input}
@@ -964,7 +980,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                                type='file'
                                                placeholder='ODO Image'
                                                className={classes.input}
-                                               onChange={(event)=>changeHandler(event, "SJ")}
+                                               onChange={(event)=>changeHandler(event, "COUT")}
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
@@ -1196,12 +1212,16 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         </>
     )
 };
+
 const mapStateToProps = state => {
     return {
         userDetails: state.auth.userDetails,
         driversLatestJourney: state.driver.driversLatestJourney,
         tabIndexData: state.driver.tabIndexData,
         driverAllUpcomingRides: state.driver.driverAllUpcomingRides,
+        vehicleCheckIn: state.driver.vehicleCheckIn,
+        vehicleCheckOut: state.driver.vehicleCheckOut,
+        vehicleCheckInOut: state.driver.vehicleCheckInOut,
         upcomingPreviousRides: state.admin.upcomingPreviousRides,
         loading: state.request.loading,
         changeLang: state.trackLocation.changeLang,
@@ -1218,6 +1238,8 @@ const mapDispatchToProps = dispatch => {
         setStartJourneyData: (requestBody) => dispatch(ActionCreatorsDriver.setStartJourneyData(requestBody)),
         setEndJourneyData: (requestBody) => dispatch(ActionCreatorsDriver.setEndJourneyData(requestBody)),
         setJourneyCheckInData : (requestBody) => dispatch(ActionCreatorsDriver.setJourneyCheckInData(requestBody)),
+        setJourneyCheckOutData : (requestBody) => dispatch(ActionCreatorsDriver.setJourneyCheckOutData(requestBody)),
+        getCheckinVehicleData : (requestBody) => dispatch(ActionCreatorsDriver.getCheckinVehicleData(requestBody)),
         userLogout: () => dispatch(ActionCreators.userLogout()),
     }
 };

@@ -80,21 +80,15 @@ const RequestForRide = ({
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
-    const [openFeedBackList, setOpenFeedBackList] = useState(false);
-    const [checked, setChecked] = useState(false);
     const [password, setpassword] = useState(null);
     const [confirmpassword, setconfirmpassword] = useState(null);
     const [isvisible1, setisvisible1] = useState(false);
     const [isvisible2, setisvisible2] = useState(false);
     const [error, seterror] = useState(false);
+    const [openFeedBackList, setOpenFeedBackList] = useState(false);
+    const [checked, setChecked] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState([]);
-
-
-    const [value1, setValue1] = React.useState(2);
     const [hover1, setHover1] = React.useState(-1);
-    const [question1, setquestion1] = React.useState(false);
-    const [question2, setquestion2] = React.useState(false);
-    const [question3, setquestion3] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
 
     useEffect(() => {
