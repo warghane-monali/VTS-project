@@ -70,7 +70,7 @@ export const setJourneyCheckOut = data => {
 export const getJourneyCheckInOut = data => {
     return{
         type:"GET_DRIVER_CHECK_IN_OUT",
-        payload:data
+        payload: data
     }
 }
 
@@ -305,9 +305,10 @@ export function getCheckinVehicleData(requestBody) {
             redirect: 'follow'
         };
 
-        fetch("http://3.110.60.38:9001/v1/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.text()).then(result =>
+        return fetch("http://3.110.60.38:9001/v1/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.json()).then(result =>{
             dispatch(getJourneyCheckInOut(result))
-        ).catch(error => console.log('error', error));
+            return result
+        }).catch(error => console.log('error', error));
     }
 }
 
@@ -337,12 +338,12 @@ export function setJourneyCheckInData(data){
         };
 
         return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckin',requestOptions).then(response => response.json()).then(res => {
-            dispatch(setJourneyCheckIn(res));
+            dispatch(getJourneyCheckInOut(res))
             return res
         })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     }
 }
 
@@ -358,14 +359,14 @@ export function setJourneyCheckOutData(data){
         urlencoded.append("vehicleCheckoutOdoMeter", data.vehicleCheckoutOdoMeter);
 
         let requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
 
         return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckout',requestOptions).then(response => response.json()).then(res => {
-            dispatch(setJourneyCheckOut(res));
+            dispatch(getJourneyCheckInOut(res))
             return res
         }).catch((error) => {
             console.error('Error:', error);

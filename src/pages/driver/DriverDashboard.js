@@ -279,8 +279,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                              getDriverLatestJourneyData, userDetails, upcomingPreviousRides, driversLatestJourney,
                              setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData,
                              setJourneyCheckOutData,
-                             getCheckinVehicleData, vehicleCheckIn,
-                             vehicleCheckOut,
+                             getCheckinVehicleData,
                              vehicleCheckInOut}) => {
 
     const classes = useStyles();
@@ -436,10 +435,11 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setshowcheckin(true)
        const res = await setJourneyCheckOutData({
            checkoutLocation:checkoutLocation,
-           vehicleCheckinCheckOutId: vehicleCheckIn._id,
+           vehicleCheckinCheckOutId: vehicleCheckInOut._id,
            vehicleCheckoutOdoMeter: chekoutodometer,
            vehicleCheckoutOdoMeterImgURL: selectedFileUrl,
         })
+        getCheckinVehicle()
     }
 
     const uploadImageToS3 = (event, type) => {
@@ -531,11 +531,12 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </Typography>
             </div>
             <div>
-                { showcheckin ?
-                <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
-                    Check in
-                </Button>
-                :
+                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" &&
+                    <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
+                        Check in
+                    </Button>
+                }
+                {vehicleCheckInOut && vehicleCheckInOut.status === "CHECKIN" &&
                     <TableContainer component={Paper}>
                         <Table sx={{ maxWidth:320,width:'100%'  }} aria-label="simple table">
                             <TableHead>
@@ -562,7 +563,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             </TableBody>
                         </Table>
                     </TableContainer>
-                 }
+                }
             </div>
             {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY'? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
