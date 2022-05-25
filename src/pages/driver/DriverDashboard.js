@@ -527,7 +527,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         {selected===0?<div className={classes.root}>
             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                 <Typography variant='h5' component='div' style={{textAlign:"center", margin:"5%"}}>
-                  {changeLang?'आगामी सवारी':"Upcoming Rides"}
+                  {changeLang?'पुढचा प्रवास':"Upcoming Rides"}
                 </Typography>
             </div>
             <div>
@@ -597,7 +597,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                                 <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}}>
                                     <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}} />
-                                    {changeLang?'प्रवास समाप्त करा':" End Journey"}
+                                    {changeLang?'प्रवास समाप्त ':" End Journey"}
                                 </Typography>
                             </div>
                             {/*<div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>*/}
@@ -632,7 +632,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             {driversLatestJourney.journeyNo !== ''?
                                             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                                                 <Typography variant='subtitle2' component='h4' style={{marginTop: 4}}>
-                                                    {changeLang?'प्रवास क्र.':"Journey No."}
+                                                    {changeLang?'प्रवासी क्रमांक':"Journey No."}
                                                 </Typography>
                                                 <Typography variant='body-1' component='h4' style={{marginTop: 4}}>
                                                     {driversLatestJourney.journeyNo}
@@ -640,7 +640,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             </div>:null}
                                             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                                             <Typography variant='subtitle2' component='h4' style={{marginTop: 4}}>
-                                                {changeLang?'सहलीचा प्रकार':"  Trip Type"}
+                                                {changeLang?'प्रवास प्रकार':"  Trip Type"}
                                             </Typography>
                                             <Typography variant='body-1' component='div' style={{marginTop: 4}}>
                                                 {driversLatestJourney.oneWayOrRoundTrip==='OneWay'? 'One Way': 'Round Trip'}
@@ -649,7 +649,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
                                                    onClick={()=>goToMap(driversLatestJourney.sourceLat, driversLatestJourney.sourceLong, driversLatestJourney.destinationLat, driversLatestJourney.destinationLong)}>
                                                 <Typography variant='body-1' component='h4' style={{margin: 4}}>
-                                                    {changeLang?'सहलीचा पासून':"  From"}
+                                                    {changeLang?'पासून':"  From"}
                                                 </Typography>
                                                 <Typography variant='subtitle2' component='div' style={{margin: 4, textDecoration: "underline", color:'blue'}}>
                                                     {driversLatestJourney.source}
@@ -662,7 +662,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <Paper style={{padding:8, margin:4, cursor: 'pointer'}} elevation={4}
                                                    onClick={()=>goToMap(driversLatestJourney.sourceLat, driversLatestJourney.sourceLong, driversLatestJourney.destinationLat, driversLatestJourney.destinationLong)}>
                                                 <Typography variant='body-2' component='h4' style={{margin: 4}}>
-                                                    {changeLang?'सहलीचा ला':"To"}
+                                                    {changeLang?'पर्यंत':"To"}
                                                 </Typography>
                                                 <Typography variant='subtitle2' component='div' style={{margin: 4, textDecoration: "underline", color:'blue'}}>
                                                     {driversLatestJourney.destination}
@@ -1198,10 +1198,10 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             navigate('/driver/petrol-expense')
                         }
                     }}>
-                    <BottomNavigationAction label={changeLang?'आगामी सवारी':"Upcoming Ride"} icon={<DashboardIcon />} />
-                    <BottomNavigationAction label={changeLang?'भविष्यातील राइड':"Future Ride"} icon={<DirectionsCarIcon />} />
-                    <BottomNavigationAction label={changeLang? 'व्छुट्टी यवस्थापन':"Leave Management"} icon={<PersonOffTwoToneIcon />} />
-                    <BottomNavigationAction label={changeLang? 'व्छुट्टी यवस्थापन':"petrol expense"} icon={<LocalGasStationIcon />} />
+                    <BottomNavigationAction label={changeLang?'पुढचा प्रवास':"Upcoming Ride"} icon={<DashboardIcon />} />
+                    <BottomNavigationAction label={changeLang?'भविष्यातील प्रवास':"Future Ride"} icon={<DirectionsCarIcon />} />
+                    <BottomNavigationAction label={changeLang? 'मागील  प्रवास':"Leave Management"} icon={<DirectionsCarIcon />} />
+                    <BottomNavigationAction label={changeLang? 'सुट्टी व्यवस्थापन ':"Leave Management"} icon={<PersonOffTwoToneIcon />} />
                 </BottomNavigation>
                 <div>
                     <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
