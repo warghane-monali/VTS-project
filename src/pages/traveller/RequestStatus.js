@@ -17,9 +17,8 @@ import TableCell from "@mui/material/TableCell";
 
 
 
-const RequestStatus = ({ requestRide, userDetails, setCancelStatusData, sourceLocation, destinationLocation,  }) => {
+const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sourceLocation, destinationLocation,  }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [requestRideData, setRequestRideData] = useState(requestRide);
     const classes = useStyles();
     const navigate = useNavigate();
 
@@ -362,7 +361,7 @@ const RequestStatus = ({ requestRide, userDetails, setCancelStatusData, sourceLo
 const mapStateToProps = state => {
     return {
         userDetails: state.auth.userDetails,
-        requestRide: state.request.requestRideData,
+        requestRideData: state.request.requestRideData,
         destinationLocation: state.trackLocation.destinationLocation,
         sourceLocation: state.trackLocation.sourceLocation,
     }
