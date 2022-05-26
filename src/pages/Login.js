@@ -178,7 +178,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                                 placeholder='Password'
                                 className={classes.input}
                                 value={password}
-                                onChange={e => setPassword(e.target.value.replace(/[^0-9]/g, ""))}
+                                onChange={e => setPassword(e.target.value)}
                                 InputProps={{
                                     endAdornment:
                                         <InputAdornment position="end">

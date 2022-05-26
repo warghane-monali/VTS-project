@@ -90,6 +90,7 @@ const RequestForRide = ({
     const [selectedProduct, setSelectedProduct] = useState([]);
     const [hover1, setHover1] = React.useState(-1);
     const [textValue, setTextValue] = React.useState('');
+    const [popup,setpopup] = useState(false)
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
@@ -99,6 +100,8 @@ const RequestForRide = ({
 
     useEffect(() => {
         const data = getTravellerLatestJourney();
+        if(userDetails.user.status === 'NewLogin')
+            setpopup(true)
     }, []);
 
     const getTravellerLatestJourney = async () => {
@@ -219,6 +222,7 @@ const RequestForRide = ({
             seterror(true)
         } else if (password === confirmpassword) {
             await setPasswordData({password: password, userId: userDetails && userDetails.user && userDetails.user._id})
+            setpopup(false)
         }
     }
 
@@ -245,7 +249,7 @@ const RequestForRide = ({
 
     return (
         <div className={classes.root}>
-            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' &&
+            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
                 <div className={classes.popupbox}>
                     <div className={classes.box}>
                         {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
@@ -320,7 +324,7 @@ const RequestForRide = ({
 
                 </div>
                 {selected === 0 &&
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <Paper className={classes.leftSection} elevation={3}
                                onClick={() => navigate('/dashboard/request')}>
                             <Typography variant='body-1' component='div' style={{width: '100%', textAlign: "center"}}>
@@ -632,7 +636,7 @@ const RequestForRide = ({
                         }
                     </div>}
                 {selected === 2 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList
                                 onChange={(e, value) => {
@@ -725,7 +729,7 @@ const RequestForRide = ({
                         </Modal>
                     </div> : null}
                 {selected === 1 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList onChange={(e, value) => {
                                 setSelectedTab(Number(value));
