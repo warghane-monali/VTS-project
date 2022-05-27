@@ -110,6 +110,12 @@ export const getPetrolExpenseList = data => {
         payload : data
     }
 }
+export const setjourneyextendList = data => {
+    return {
+        type: "GET_JOURNEY_EXTEND_DATE",
+        payload : data
+    }
+}
 
 export function getVehicleListData() {
     return dispatch => {
@@ -561,8 +567,7 @@ export function setEndJourneyData(data) {
 
 export function setfeedbackdata(userDetails){
     return dispatch => {
-        console.log('In set feedback')
-
+      
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -606,6 +611,33 @@ export function getPetrolExpenseListData(data) {
 
         return fetch(BASE_URL + '/vehiclepetrolfeeling/getvehiclepetrolfeelingbyvehicle', requestOptions).then(response => response.json()).then(res => {
             dispatch(getPetrolExpenseList(res));
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+export function settravellersExtendJourneyData(data) {
+    return dispatch => {
+        console.log('In set extend journey')
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId", data.journeyId);
+        urlencoded.append("extendRequestDate", data.extendRequestDate);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/journey/extendrequest', requestOptions).then(response => response.json()).then(res => {
+            dispatch(setjourneyextendList(res));
+            console.log('-----response from extendtravellerjourney api----',res)
             return res
         })
         .catch((error) => {

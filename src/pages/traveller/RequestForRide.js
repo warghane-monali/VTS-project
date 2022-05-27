@@ -7,7 +7,9 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar'
 import {connect, useDispatch} from "react-redux";
 import * as ActionCreators from "../../actions/requestAction";
 import {AppBar, Box, Card, IconButton, Modal, Rating} from "@mui/material";
+import ConfirmModal from "./ConfirmModal";
 import moment from "moment";
+import Stack from "@mui/material/Stack";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -35,6 +37,7 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from "@mui/material/Alert";
 import {getFeedBackQue} from "../../actions/adminAction";
+
 
 const labels = {
     1: 'Not Good',
@@ -66,7 +69,8 @@ const RequestForRide = ({
                             travellersLatestJourney,
                             getFeedBackQueData,
                             feedBackQueList,
-                            setFeedBackQueData
+                            setFeedBackQueData,
+                            settravellersExtendJourneyData
                         }) => {
     const classes = useStyles();
     const navigate = useNavigate();
@@ -75,6 +79,7 @@ const RequestForRide = ({
     const [selectedUpDate, setSelectedUpDate] = useState(0);
     const [selectedDate, setSelectedDate] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [tabValue, setTabValue] = useState(0);
     const [startDate, setStartDate] = useState(new Date());
@@ -96,7 +101,7 @@ const RequestForRide = ({
     const [question2, setquestion2] = React.useState(false);
     const [question3, setquestion3] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
-
+    // console.log('journey data',travellersLatestJourney)
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
@@ -247,7 +252,15 @@ const RequestForRide = ({
         setSelectedProduct(newArray)
         dispatch(getFeedBackQue(newArray));
     };
+    const handleLogout = () => {
+        settravellersExtendJourneyData({ 
+             "journeyId": travellersLatestJourney._id,
+             "extendRequestDate":value
+            })
+        console.log("journeyid",travellersLatestJourney._id);
+        console.log("date",value);
 
+      };
 
     return (
         <div className={classes.root}>
@@ -619,8 +632,43 @@ const RequestForRide = ({
                                                             {travellersLatestJourney.endOdoMeter}
                                                         </Typography>
                                                     </div>
+                                                    
                                                 </div>}
+
                                         </div>
+
+                                        <Stack style={{width:'100%', marginTop: '20px'}}
+                       direction="column"
+                       justifyContent="flex-start"
+                       alignItems="flex-start">
+                    <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+                        <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
+                                onClick={() => setConfirmOpen(true)}>
+                          EXTENSION
+                        </Button>
+                        <ConfirmModal
+      content={  
+        <div style={{margin:10}}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+                renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                mask="__/__/____"
+                format="dd-MM-yyyy"
+                label="Select Date"
+                value={value}
+                onChange={(newValue) => {
+                    setValue(newValue);
+                }}
+                // maxDate={new Date(moment().subtract(3, 'days').format('DD-MMM-YYYY'))}
+            />
+        </LocalizationProvider>
+    </div>}
+        open={confirmOpen}
+        setOpen={setConfirmOpen}
+        onConfirm={handleLogout}
+      />
+                    </div>
+                </Stack>
                                     </>
                                 }
 
@@ -1259,6 +1307,7 @@ const mapDispatchToProps = dispatch => {
         getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
         setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
         setPasswordData: (requestBody) => dispatch(ActionCreatorsAdmin.setPasswordData(requestBody)),
+        settravellersExtendJourneyData: (requestBody) => dispatch(ActionCreators.settravellersExtendJourneyData(requestBody)),
     }
 };
 

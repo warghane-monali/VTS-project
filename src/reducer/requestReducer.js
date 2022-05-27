@@ -17,6 +17,7 @@ const initialState = {
     vehicleMaintenance:[],
     vehiclePetrolExpenseList:[],
     identityPicURL:'',
+    JourneyExtendList:[],
     error: null,
 };
 
@@ -123,6 +124,12 @@ const requestReducer = (state = initialState, action) => {
                 vehiclePetrolExpenseList:action.payload,
                 error:null
             }
+            case 'GET_JOURNEY_EXTEND_DATE':
+                return{
+                    ...state,
+                    JourneyExtendList:action.payload,
+                    error:null
+                }
         case "LOGOUT": return {};
         default:
             return state

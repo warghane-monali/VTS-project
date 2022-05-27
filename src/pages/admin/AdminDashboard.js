@@ -303,7 +303,34 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
         <>
             {selected===0?<div className={classes.root}>
                 <main className={classes.main}>
-
+                <Box className={classes.smallCardContainer}>
+                        <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
+                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={countData['ONGOING']=== 0 ? '0' : countData['ONGOING'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
+                                </Grid>
+                                <img style={{width: '50%'}}
+                                     alt="React"
+                                     src="/static/img/cab_ongoing.png"/>
+                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
+                                  Extend Journey Request
+                                </Typography>
+                            </Box>
+                        </Paper>
+                        <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
+                            <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                                <Grid container justify="flex-end"  >
+                                <Badge badgeContent={countData['UNSERVICE']=== 0 ? '0' : countData['UNSERVICE']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
+                                </Grid>
+                                <img style={{width: '50%'}}
+                                     alt="React"
+                                     src="/static/img/cab_unserviced.png"/>
+                                <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
+                                    Driver Realocation
+                                </Typography>
+                            </Box>
+                        </Paper>
+                    </Box>
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
