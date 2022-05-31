@@ -7,7 +7,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import {makeStyles} from "@mui/styles";
 import {useLocation, useNavigate} from "react-router-dom";
 import {connect, useDispatch} from "react-redux";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
@@ -17,7 +16,7 @@ import TableCell from "@mui/material/TableCell";
 import * as ActionCreators from "../../actions/requestAction";
 import * as ActionCreatorsAdmin from "../../actions/adminAction";
 import {createBrowserHistory} from "history";
-import {getFeedBackAnsData, getFeedBackData, getFeedBackQue} from "../../actions/adminAction";
+import {getFeedBackQue} from "../../actions/adminAction";
 import TextField from "@mui/material/TextField";
 import Switch from "@mui/material/Switch";
 
@@ -80,7 +79,6 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
     const getFeedBack = async ()=>{
         const result = await getFeedBackAnsData(requestRideData._id);
         setFeedBackAnsData(result)
-        history.back()
     };
 
     const openFeedBackQue = async () => {
