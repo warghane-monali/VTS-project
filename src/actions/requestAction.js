@@ -134,13 +134,14 @@ export function getVehicleListData() {
 }
 
 export function addVehicleListData(data) {
+    console.log("----Add vehicle data-------",data)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         let urlencoded = new URLSearchParams();
-        urlencoded.append("agencyName", data.agencyName);
-        urlencoded.append("agencyNumber", data.agencyNumber);
+        urlencoded.append("agencyName", "SAKAAL PAPERS LTD.");
+        urlencoded.append("agencyNumber", "");
         urlencoded.append("vehicleType", data.vehicleType);
         urlencoded.append("vehicleName", data.vehicleName);
         urlencoded.append("capacity", data.capacity);
@@ -149,7 +150,9 @@ export function addVehicleListData(data) {
         urlencoded.append("model", data.model);
         urlencoded.append("make", data.make);
         urlencoded.append("homeLocation", data.homeLocation);
+        urlencoded.append("fuelType",data.fuelType);
         urlencoded.append("createdBy", data.createdBy);
+        
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -158,6 +161,7 @@ export function addVehicleListData(data) {
         };
         return fetch(BASE_URL + '/vehicle/vehicleI', requestOptions).then(response => response.json()).then(res => {
             dispatch(getVehicleListData());
+            console.log("----Add vehicle API RES----------",res)
             return res
         })
         .catch((error) => {

@@ -176,7 +176,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
     const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
     const [odoMeterReading,setodoMeterReading] = useState('');
-    const [fueltype,setfueltype] = useState("")
+    const [fuelType,setfuelType] = useState("");
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -208,7 +208,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setModel('');
         setMaking('');
         setHomeLocation('');
-        setfueltype('')
+        setfuelType('')
 
         setIsOpen(true);
     };
@@ -223,7 +223,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
         setModel(row.model);
         setMaking(row.make);
         setHomeLocation(row.homeLocation);
-        setfueltype(row.fueltype)
+        setfuelType(row.fuelType)
         setOpenEdit(true);
     };
 
@@ -253,7 +253,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             model !=='' &&
             making !=='' &&
             homeLocation !=='' &&
-            fueltype !== '' &&
+            fuelType !== '' &&
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
@@ -267,7 +267,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 model: model,
                 make: making,
                 homeLocation: homeLocation,
-                fueltype: fueltype,
+                fuelType: fuelType,
                 createdBy: adminDetails?.user._id
             });
             if(data){
@@ -291,7 +291,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             model !=='' &&
             making !=='' &&
             homeLocation !=='' &&
-            fueltype !== '' &&
+            fuelType !== '' &&
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
@@ -307,7 +307,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                 model: model,
                 make: making,
                 homeLocation: homeLocation,
-                fueltype: fueltype,
+                fuelType: fuelType,
                 updatedBy: adminDetails?.user._id
             });
             if(data){
@@ -545,9 +545,9 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             select
                             label="Select"
                             helperText="Please select Vehicle fuel Type"
-                            value={fueltype}
+                            value={fuelType}
                             className={classes.textFields}
-                            onChange={ e => { setfueltype(e.target.value) } }
+                            onChange={ e => { setfuelType(e.target.value) } }
                         >
                             {fuel.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
@@ -688,9 +688,9 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                             select
                             label="Select"
                             helperText="Please select Vehicle fuel Type"
-                            value={fueltype}
+                            value={fuelType}
                             className={classes.textFields}
-                            onChange={ e => { setfueltype(e.target.value) } }
+                            onChange={ e => { setfuelType(e.target.value) } }
                         >
                             {fuel.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
