@@ -36,6 +36,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {getCheckinVehicleData, setJourneyCheckOutData} from "../../actions/driverAction";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import Alert from "@mui/material/Alert";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -273,6 +280,47 @@ const useStyles = makeStyles(theme => ({
             color: '#af330c !important'
         },
     },
+    popupbox: {
+        position: 'fixed',
+        background: '#00000050',
+        width: '100%',
+        height: '100vh',
+        top: 0,
+        left: 0,
+    },
+    box: {
+        position: 'relative',
+        width: '30%',
+        margin: '0 auto',
+        height: 'auto',
+        maxHeight: '70vh',
+        marginTop: 'calc(100vh - 85vh - 20px)',
+        background: 'white',
+        borderRadius: '4px',
+        padding: '20px',
+        border: '1px solid #999',
+        overflow: 'auto',
+        textAlign: 'center',
+    },
+    closeicon: {
+        content: 'x',
+        cursor: 'pointer',
+        position: 'fixed',
+        right: 'calc(35% - 30px)',
+        top: 'calc(100vh - 85vh - 33px)',
+        background: '#ededed',
+        width: '25px',
+        height: '25px',
+        borderRadius: '50%',
+        lineHeight: '20px',
+        textAlign: 'center',
+        border: '1px solid #999',
+        fontSize: '20px',
+    },
+    Passbutton: {
+        background: '#0c1572 !important',
+        color: 'white !important',
+    },
 }));
 
 const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpcomingRidesData, driverAllUpcomingRides,
@@ -280,7 +328,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                              setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData,
                              setJourneyCheckOutData,
                              getCheckinVehicleData,
-                             vehicleCheckInOut}) => {
+                             vehicleCheckInOut,setPasswordData,}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -308,6 +356,12 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const [chekoutodometer,setchekoutodometer] = useState('');
     const [checkoutLocation,setcheckoutLocation] = useState('');
     const [checkinTime,setcheckinTime] = useState('');
+    const [password, setpassword] = useState(null);
+    const [confirmpassword, setconfirmpassword] = useState(null);
+    const [isvisible1, setisvisible1] = useState(false);
+    const [isvisible2, setisvisible2] = useState(false);
+    const [error, seterror] = useState(false);
+    const [popup,setpopup] = useState(false)
 
     useEffect(() => {
         getDriverLatestRides();
@@ -322,6 +376,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         else if(tabIndexData===3){
            navigate('/driver/attendance')
         }
+        if(userDetails.user.status === 'NewLogin')
+        setpopup(true)
     }, []);
 
     const getUserPreviousRides = async () => {
@@ -522,16 +578,100 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         window.open(url+origin+destinationL, '_blank');
     };
 
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const updatePassword = async () => {
+        if (password === null && confirmpassword === null) {
+            seterror(true)
+        } else if (password === confirmpassword) {
+            await setPasswordData({password: password, userId: userDetails && userDetails.user && userDetails.user._id})
+            setpopup(false)
+        }
+    }
+
+    console.log("---------Driver Details--------",userDetails.user)
     return (
         <>
         {selected===0?<div className={classes.root}>
+            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
+                <div className={classes.popupbox}>
+                    <div className={classes.box}>
+                        {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
+                        <h2>Create Password</h2>
+                        <FormControl sx={{m: 1, width: '25ch'}} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={isvisible1 ? 'text' : 'password'}
+                                value={password}
+                                onChange={e => setpassword(e.target.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setisvisible1(!isvisible1)}
+                                            onMouseDown={() => handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {isvisible1 ? <Visibility/> : <VisibilityOff/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+                        <br/>
+                        <FormControl sx={{m: 1, width: '25ch'}} variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={isvisible2 ? 'text' : 'password'}
+                                value={confirmpassword}
+                                onChange={e => setconfirmpassword(e.target.value)}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={() => setisvisible2(!isvisible2)}
+                                            onMouseDown={() => handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {isvisible2 ? <Visibility/> : <VisibilityOff/>}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+                        <br/>
+                        {error ? <Alert
+                            severity="warning"
+                            action={<IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    seterror(false);
+                                }}>
+                                <CloseIcon fontSize="inherit"/>
+                            </IconButton>}
+                            sx={{mb: 2}}>
+                            Password does not match
+                        </Alert> : null}
+                        <br/>
+                        <Button className={classes.Passbutton} onClick={() => updatePassword()}>Set Password</Button>
+                    </div>
+                </div>
+            }
             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                 <Typography variant='h5' component='div' style={{textAlign:"center", margin:"5%"}}>
                   {changeLang?'पुढचा प्रवास':"Upcoming Rides"}
                 </Typography>
             </div>
             <div>
-                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" &&
+                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" && popup === false &&
                     <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
                         Check in
                     </Button>
@@ -565,7 +705,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                     </TableContainer>
                 }
             </div>
-            {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY'? <main className={classes.main}>
+            {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY' && popup === false ? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
 
                 </Box>
@@ -1242,6 +1382,7 @@ const mapDispatchToProps = dispatch => {
         setJourneyCheckOutData : (requestBody) => dispatch(ActionCreatorsDriver.setJourneyCheckOutData(requestBody)),
         getCheckinVehicleData : (requestBody) => dispatch(ActionCreatorsDriver.getCheckinVehicleData(requestBody)),
         userLogout: () => dispatch(ActionCreators.userLogout()),
+        setPasswordData: (requestBody) => dispatch(ActionCreator.setPasswordData(requestBody)),
     }
 };
 

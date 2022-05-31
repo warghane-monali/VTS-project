@@ -749,6 +749,8 @@ export function getJourneyAllCountData() {
 }
 
 export function setPasswordData(data) {
+    console.log('-----New Password---',data.password)
+    console.log('-----Driver Id------',data.userId)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
