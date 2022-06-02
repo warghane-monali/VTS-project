@@ -344,7 +344,7 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
+                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
                             <Paper className={classes.rightSection} elevation={4}>
                                 {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) ?
                                     <div className={classes.topicRow}>
@@ -505,7 +505,7 @@ const RequestForRide = ({
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
                                     <>
                                         <div style={{
                                             display: 'flex',

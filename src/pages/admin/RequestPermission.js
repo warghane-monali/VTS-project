@@ -778,15 +778,20 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         </TableRow>
                                         {requestDetails && requestDetails.travellersDetails.map((traveller, index) => (
                                             <TableRow key={index}>
-                                                <TableCell component="th" scope="row">
-                                                    {traveller.name}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-                                                    {traveller.number}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-                                                    {' '}
-                                                </TableCell>
+                                               { requestDetails.selfTravellerName != traveller.name ?
+                                                    <>
+                                                        <TableCell component="th" scope="row">
+                                                            {traveller.name}
+                                                        </TableCell>
+                                                         <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                                             {traveller.number}
+                                                        </TableCell>
+                                                        <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                                            {' '}
+                                                        </TableCell> 
+                                                    </>
+                                                    : null
+                                               }
                                             </TableRow>
                                         ))}
                                     </TableBody>

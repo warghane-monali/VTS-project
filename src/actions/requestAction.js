@@ -177,12 +177,14 @@ export function updateVehicleListData(data) {
 
         let urlencoded = new URLSearchParams();
         urlencoded.append("vehicleId", data.vehicleId);
-        urlencoded.append("agencyName", data.agencyName);
-        urlencoded.append("agencyNumber", data.agencyNumber);
+        urlencoded.append("agencyName", "SAKAAL PAPERS LTD.");
+        urlencoded.append("agencyNumber", "");
         urlencoded.append("vehicleType", data.vehicleType);
         urlencoded.append("vehicleName", data.vehicleName);
         urlencoded.append("capacity", data.capacity);
         urlencoded.append("vehicleNo", data.vehicleNo);
+        urlencoded.append("homeLocation", data.homeLocation);
+        urlencoded.append("fuelType",data.fuelType);
         urlencoded.append("updatedBy", data.updatedBy);
 
         let requestOptions = {

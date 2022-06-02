@@ -677,7 +677,7 @@ export function getFeedBackQueData() {
         let requestOptions = {
             method: 'GET'
         };
-        return fetch('http://3.111.38.219:4001/v1/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
+        return fetch(BASE_URL+'/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBackQue(res));
             return res
         })
@@ -699,7 +699,7 @@ export function setFeedBackQueData(data) {
             body: raw,
             redirect: 'follow'
         };
-        return fetch('http://3.111.38.219:4001/v1/feedback/insertfeedbacka', requestOptions).then(response => response.json()).then(res => {
+        return fetch(BASE_URL+'/feedback/insertfeedbacka', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBackQue(data));
         return res
         })
@@ -723,7 +723,7 @@ export function getFeedBackData(data) {
             redirect: 'follow'
         };
 
-        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedback', requestOptions).then(response => response.json()).then(res => {
+        return fetch(BASE_URL+'/feedback/getfeedback', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res))
             return res
         })
@@ -788,9 +788,9 @@ export function getFeedBackAnsData(data) {
             redirect: 'follow'
         };
 
-        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getFeedBack(res))
-            return res
+        return fetch(BASE_URL+'/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBack(res));
+            return res;
         })
             .catch((error) => {
                 console.error('Error:', error);

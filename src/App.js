@@ -38,6 +38,8 @@ import AttendanceStatus from "./pages/admin/AttendanceStatus";
 import Feedback from "./pages/traveller/Feedback";
 import VehicleMaintenancepage from "./pages/admin/VehicleMaintenancepage";
 import PetrolExpense from "./pages/admin/PetrolExpense";
+import RequestFromAdmin from "./pages/admin/Request";
+import RequestStatusAdmin from "./pages/admin/RequestStatusAdmin";
 
 
 function App({userDetails, adminDetails}) {
@@ -100,6 +102,8 @@ function App({userDetails, adminDetails}) {
 
             <Route path='VehicleMaintenancepage' element={ <VehicleMaintenancepage /> } />
             <Route path="petrol-expense" element={<PetrolExpense />} />
+            <Route path="requestfromadmin" element={ <RequestFromAdmin /> } />
+            <Route path="requeststatusadmin" element={ <RequestStatusAdmin /> } />
 
           </Route>
         </Routes>

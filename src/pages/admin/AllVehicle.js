@@ -176,7 +176,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     const [maintenaceStartDate,setmaintenaceStartDate] = useState("");
     const [maintenaceEndDate,setmaintenaceEndDate] = useState("");
     const [odoMeterReading,setodoMeterReading] = useState('');
-    const [fuelType,setfuelType] = useState("");
+    const [fuelType,setfuelType] = useState('');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
