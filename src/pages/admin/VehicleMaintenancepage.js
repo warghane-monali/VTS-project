@@ -348,6 +348,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                             style={{margin: 8}}
                             label='Maintenace Description'
                             required
+                            error={maintenanceDescription.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Maintenance Description' : ''}
+                            helperText={maintenanceDescription.match(/[^A-Za-z0-9]/g) ? 'Please enter valid  Maintenance Description' : ''}
                             value={maintenanceDescription}
                             onChange={e => {
                               setMaintenanceDescription(e.target.value)
@@ -357,8 +359,8 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                             style={{margin: 8}}
                             label='Maintenace Cost'
                             required
-                            error={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
-                            helperText={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            error={maintenanceCost.match( /^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            helperText={maintenanceCost.match( /^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
                             value={maintenanceCost}
                             onChange={e => {
                                 setMaintenanceCost(e.target.value)

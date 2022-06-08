@@ -257,12 +257,14 @@ const AllDrivers = ({getDriverUserListData, userList, addDriverListData, updateD
         if (
             firstName !==' ' &&
             lastName !=='' &&
+            middleName !=='' &&
             email !==''
         ){
             setOpenEdit(false);
             const data = await updateDriverListData({
                 userId: userId,
                 firstName: firstName,
+                middleName: middleName,
                 lastName: lastName,
                 emailId: email,
             });

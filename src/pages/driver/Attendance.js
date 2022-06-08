@@ -20,7 +20,7 @@ import moment from "moment";
 import * as XLSX from 'xlsx';
 
 const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,driverattendance,getdriverattendanceData,changeLang }) => {
-    const [value, setValue] = React.useState([null, null]);
+    const [drivervalue, setDriverValue] = React.useState([null, null]);
     const classes = useStyles();
     const [startDateTime, setstartDatetime] = useState('');
     const [endDateTime, setendDatetime] = useState('');
@@ -51,7 +51,7 @@ const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,dr
 
             <div className="container">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
-                    <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Driver Attendance'}</h1></div>
+                    <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Leave Management'}</h1></div>
                     {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                 </Box>
                 <Box sx={{ flexDirection: 'row', display: 'flex', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
@@ -59,9 +59,9 @@ const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,dr
                         <DateRangePicker
                             startText={changeLang ? "प्रारंभ तारीख" :'Start Date'}
                             endText={changeLang ? "समाप्तीची तारीख" :"End Date"}
-                            value={value}
+                            value={drivervalue}
                             onChange={(newValue) => {
-                                setValue(newValue)
+                                setDriverValue(newValue)
                             }}
                             renderInput={(startProps, endProps) => (
                                 <React.Fragment>
@@ -77,7 +77,7 @@ const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,dr
                         />
                     </LocalizationProvider>
                     <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
-                        <Button variant="contained" onClick={() => setDriverAttendanceData(userDetails, value[0], value[1])}>Leave</Button>
+                        <Button variant="contained" onClick={() => setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1])}>Leave</Button>
                     </div>
 
                 </Box>

@@ -295,6 +295,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
             adminDetails?.user._id !==''
         ) {
             e.preventDefault();
+            setOpenEdit(false)
             const data = await updateVehicleListData({
                 vehicleId: vehicleId,
                 agencyName: agencyName,

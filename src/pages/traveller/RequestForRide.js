@@ -155,7 +155,10 @@ const RequestForRide = ({
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%'}}>
                 <div className={classes.upperRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>
-                    <Typography variant='h6' style={{textAlign: "center"}}>
+                    <Typography  variant='subtitle2' style={{textAlign: "center",marginBottom:15,fontSize:15}}>
+                       <strong>Requested By :- {item.selfTravellerName}</strong>
+                    </Typography>
+                    <Typography variant='subtitle2' style={{textAlign: "center"}}>
                         {item.source}
                     </Typography>
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
@@ -178,7 +181,7 @@ const RequestForRide = ({
                 <div className={classes.lowerRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>
                     {/*<DirectionsCarRoundedIcon className={classes.carColor} />*/}
-                    <Typography variant='h6' style={{textAlign: "center"}}>
+                    <Typography variant='subtitle2' style={{textAlign: "center"}}>
                         {item.destination}
                     </Typography>
 

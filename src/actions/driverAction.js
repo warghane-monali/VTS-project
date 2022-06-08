@@ -305,7 +305,7 @@ export function getCheckinVehicleData(requestBody) {
             redirect: 'follow'
         };
 
-        return fetch("http://3.110.60.38:9001/v1/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.json()).then(result =>{
+        return fetch(BASE_URL+"/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.json()).then(result =>{
             dispatch(getJourneyCheckInOut(result))
             return result
         }).catch(error => console.log('error', error));
@@ -313,7 +313,6 @@ export function getCheckinVehicleData(requestBody) {
 }
 
 export function setJourneyCheckInData(data){
-    console.log('In set Journey Checkin',data)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -338,7 +337,8 @@ export function setJourneyCheckInData(data){
         };
 
         return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckin',requestOptions).then(response => response.json()).then(res => {
-            dispatch(getJourneyCheckInOut(res))
+            dispatch(setJourneyCheckIn(res))
+            console.log("Joureny Check IN",res)
             return res
         })
         .catch((error) => {
@@ -366,7 +366,7 @@ export function setJourneyCheckOutData(data){
         };
 
         return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckout',requestOptions).then(response => response.json()).then(res => {
-            dispatch(getJourneyCheckInOut(res))
+            dispatch(setJourneyCheckOut(res))
             return res
         }).catch((error) => {
             console.error('Error:', error);

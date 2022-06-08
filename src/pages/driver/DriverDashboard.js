@@ -3,7 +3,8 @@ import {AppBar, Box, Button, IconButton, InputBase, Modal, Paper, Table, Typogra
 import { makeStyles } from '@mui/styles'
 import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
 import * as ActionCreatorsDriver from "../../actions/driverAction";
-import {connect} from "react-redux";
+import * as ActionCreatorRequest from "../../actions/requestAction";
+import {connect,useSelector,useDispatch} from "react-redux";
 import moment from "moment";
 import {useLocation, useNavigate} from "react-router-dom";
 import S3 from "react-aws-s3";
@@ -43,6 +44,10 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from "@mui/material/Alert";
+import DateRangePicker from '@mui/lab/DateRangePicker';
+import TablePagination from "@mui/material/TablePagination";
+import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
+import MenuItem from '@mui/material/MenuItem';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -323,12 +328,27 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const SakalOffices = [
+    {
+        value:'Aundh,Pune',
+        label:'Aundh,Pune',
+    },
+    {
+        value:'Shivajinagar,Pune',
+        label:'Shivajinagar,Pune',
+    },
+    {
+        value:'Shanwarwada,Pune',
+        label:'Shanwarwada,Pune',
+    },
+]
+
 const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpcomingRidesData, driverAllUpcomingRides,
                              getDriverLatestJourneyData, userDetails, upcomingPreviousRides, driversLatestJourney,
                              setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData,
                              setJourneyCheckOutData,
-                             getCheckinVehicleData,
-                             vehicleCheckInOut,setPasswordData,}) => {
+                             getCheckinVehicleData,vehicleCheckIn,vehicleCheckOut,
+                             vehicleCheckInOut,setPasswordData,setDriverAttendanceData,getdriverattendanceData,driverattendance,getVehicleListData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -350,20 +370,31 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const [ischeckin,setischeckin] = useState(false);
     const [showcheckin,setshowcheckin] = useState(true);
     const [chekinodometer,setchekinodometer] = useState('');
-    const [checkinLocation,setcheckinLocation] = useState('');
+    const [checkinLocation,setcheckinLocation] = useState(null);
     const [checkOutTime,setcheckOutTime] = useState('');
     const [ischeckOut,setischeckOut] = useState(false);
     const [chekoutodometer,setchekoutodometer] = useState('');
-    const [checkoutLocation,setcheckoutLocation] = useState('');
+    const [checkoutLocation,setcheckoutLocation] = useState(null);
     const [checkinTime,setcheckinTime] = useState('');
     const [password, setpassword] = useState(null);
     const [confirmpassword, setconfirmpassword] = useState(null);
     const [isvisible1, setisvisible1] = useState(false);
     const [isvisible2, setisvisible2] = useState(false);
     const [error, seterror] = useState(false);
-    const [popup,setpopup] = useState(false)
+    const [popup,setpopup] = useState(false);
+    const [drivervalue, setDriverValue] = React.useState([null, null]);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [count, setCount] = useState(0);
+    const [startDateTime, setstartDatetime] = useState('');
+    const [endDateTime, setendDatetime] = useState('');
+    const driver = useSelector(state => state.driver);
+    const [selectedVehicle,setselectedVehicle] = useState(''); 
+    const [data, setData] = useState([]);
+
 
     useEffect(() => {
+        getVehicleList();
         getDriverLatestRides();
         getUserPreviousRides();
         getUserUpcomingRides();
@@ -374,11 +405,25 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'))
         }
         else if(tabIndexData===3){
-           navigate('/driver/attendance')
+            getdriverattendanceData(userDetails.user);
         }
         if(userDetails.user.status === 'NewLogin')
         setpopup(true)
     }, []);
+
+    const getVehicleList = async () => {
+        const data = await getVehicleListData()
+        setData(data)
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
     const getUserPreviousRides = async () => {
         await getUpcomingPreviousRidesAdminData(moment().subtract(1,'days').format('YYYY-MM-DD'));
@@ -402,7 +447,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
         }
         else if (selected===3 || newValue===3){
-            navigate('/driver/attendance')
+            getdriverattendanceData(userDetails.user);
         }
     };
 
@@ -477,9 +522,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             driverId:driversLatestJourney.driverId,
             driverName:driversLatestJourney.driverName,
             driverNo:driversLatestJourney.driverNo,
-            vehicleId:driversLatestJourney.vehicleId,
-            vehicleNo:driversLatestJourney.vehicleNo,
-            vehicleName:driversLatestJourney.vehicleName,
+            vehicleId:selectedVehicle.vehicleId,
+            vehicleNo:selectedVehicle.vehicleNo,
+            vehicleName:selectedVehicle.vehicleName,
         })
         setshowcheckin(false)
         getCheckinVehicle()
@@ -540,11 +585,18 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         }
     };
 
+    console.log('---vehicle check in data-----',vehicleCheckIn)
+    console.log('---Vehicle check out data----',vehicleCheckOut)
+
+
     const renderList = (item, index) => {
         return <Paper key={index} className={classes.cardList} onClick={() => navigate('/driver/ride-status', { state: item})}>
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between',}}>
                 <div className={classes.upperRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <Typography  variant='subtitle2' style={{textAlign: "center",marginBottom:15,fontSize:15}}>
+                       <strong>Requested By :- {item.selfTravellerName}</strong>
+                    </Typography>
                     <Typography  variant='subtitle2' style={{textAlign: "center"}}>
                         {item.source}
                     </Typography>
@@ -591,7 +643,6 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         }
     }
 
-    console.log("---------Driver Details--------",userDetails.user)
     return (
         <>
         {selected===0?<div className={classes.root}>
@@ -669,41 +720,6 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 <Typography variant='h5' component='div' style={{textAlign:"center", margin:"5%"}}>
                   {changeLang?'पुढचा प्रवास':"Upcoming Rides"}
                 </Typography>
-            </div>
-            <div>
-                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" && popup === false &&
-                    <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } }>
-                        Check in
-                    </Button>
-                }
-                {vehicleCheckInOut && vehicleCheckInOut.status === "CHECKIN" &&
-                    <TableContainer component={Paper}>
-                        <Table sx={{ maxWidth:320,width:'100%'  }} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Vehicle Name</TableCell>
-                                    <TableCell>Vehicle No</TableCell>
-                                    <TableCell>Vehicle Check In Time</TableCell>
-                                    <TableCell>Vehicle Check In Location</TableCell>
-                                    <TableCell>Action</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell>{driversLatestJourney.vehicleName}</TableCell>
-                                    <TableCell>{driversLatestJourney.vehicleNo}</TableCell>
-                                    <TableCell>Check In Time</TableCell>
-                                    <TableCell>{checkinLocation}</TableCell>
-                                    <TableCell>
-                                    <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
-                                         Check Out
-                                    </Button>
-                                    </TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                }
             </div>
             {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY' && popup === false ? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
@@ -818,20 +834,20 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             </Typography>
                                         </Box>
                                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'100%'}}>
-                                            <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left' }}>
+                                            <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'left',marginRight:8 }}>
                                                 <Typography variant='body-2' component='div'>
                                                     {changeLang?'प्रारंभ तारीख आणि वेळ':"Start Date & Time"}
                                                 </Typography>
                                                 <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                                    {moment(driversLatestJourney.startDateTime).format('DD/MM/YYYY hh:mm a')}
+                                                    {moment(driversLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                 </Typography>
                                             </div>
-                                            <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
+                                            <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right',marginLeft:8}}>
                                                 <Typography variant='body-2' component='div'>
                                                     {changeLang?'समाप्तीची तारीख आणि वेळ':"End Date & Time"}
                                                 </Typography>
                                                 <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                                    {moment(driversLatestJourney.endDateTime).format('DD/MM/YYYY hh:mm a')}
+                                                    {moment(driversLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                 </Typography>
                                             </div>
                                         </div>
@@ -839,7 +855,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Box>
                         </Paper>
                     </>}
-                    {(driversLatestJourney.requestStatus==='APPROVED') ?
+                    {(driversLatestJourney.requestStatus==='APPROVED' || driversLatestJourney.requestStatus==='EXTENDREQUEST') ?
                         <>
                             <Box className={classes.middlePosition}>
                                 <Button variant="contained"
@@ -888,22 +904,29 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     </IconButton>
                                 </Stack>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase
-                                        type='text'
-                                        placeholder='OTP'
+                                    <TextField 
+                                         sx={{ m: 1, width: '25ch' }}
+                                         label='OTP'
+                                         required
                                         className={classes.input}
                                         value={otp}
                                         onChange={e => setOtp(e.target.value)}
                                     />
-                                </Box><Box className={classes.middlePosition}>
-                                <InputBase
-                                    type='text'
-                                    placeholder='Meter Reading / मीटर रीडिंग'
-                                    className={classes.input}
-                                    value={odoMeter}
-                                    onChange={e => setOdoMeter(e.target.value)}
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                <TextField
+                                    style={{margin: 8}}
+                                    sx={{ m: 1, width: '25ch' }}
+                                        label='Odo Meter Reading / मीटर रीडिंग'
+                                        required
+                                        error={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                        helperText={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                        value={odoMeter}
+                                            onChange={e => {
+                                                setOdoMeter(e.target.value)
+                                            }}
                                 />
-                            </Box>
+                                </Box>
                                 <Box className={classes.middlePosition}>
                                     <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
                                     <InputBase capture
@@ -913,12 +936,27 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                                onChange={(event)=>changeHandler(event, "SJ")}
                                     />
                                 </Box>
-
+                                {error? <Alert
+                                    severity="warning"
+                                    action={
+                                    <IconButton
+                                        aria-label="close"
+                                        color="inherit"
+                                        size="small"
+                                         onClick={() => {
+                                            seterror(false);
+                                        }}>
+                                    <CloseIcon fontSize="inherit" />
+                                    </IconButton>
+                                    }
+                                    sx={{ mb: 2 }}>
+                                    Please eneter valid Readings
+                                    </Alert>:null}
                                 <Box className={classes.middlePosition}>
                                     {spinner?<CircularProgress color="success" />:
                                         <Button variant="contained" className={classes.button} onClick={e => {
                                             e.preventDefault();
-                                            setStartJourney()
+                                                setStartJourney()
                                         }}>
                                             {changeLang?'प्रवास सुरू करा':"  Start Journey"}
                                         </Button>}
@@ -947,22 +985,29 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     </IconButton>
                                 </Stack>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase
-                                        type='text'
-                                        placeholder='OTP'
+                                    <TextField 
+                                         sx={{ m: 1, width: '25ch' }}
+                                         label='OTP'
+                                         required
                                         className={classes.input}
                                         value={otp}
                                         onChange={e => setOtp(e.target.value)}
                                     />
-                                </Box><Box className={classes.middlePosition}>
-                                <InputBase
-                                    type='text'
-                                    placeholder='Meter Reading / मीटर रीडिंग'
-                                    className={classes.input}
-                                    value={odoMeter}
-                                    onChange={e => setOdoMeter(e.target.value)}
+                                </Box>
+                                <Box className={classes.middlePosition}>
+                                <TextField
+                                    style={{margin: 8}}
+                                    sx={{ m: 1, width: '25ch' }}
+                                        label='Odo Meter Reading / मीटर रीडिंग'
+                                        required
+                                        error={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                        helperText={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                        value={odoMeter}
+                                            onChange={e => {
+                                                setOdoMeter(e.target.value)
+                                            }}
                                 />
-                            </Box>
+                                </Box>
                                 <Box className={classes.middlePosition}>
                                     <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
                                     <InputBase capture
@@ -981,6 +1026,22 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             {changeLang?'प्रवास समाप्त करा':" End Journey"}
                                         </Button>}
                                 </Box>
+                                {error? <Alert
+                                    severity="warning"
+                                    action={
+                                    <IconButton
+                                        aria-label="close"
+                                        color="inherit"
+                                        size="small"
+                                         onClick={() => {
+                                            seterror(false);    
+                                        }}>
+                                    <CloseIcon fontSize="inherit" />
+                                    </IconButton>
+                                    }
+                                    sx={{ mb: 2 }}>
+                                    Please eneter valid Readings
+                                    </Alert>:null}
                             </Paper>
                         </Modal>
                         {/* Absent */}
@@ -1017,8 +1078,80 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Box>
                             </Paper>
                         </Modal>
-                        {/* Check In */}
-                        <Modal
+                    </Paper>
+                </div>
+                <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
+
+                </Box>
+            </main>:null}
+        </div>:null}
+        {selected===2?
+            
+               <div>
+                    <div className="container">
+                         <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
+                            <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Daily Check In - Check Out'}</h1></div>
+                            {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
+                        </Box>
+                            <div>
+                                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" && popup === false && 
+                                    <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } } style={{ margin:8 }} >
+                                        Daily Check in
+                                    </Button>
+                                }
+                                {vehicleCheckInOut && vehicleCheckInOut.status === "CHECKIN" && 
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ width:'100%'  }} aria-label="simple table">
+                                        <TableHead>
+                                        <TableRow>
+                                            <TableCell>Vehicle Check In ODO Meter Reading</TableCell>
+                                            <TableCell>Vehicle No</TableCell>
+                                            <TableCell>Vehicle Check In Time</TableCell>
+                                            <TableCell>Vehicle Check In Location</TableCell>
+                                            <TableCell>Action</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                            <TableCell>{vehicleCheckInOut.vehicleCheckinOdoMeter}</TableCell>
+                                            <TableCell>{vehicleCheckInOut.vehicleNo}</TableCell>
+                                            <TableCell>{vehicleCheckInOut.vehicleCheckinDateTime}</TableCell>
+                                            <TableCell>{vehicleCheckInOut.checkinLocation}</TableCell>
+                                            <TableCell>
+                                            <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
+                                                Check Out
+                                            </Button>
+                                            </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                }
+                            </div>
+                            <div>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
+                                <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Previous Data'}</h1></div>
+                                {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
+                            </Box>
+                            <TableContainer component={Paper} >
+                                <Table sx={{ width:'100%'  }} aria-label="simple table">
+                                        <TableHead>
+                                        <TableRow>
+                                            <TableCell>Vehicle No</TableCell>
+                                            <TableCell>Vehicle Check In Time</TableCell>
+                                            <TableCell>Vehicle Check In Location</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableCell>{vehicleCheckInOut.vehicleNo}</TableCell>
+                                            <TableCell>{moment( vehicleCheckInOut.vehicleCheckinDateTime).format('DD MMM YYYY hh:mm:a')}</TableCell>
+                                            <TableCell>{vehicleCheckInOut.checkinLocation}</TableCell>
+                                        </TableBody>
+                                </Table>
+                            </TableContainer>
+                            </div>
+                            {/* Check In */}
+                            <Modal
                             className={classes.middlePosition}
                             open={ischeckin}
                             onClose={e => {
@@ -1029,7 +1162,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 <Stack direction="row" justifyContent="space-between"
                                        alignItems="center" spacing={2}>
                                     <Stack direction="column">
-                                        <Typography variant='h6' component='div'> {changeLang?'प्रवास सुरू करा':"  Check IN"}</Typography>
+                                        <Typography variant='h6' component='div'> {changeLang?'प्रवास सुरू करा':" Daily Check IN"}</Typography>
                                     </Stack>
                                     <IconButton aria-label="delete" onClick={e => {
                                         e.preventDefault();
@@ -1038,6 +1171,25 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         <CloseIcon />
                                     </IconButton>
                                 </Stack>
+                                <Box className={classes.middlePosition}>
+                                    <TextField
+                                        style={{ margin:8 }}
+                                        select
+                                        label="Select Vehicle No"
+                                        helperText="Select Vehicle No"
+                                        value={selectedVehicle}
+                                        className={classes.textFields}
+                                        onChange={ e => setselectedVehicle(e.target.value) }
+                                    >
+                                        {
+                                            data.map( (checkinvehicle) => (
+                                                <MenuItem key={checkinvehicle._id} value={checkinvehicle} >
+                                                    {checkinvehicle.vehicleNo}
+                                                </MenuItem>
+                                            ) )
+                                        }
+                                    </TextField>
+                                </Box>
                                 <Box className={classes.middlePosition}>
                                     <InputBase
                                     type='text'
@@ -1048,13 +1200,22 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase
-                                        type='text'
-                                        placeholder='Check In Location'
-                                        className={classes.input}
-                                        value={checkinLocation}
-                                        onChange={e => setcheckinLocation(e.target.value) }
-                                    />
+                                <TextField
+                                    style={{margin:8}}
+                                    id="outlined-select-currency"
+                                    select
+                                    label="Select Vehicle Check In location"
+                                    helperText="Please select Vehicle Check In location"
+                                    value={checkinLocation}
+                                    className={classes.textFields}
+                                    onChange={ e => { setcheckinLocation(e.target.value) } }
+                                >
+                                    {SakalOffices.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                                 </Box>
                                 <Box className={classes.middlePosition}>
                                     <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
@@ -1107,13 +1268,22 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     />
                                 </Box>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase
-                                        type='text'
-                                        placeholder='Check Out Location'
-                                        className={classes.input}
-                                        value={checkoutLocation}
-                                        onChange={e => setcheckoutLocation(e.target.value) }
-                                    />
+                                <TextField
+                                    style={{margin:8}}
+                                    id="outlined-select-currency"
+                                    select
+                                    label="Select Vehicle Check out location"
+                                    helperText="Please select Vehicle SakalOffices Type"
+                                     value={checkoutLocation}
+                                    className={classes.textFields}
+                                    onChange={ e => { setcheckoutLocation(e.target.value) } }
+                                >
+                                    {SakalOffices.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                    </MenuItem>
+                                ))}
+                        </TextField>
                                 </Box>
                                 <Box className={classes.middlePosition}>
                                     <Typography variant='h6' component='div'>{changeLang?'पमीटर प्रतिमा अपलोड करा':"Upload meter image"}</Typography>
@@ -1134,101 +1304,10 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         </Button>}
                                 </Box>
                             </Paper>
-                        </Modal>
-                    </Paper>
-                </div>
-                <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
-
-                </Box>
-            </main>:null}
-        </div>:null}
-        {selected===2?<div className={classes.root}>
-            <main className={classes.main}>
-                <TabContext value={tabValue.toString()} >
-                    <TabList onChange={(e, value) => {
-                                 setSelectedTab(Number(value));
-                                 getChangeDatePreviousRides(Number(value));
-                                 setFilter(false);
-                             }}>
-                        <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={moment().subtract(1, 'days').format('DD-MMM')} value="0"/>
-                        <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={moment().subtract(2, 'days').format('DD-MMM')} value="1"/>
-                        <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={moment().subtract(3, 'days').format('DD-MMM')} value="2"/>
-                        { filter && value?<Tab style={{minWidth: 115, padding: '12px 8px'}} label={moment(value && value.toString()).format('DD-MMM-YYYY')} value="3"/>:null}
-                        <IconButton onClick={e => {
-                            e.preventDefault();
-                            setIsOpen(pState => !pState)
-                        }}>
-                            <DateRangeRoundedIcon color="primary" className={classes.calendarIcon} style={{width: 24, height: 24}}/>
-                        </IconButton>
-                    </TabList>
-                    <TabPanel value="0">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ?<div style={{width: "100%",  height:"100vh"}}>
-                            {upcomingPreviousRides.map((item, index)=>{
-                                return renderList(item, index)
-                            })}
-                        </div>:null}
-                    </TabPanel>
-                    <TabPanel value="1">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ?<div style={{width: "100%",  height:"100vh"}}>
-                            {upcomingPreviousRides.map((item, index)=>{
-                                return renderList(item, index)
-                            })}
-                        </div>:null}
-                    </TabPanel>
-                    <TabPanel value="2">
-                            {upcomingPreviousRides && upcomingPreviousRides.length > 0 ?<div style={{width: "100%",  height:"100vh"}}>
-                                { upcomingPreviousRides.map((item, index)=>{
-                                    return renderList(item, index)
-                                })}
-                            </div>:null}
-                    </TabPanel>
-                    {filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
-                            return renderList(item, index)
-                        }):null}
-                    </TabPanel>:null}
-                </TabContext>
-                <Modal
-                    className={classes.middlePosition}
-                    open={isOpen}
-                    onClose={e => {
-                        e.preventDefault();
-                        setIsOpen(false)
-                    }}>
-                    <Paper className={classes.form}>
-                        <Typography
-                            variant='h4' component='div' align='center'>
-                            Select Date
-                        </Typography>
-                        <div style={{margin:10}}>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DesktopDatePicker
-                                    renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
-                                    label="Select Date"
-                                    mask="__/__/____"
-                                    format="dd-MM-yyyy"
-                                    value={value}
-                                    onChange={(newValue) => {
-                                        setValue(newValue);
-                                    }}
-                                    maxDate={new Date(moment().subtract(3, 'days').format('DD-MMM-YYYY'))}
-                                />
-                            </LocalizationProvider>
-                        </div>
-                        <div style={{margin:10, display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'}}>
-                            <Button variant="contained" onClick={e => {
-                                e.preventDefault();
-                                setIsOpen(pState => !pState);
-                                getRequestDataByDate(value, 'filter')
-                            }}>Submit</Button>
-                        </div>
-
-                    </Paper>
-                </Modal>
-            </main>
-        </div>:null}
+                        </Modal>                  
+                    </div>
+               </div>
+        :null}
         {selected===1?<div className={classes.root}>
             <main className={classes.main}>
                 <TabContext value={tabValue.toString()}>
@@ -1318,7 +1397,80 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </Modal>
             </main>
         </div>:null}
-        {selected===3 ? navigate('/driver/attendance') : null}
+
+        {selected===3 ? 
+                <div>
+
+                <div className="container">
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
+                        <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Leave Management'}</h1></div>
+                        {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
+                    </Box>
+                    <Box sx={{ flexDirection: 'row', display: 'flex', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DateRangePicker
+                                startText={changeLang ? "प्रारंभ तारीख" :'Start Date'}
+                                endText={changeLang ? "समाप्तीची तारीख" :"End Date"}
+                                value={drivervalue}
+                                onChange={(newValue) => {
+                                    setDriverValue(newValue)
+                                }}
+                                renderInput={(startProps, endProps) => (
+                                    <React.Fragment>
+                                        <TextField {...startProps} onChange={(newValue) => {
+                                            setstartDatetime(newValue)
+                                        }} />
+                                        <Box sx={{ mx: 2 }}> to </Box>
+                                        <TextField {...endProps} onChange={(newValue) => {
+                                            setendDatetime(newValue)
+                                        }} />
+                                    </React.Fragment>
+                                )}
+                            />
+                        </LocalizationProvider>
+                        <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
+                            <Button variant="contained" onClick={() => setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1])}>{changeLang ? "सुट्टी" :'Leave'}</Button>
+                        </div>
+    
+                    </Box>
+                    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                        <TableContainer>
+                            <Table stickyHeader aria-label="sticky table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell><strong>{changeLang ? "प्रारंभ तारीख" :'Start Date'}</strong></TableCell>
+                                        <TableCell><strong>{changeLang ? "समाप्तीची तारीख" :"End Date"}</strong></TableCell>
+                                        <TableCell><strong>{changeLang ? "स्थिती" : "Status"}</strong></TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    { driver.driverattendance && driver.driverattendance.length > 0 && driver.driverattendance.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                                        return (
+                                            <TableRow key={Math.random() * index} hover role="checkbox" tabIndex={-1}>
+                                                <TableCell>{row && moment(row.startDateTime).format('DD MMM YYYY') }</TableCell>
+                                                <TableCell>{row && moment(row.endDateTime).format('DD MMM YYYY') }</TableCell>
+                                                <TableCell>{row && row.status}</TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[10, 25, 100]}
+                            component="div"
+                            // count={count ? count : 0}
+                            count={driverattendance?.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+                </div>
+            </div>
+        : null}
+
             <AppBar className={classes.footer}>
             <Box sx={{width: {xs:500, sm:786,md:1080, xl:'100%'}}}>
                 <BottomNavigation
@@ -1333,14 +1485,12 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                         } else if(newValue===2){
                             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'), newValue)
                         } else if(newValue===3){
-                            navigate('/driver/attendance')
-                        } else if(newValue===4){
-                            navigate('/driver/petrol-expense')
-                        }
+                            
+                        } 
                     }}>
                     <BottomNavigationAction label={changeLang?'पुढचा प्रवास':"Upcoming Ride"} icon={<DashboardIcon />} />
                     <BottomNavigationAction label={changeLang?'भविष्यातील प्रवास':"Future Ride"} icon={<DirectionsCarIcon />} />
-                    <BottomNavigationAction label={changeLang? 'मागील  प्रवास':"Leave Management"} icon={<DirectionsCarIcon />} />
+                    <BottomNavigationAction label={changeLang? '':"Daily Check-In Check-out"} icon={ <InsertInvitationIcon /> } />
                     <BottomNavigationAction label={changeLang? 'सुट्टी व्यवस्थापन ':"Leave Management"} icon={<PersonOffTwoToneIcon />} />
                 </BottomNavigation>
                 <div>
@@ -1366,7 +1516,9 @@ const mapStateToProps = state => {
         upcomingPreviousRides: state.admin.upcomingPreviousRides,
         loading: state.request.loading,
         changeLang: state.trackLocation.changeLang,
-        error: state.request.error
+        error: state.request.error,
+        setDriverAttendance: state.driver.setDriverAttendance,
+        driverattendance : state.driver.driverattendance,
     }
 };
 
@@ -1383,6 +1535,10 @@ const mapDispatchToProps = dispatch => {
         getCheckinVehicleData : (requestBody) => dispatch(ActionCreatorsDriver.getCheckinVehicleData(requestBody)),
         userLogout: () => dispatch(ActionCreators.userLogout()),
         setPasswordData: (requestBody) => dispatch(ActionCreator.setPasswordData(requestBody)),
+        setDriverAttendanceData: (userDetails, startDateTime, endDateTime) => dispatch(ActionCreatorsDriver.setDriverAttendanceData(userDetails, startDateTime, endDateTime)),
+        // setRequestStatusAdminDataReports: (startDate, endDate) => dispatch(ActionCreators.setRequestStatusAdminDataReports(startDate, endDate)),
+        getdriverattendanceData : (driverattendance) => dispatch(ActionCreatorsDriver.getdriverattendanceData(driverattendance)),
+        getVehicleListData: () => dispatch(ActionCreatorRequest.getVehicleListData()),
     }
 };
 

@@ -53,8 +53,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [travellerId, setTravellerId] = useState('');
     const [source, setSource] = useState(null);
     const [destination, setDestination] = useState(null);
-    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
-    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
+    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000));
+    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000));
     const [vehicle, setVehicle] = useState('');
     const [reason, setReason] = useState('');
     const [error, setError] = useState(false);
@@ -333,7 +333,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="Start Date and Time"
                         value={startDate}
-                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000)}
+                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000)}
                         onChange={(newValue) => {
                             setStartDate(newValue);
                         }}

@@ -43,7 +43,7 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                         {requestDetails?.requestStatus ==='ONGOING' ? changeLang?'चालू आहे':"Ongoing Status":null}
                         {requestDetails?.requestStatus ==='REJECTED' ? changeLang?'नाकारले':"Rejected Status":null}
                     </Typography>
-                    <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin:12}}>
+                    <Paper className={classes.form} style={{minWidth:'320px', margin: "16px 0"}}>
                         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                 <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center"}}>
                                     {requestDetails.journeyNo !== ''?
@@ -100,7 +100,7 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                                             {changeLang?'प्रारंभ तारीख आणि वेळ':"Start Date & Time"}
                                         </Typography>
                                         <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                            {moment(requestDetails.startDateTime).format('DD/MM/YYYY hh:mm a')}
+                                            {moment(requestDetails.startDateTime).format('DD-MMM-YYYY hh:mm a')}
                                         </Typography>
                                     </div>
                                     <div style={{display:'flex', flexDirection:'column', marginTop:16, textAlign:'right'}}>
@@ -108,7 +108,7 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                                             {changeLang?'समाप्तीची तारीख आणि वेळ':"End Date & Time"}
                                         </Typography>
                                         <Typography variant='subtitle2' component='div' style={{marginTop:8}}>
-                                            {moment(requestDetails.endDateTime).format('DD/MM/YYYY hh:mm a')}
+                                            {moment(requestDetails.endDateTime).format('DD-MMM-YYYY hh:mm a')}
                                         </Typography>
                                     </div>
                                 </div>
@@ -153,7 +153,7 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                         </div>
                         {requestDetails && requestDetails?.journeyStatus.map((traveller, index) => (
                             <div className={classes.travellerItem} key={index}>
-                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</div>
+                                <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMM-YYYY hh:mm a')}</div>
                                 <div className={classes.itemRightSection}>
                                     {traveller?.Status==='ONGOING' &&
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#bc9800'}}>
@@ -175,11 +175,15 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
                                         {traveller?.Status}
                                     </Typography>}
-                                    {traveller?.Status==='STARTJPURNEY' &&
+                                    {traveller?.Status==='STARTJOURNEY' &&
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
                                         {traveller?.Status}
                                     </Typography>}
-                                    {traveller?.Status==='ENDJPURNEY' &&
+                                    {traveller?.Status==='ENDJOURNEY' &&
+                                    <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
+                                        {traveller?.Status}
+                                    </Typography>}
+                                    {traveller?.Status==='EXTENDREQUEST' &&
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
                                         {traveller?.Status}
                                     </Typography>}
@@ -213,37 +217,41 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                         </div>
                         {requestDetails && requestDetails?.journeyStatus.map((traveller, index) => {
                             return <div className={classes.travellerItem} key={index}>
-                                <p className={classes.itemRightSection}> {moment(traveller.Date).format('DD/MM/YYYY hh:mm a')}</p>
-                                <p className={classes.itemRightSection}>
-                                    {traveller?.Status==='ONGOING' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f9ed1b'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                     {traveller?.Status==='APPROVED' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#19f928'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                    {traveller?.Status==='PENDING' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f99935'}}>
-                                            {traveller?.Status}
-                                        </Typography> }
-                                    {traveller?.Status==='REJECTED' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                    {traveller?.Status==='CANCEL' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                    {traveller?.Status==='STARTJPURNEY' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                    {traveller?.Status==='ENDJPURNEY' &&
-                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
-                                            {traveller?.Status}
-                                        </Typography>}
-                                </p>
+                                {   traveller?.status ==='' ?
+                                    null
+                                : <>
+                                <p className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMM-YYYY hh:mm a')}</p>
+                         <p className={classes.itemRightSection}>
+                             {traveller?.Status==='ONGOING' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f9ed1b'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                              {traveller?.Status==='APPROVED' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#19f928'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                             {traveller?.Status==='PENDING' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f99935'}}>
+                                     {traveller?.Status}
+                                 </Typography> }
+                             {traveller?.Status==='REJECTED' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                             {traveller?.Status==='CANCEL' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                             {traveller?.Status==='STARTJOURNEY' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                             {traveller?.Status==='ENDJOURNEY' &&
+                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
+                                     {traveller?.Status}
+                                 </Typography>}
+                         </p>
+                         </>}
                             </div>})}
                     </Paper>
                 </Modal>

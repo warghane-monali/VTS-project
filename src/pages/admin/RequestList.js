@@ -138,10 +138,11 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
         }else if(selection==="2"){
             setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(0,'days').format('YYYY-MM-DD')})
         }else if (selection==="3"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1,'days').format('YYYY-MM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1, 'days').format('YYYY-MMM-DD')})
         }
     };
 
+    console.log("----Requested date-----",value)
     const getRequestDataByDate = (date)=> {
         setFilter(true);
         setTabValue(4);
@@ -231,7 +232,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                                         return renderList(item, index)
                                     }):null}
                                 </TabPanel>
-                                { filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
+                                { filter?<TabPanel style={{width: '95%',  padding:12}} >
                                     {requestStatusList && requestStatusList.length > 0 ? requestStatusList.map((item, index) => {
                                         return renderList(item, index)
                                     }) : null}

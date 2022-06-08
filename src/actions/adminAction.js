@@ -427,6 +427,7 @@ export function updateDriverListData(data) {
         let urlencoded = new URLSearchParams();
         urlencoded.append("userId", data.userId);
         urlencoded.append("firstName", data.firstName);
+        urlencoded.append("middleName", data.middleName);
         urlencoded.append("lastName", data.lastName);
         urlencoded.append("emailId", data.emailId);
 
@@ -438,6 +439,7 @@ export function updateDriverListData(data) {
         };
         return fetch(BASE_URL + '/user/userU', requestOptions).then(response => response.json()).then(res => {
             dispatch(getDriverUserListData());
+            console.log("-----Update driver response-------",res)
             return res
         })
             .catch((error) => {
@@ -788,7 +790,7 @@ export function getFeedBackAnsData(data) {
             redirect: 'follow'
         };
 
-        return fetch(BASE_URL+'/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
+        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res));
             return res;
         })
