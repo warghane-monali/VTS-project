@@ -536,7 +536,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setshowcheckin(true)
        const res = await setJourneyCheckOutData({
            checkoutLocation:checkoutLocation,
-           vehicleCheckinCheckOutId: vehicleCheckInOut._id,
+           vehicleCheckinCheckOutId: vehicleCheckIn._id,
            vehicleCheckoutOdoMeter: chekoutodometer,
            vehicleCheckoutOdoMeterImgURL: selectedFileUrl,
         })
@@ -587,6 +587,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
 
     console.log('---vehicle check in data-----',vehicleCheckIn)
     console.log('---Vehicle check out data----',vehicleCheckOut)
+    console.log("---Vehicle Check in out variable------",vehicleCheckInOut)
 
 
     const renderList = (item, index) => {
@@ -1094,12 +1095,12 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                         </Box>
                             <div>
-                                {vehicleCheckInOut && vehicleCheckInOut.message === "NO RECORD FOUND" && popup === false && 
+                                { popup === false && showcheckin && 
                                     <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } } style={{ margin:8 }} >
                                         Daily Check in
                                     </Button>
                                 }
-                                {vehicleCheckInOut && vehicleCheckInOut.status === "CHECKIN" && 
+                                {vehicleCheckIn && vehicleCheckIn.status === "CHECKIN" && 'CHECKOUT' &&
                                     <TableContainer component={Paper}>
                                         <Table sx={{ width:'100%'  }} aria-label="simple table">
                                         <TableHead>
@@ -1113,10 +1114,10 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         </TableHead>
                                         <TableBody>
                                             <TableRow>
-                                            <TableCell>{vehicleCheckInOut.vehicleCheckinOdoMeter}</TableCell>
-                                            <TableCell>{vehicleCheckInOut.vehicleNo}</TableCell>
-                                            <TableCell>{vehicleCheckInOut.vehicleCheckinDateTime}</TableCell>
-                                            <TableCell>{vehicleCheckInOut.checkinLocation}</TableCell>
+                                            <TableCell>{vehicleCheckIn.vehicleCheckinOdoMeter}</TableCell>
+                                            <TableCell>{vehicleCheckIn.vehicleNo}</TableCell>
+                                            <TableCell>{vehicleCheckIn.vehicleCheckinDateTime}</TableCell>
+                                            <TableCell>{vehicleCheckIn.checkinLocation}</TableCell>
                                             <TableCell>
                                             <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
                                                 Check Out
@@ -1140,12 +1141,22 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <TableCell>Vehicle No</TableCell>
                                             <TableCell>Vehicle Check In Time</TableCell>
                                             <TableCell>Vehicle Check In Location</TableCell>
+                                            <TableCell>Vehicle Check Out Location</TableCell>
+                                            <TableCell>Vehicle Check Out Time</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            <TableCell>{vehicleCheckInOut.vehicleNo}</TableCell>
-                                            <TableCell>{moment( vehicleCheckInOut.vehicleCheckinDateTime).format('DD MMM YYYY hh:mm:a')}</TableCell>
-                                            <TableCell>{vehicleCheckInOut.checkinLocation}</TableCell>
+                                            {
+                                                vehicleCheckInOut.map( (dailydata) => (
+                                                <TableRow key={dailydata.id}>
+                                                    <TableCell>{dailydata.vehicleNo}</TableCell>
+                                                    <TableCell>{dailydata.vehicleCheckinDateTime}</TableCell>
+                                                    <TableCell>{dailydata.checkinLocation}</TableCell>
+                                                    <TableCell>{dailydata.checkoutLocation ? dailydata.checkoutLocation : '-'}</TableCell>
+                                                    <TableCell>{dailydata.checkOutTime ? dailydata.checkOutTime :'-' }</TableCell>
+                                                </TableRow>
+                                                ))
+                                            }
                                         </TableBody>
                                 </Table>
                             </TableContainer>
