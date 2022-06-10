@@ -533,9 +533,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             vehicleCheckinOdoMeter:chekinodometer,
             vehicleCheckinOdoMeterImgURL: selectedFileUrl,
             journeyId:driversLatestJourney._id,
-            driverId:driversLatestJourney.driverId,
-            driverName:driversLatestJourney.driverName,
-            driverNo:driversLatestJourney.driverNo,
+            driverId:userDetails.user._id,
+            driverName:userDetails.user.firstName + userDetails.user.middleName + userDetails.user.lastName,
+            driverNo:userDetails.user.contactNo,
             vehicleId:selectedVehicle.vehicleId,
             vehicleNo:selectedVehicle.vehicleNo,
             vehicleName:selectedVehicle.vehicleName,
@@ -604,10 +604,6 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         getdriverattendanceData(userDetails.user);
     }
 
-    console.log('---vehicle check in data-----',vehicleCheckIn)
-    console.log('---Vehicle check out data----',vehicleCheckOut)
-    console.log("---Vehicle Check in out variable------",vehicleCheckInOut)
-
 
     const renderList = (item, index) => {
         return <Paper key={index} className={classes.cardList} onClick={() => navigate('/driver/ride-status', { state: item})}>
@@ -662,6 +658,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             setpopup(false)
         }
     }
+
+    console.log('Driver Details',userDetails.user)
 
     return (
         <>
