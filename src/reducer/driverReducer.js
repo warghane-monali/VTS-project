@@ -5,6 +5,7 @@ const initialState = {
     driverPreviousRides: [],
     driverUpcomingRides: [],
     driverAllUpcomingRides: [],
+    driverAllUpcomingRideswithdate:[],
     driversLatestJourney:{},
     driverattendance:[],
     setDriverAttendance:{},
@@ -46,6 +47,12 @@ const driverReducer = (state = initialState, action) => {
                 driverAllUpcomingRides:action.payload,
                 error: null,
             };
+            case 'GET_DRIVER_ALL_UPCOMING_RIDE_WITH_DATE':
+                return {
+                    ...state,
+                    driverAllUpcomingRideswithdate:action.payload,
+                    error:null,
+                }
             case 'SET_DRIVER_ATTENDANCE':
                 return {
                     ...state,

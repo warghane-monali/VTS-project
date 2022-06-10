@@ -25,6 +25,12 @@ export const getDriverAllUpcomingRides = data => {
         payload: data
     }
 };
+export const getDriverAllUpcomingRideswithdate = data => {
+    return {
+        type:"GET_DRIVER_ALL_UPCOMING_RIDE_WITH_DATE",
+        payload: data
+    }
+};
 export const getDriverLatestJourney = data => {
     return {
         type: "GET_DRIVER_LATEST_JOURNEY",
@@ -115,6 +121,31 @@ export function getDriverAllUpcomingRidesData(requestBody) {
 
         return fetch(BASE_URL + '/journey/upcomingRidesForDriver', requestOptions).then(response => response.json()).then(res => {
             dispatch(getDriverAllUpcomingRides(res));
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+export function getDriverAllUpcomingRideswithdateData(requestBody){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("userId", requestBody.userId);
+        urlencoded.append("startDateTime",requestBody.startDateTime)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+       
+        return fetch(BASE_URL + '/journey/specificridesfordriver', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getDriverAllUpcomingRideswithdate(res));
+            console.log("-----Driver upcoming rides with date",res)
         })
         .catch((error) => {
             console.error('Error:', error);

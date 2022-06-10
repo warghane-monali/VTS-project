@@ -348,7 +348,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                              setEndJourneyData, setStartJourneyData, getUpcomingPreviousRidesAdminData, userLogout,setJourneyCheckInData,
                              setJourneyCheckOutData,
                              getCheckinVehicleData,vehicleCheckIn,vehicleCheckOut,
-                             vehicleCheckInOut,setPasswordData,setDriverAttendanceData,getdriverattendanceData,driverattendance,getVehicleListData}) => {
+                             vehicleCheckInOut,setPasswordData,setDriverAttendanceData,getdriverattendanceData,driverattendance,getVehicleListData,
+                             getDriverAllUpcomingRideswithdateData,driverAllUpcomingRideswithdate}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -435,19 +436,26 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const getUserUpcomingRides = async () => {
         await getDriverAllUpcomingRidesData(userDetails && userDetails.user && userDetails.user._id);
     };
+    console.log("Driver ID",userDetails.user._id)
 
-    const getRequestDataByDate = (date, newValue)=> {
+    const getRequestDataByDate = async (date, newValue)=> {
         if (newValue==='filter'){
             setFilter(true);
             setTabValue(3);
         }
         if(selected===2 || newValue===2){
-            getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
+            await getDriverAllUpcomingRideswithdateData({
+                userId: userDetails.user._id,
+                startDateTime: moment(date).format('YYYY-MM-DD')
+            })
         } else if (selected===1 || newValue===1){
-            getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
+            await getDriverAllUpcomingRideswithdateData({
+                userId: userDetails.user._id,
+                startDateTime: moment(date).format('YYYY-MM-DD')
+            })
         }
         else if (selected===3 || newValue===3){
-            getdriverattendanceData(userDetails.user);
+            await  getdriverattendanceData(userDetails.user);
         }
     };
 
@@ -457,9 +465,15 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         if(selection===0){
             getDriverAllUpcomingRidesData(userDetails && userDetails.user && userDetails.user._id)
         }else if(selection===1){
-            getUpcomingPreviousRidesAdminData(moment().add(0,'days').format('YYYY-MM-DD'))
+            getDriverAllUpcomingRideswithdateData({
+                userId: userDetails && userDetails.user && userDetails.user._id,
+                startDateTime:moment().add(0,'days').format('YYYY-MM-DD')
+            })
         }else if (selection===2){
-            getUpcomingPreviousRidesAdminData(moment().add(1,'days').format('YYYY-MM-DD'))
+            getDriverAllUpcomingRideswithdateData({
+                userId: userDetails && userDetails.user && userDetails.user._id,
+                startDateTime:moment().add(1,'days').format('YYYY-MM-DD')
+            })
         }
     };
 
@@ -584,6 +598,11 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             console.log("--------------- Upload image -----------");
         }
     };
+
+    const setattendance = () => {
+        setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1]);
+        getdriverattendanceData(userDetails.user);
+    }
 
     console.log('---vehicle check in data-----',vehicleCheckIn)
     console.log('---Vehicle check out data----',vehicleCheckOut)
@@ -1100,7 +1119,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         Daily Check in
                                     </Button>
                                 }
-                                {vehicleCheckIn && vehicleCheckIn.status === "CHECKIN" && 'CHECKOUT' &&
+                                {vehicleCheckIn && vehicleCheckIn.status === "CHECKIN" && vehicleCheckIn.vehicleCheckinDateTime !== vehicleCheckOut.vehicleCheckinDateTime &&
                                     <TableContainer component={Paper}>
                                         <Table sx={{ width:'100%'  }} aria-label="simple table">
                                         <TableHead>
@@ -1116,7 +1135,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <TableRow>
                                             <TableCell>{vehicleCheckIn.vehicleCheckinOdoMeter}</TableCell>
                                             <TableCell>{vehicleCheckIn.vehicleNo}</TableCell>
-                                            <TableCell>{vehicleCheckIn.vehicleCheckinDateTime}</TableCell>
+                                            <TableCell>{moment(vehicleCheckIn.vehicleCheckinDateTime).format('DD-MMM-YYYY hh:mm:a')}</TableCell>
                                             <TableCell>{vehicleCheckIn.checkinLocation}</TableCell>
                                             <TableCell>
                                             <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckOut(true); } } >
@@ -1134,7 +1153,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Previous Data'}</h1></div>
                                 {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                             </Box>
-                            <TableContainer component={Paper} >
+                            <TableContainer component={Paper}  >
                                 <Table sx={{ width:'100%'  }} aria-label="simple table">
                                         <TableHead>
                                         <TableRow>
@@ -1148,12 +1167,12 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         <TableBody>
                                             {
                                                 vehicleCheckInOut.map( (dailydata) => (
-                                                <TableRow key={dailydata.id}>
+                                                <TableRow key={dailydata.id} >
                                                     <TableCell>{dailydata.vehicleNo}</TableCell>
-                                                    <TableCell>{dailydata.vehicleCheckinDateTime}</TableCell>
+                                                    <TableCell>{moment(dailydata.vehicleCheckinDateTime).format('DD-MMM-YYYY hh:mm:a')}</TableCell>
                                                     <TableCell>{dailydata.checkinLocation}</TableCell>
                                                     <TableCell>{dailydata.checkoutLocation ? dailydata.checkoutLocation : '-'}</TableCell>
-                                                    <TableCell>{dailydata.checkOutTime ? dailydata.checkOutTime :'-' }</TableCell>
+                                                    <TableCell>{dailydata.vehicleCheckoutDateTime ? moment(dailydata.vehicleCheckoutDateTime).format('DD-MMM-YYYY hh:mm:a') :'-' }</TableCell>
                                                 </TableRow>
                                                 ))
                                             }
@@ -1341,28 +1360,28 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                         </IconButton>
                     </TabList>
                     <TabPanel value="0">
-                        {driverAllUpcomingRides && driverAllUpcomingRides.length > 0  ?<div style={{width: "100%",  height:"100vh"}}>
+                        {driverAllUpcomingRides && driverAllUpcomingRides.length > 0  ?<div style={{width: "100%",  height:"100%"}}>
                             {driverAllUpcomingRides.map((item, index)=>{
                                 return renderList(item, index)
                             })}
                         </div>:null}
                     </TabPanel>
                     <TabPanel value="1">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? <div style={{width: "100%",  height:"100vh"}}>
+                        {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? <div style={{width: "100%",  height:"100%"}}>
                             {upcomingPreviousRides.map((item, index)=>{
                                 return renderList(item, index)
                             })}
                         </div>:null}
                     </TabPanel>
                     <TabPanel value="2">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? <div style={{width: "100%",  height:"100vh"}}>
+                        {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? <div style={{width: "100%",  height:"100%"}}>
                             { upcomingPreviousRides.map((item, index)=>{
                                 return renderList(item, index)
                             })}
                         </div>:null}
                     </TabPanel>
                     { filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
-                        {upcomingPreviousRides && upcomingPreviousRides.length > 0 ? upcomingPreviousRides.map((item, index) => {
+                        {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? upcomingPreviousRides.map((item, index) => {
                             return renderList(item, index)
                         }) : null}
                     </TabPanel>:null}
@@ -1440,7 +1459,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             />
                         </LocalizationProvider>
                         <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
-                            <Button variant="contained" onClick={() => setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1])}>{changeLang ? "सुट्टी" :'Leave'}</Button>
+                            <Button variant="contained" onClick={() => setattendance()}>{changeLang ? "सुट्टी" :'Leave'}</Button>
                         </div>
     
                     </Box>
@@ -1494,14 +1513,14 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                         if(newValue===1){
                             getRequestDataByDate(moment().format('YYYY-MM-DD'), newValue)
                         } else if(newValue===2){
-                            getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'), newValue)
+                            getRequestDataByDate(moment().add(1,'days').format('YYYY-MM-DD'), newValue)
                         } else if(newValue===3){
                             
                         } 
                     }}>
                     <BottomNavigationAction label={changeLang?'पुढचा प्रवास':"Upcoming Ride"} icon={<DashboardIcon />} />
                     <BottomNavigationAction label={changeLang?'भविष्यातील प्रवास':"Future Ride"} icon={<DirectionsCarIcon />} />
-                    <BottomNavigationAction label={changeLang? '':"Daily Check-In Check-out"} icon={ <InsertInvitationIcon /> } />
+                    <BottomNavigationAction label={changeLang? '':"Daily Check-In Data"} icon={ <InsertInvitationIcon /> } />
                     <BottomNavigationAction label={changeLang? 'सुट्टी व्यवस्थापन ':"Leave Management"} icon={<PersonOffTwoToneIcon />} />
                 </BottomNavigation>
                 <div>
@@ -1530,6 +1549,7 @@ const mapStateToProps = state => {
         error: state.request.error,
         setDriverAttendance: state.driver.setDriverAttendance,
         driverattendance : state.driver.driverattendance,
+        driverAllUpcomingRideswithdate:state.driver.driverAllUpcomingRideswithdate,
     }
 };
 
@@ -1550,6 +1570,7 @@ const mapDispatchToProps = dispatch => {
         // setRequestStatusAdminDataReports: (startDate, endDate) => dispatch(ActionCreators.setRequestStatusAdminDataReports(startDate, endDate)),
         getdriverattendanceData : (driverattendance) => dispatch(ActionCreatorsDriver.getdriverattendanceData(driverattendance)),
         getVehicleListData: () => dispatch(ActionCreatorRequest.getVehicleListData()),
+        getDriverAllUpcomingRideswithdateData : (requestBody) => dispatch(ActionCreatorsDriver.getDriverAllUpcomingRideswithdateData(requestBody)),
     }
 };
 

@@ -100,7 +100,7 @@ const AttedanceStatus = ({
           }}
         >
           <div>
-            <h1>Attendance Status</h1>
+            <h1>Driver Leave Status</h1>
           </div>
           {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
         </Box>

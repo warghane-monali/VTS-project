@@ -54,8 +54,8 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
     const [travellerId, setTravellerId] = useState('');
     const [source, setSource] = useState(null);
     const [destination, setDestination] = useState(null);
-    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000));
-    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000));
+    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000));
+    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 120*60*1000));
     const [vehicle, setVehicle] = useState('');
     const [reason, setReason] = useState('');
     const [error, setError] = useState(false);
@@ -235,8 +235,8 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                     source: source,
                     oneWayOrRoundTrip:tripStatus,
                     destination: destination,
-                    startDateTime : moment(startDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
-                    endDateTime : moment(endDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
+                    startDateTime : moment(startDate).subtract({hours:5, minute:60}).format('YYYY-MM-DD hh:mm a'),
+                    endDateTime : moment(endDate).subtract({hours:5, minute:60}).format('YYYY-MM-DD hh:mm a'),
                     // requestedVehicleType : selectedVehicle.vehicleType,
                     sourceLat: sourceLocation && sourceLocation.lat,
                     sourceLong: sourceLocation && sourceLocation.lng,
@@ -341,7 +341,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="Start Date and Time"
                         value={startDate}
-                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000)}
+                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000)}
                         onChange={(newValue) => {
                             setStartDate(newValue);
                         }}
@@ -354,7 +354,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="End Date and Time"
                         value={endDate}
-                        minDateTime={new Date(startDate && startDate.getTime() + 15*60*1000)}
+                        minDateTime={new Date(startDate && startDate.getTime() + 60*60*1000)}
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}
@@ -523,10 +523,29 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                             className={classes.textField}
                             value={travellerNumber}
                             onChange={(e )=> {
-                                setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
-                                setTravellerId(0);
+                                if(travellerNumber.length<=9 || travellerNumber.match(/[^0-9]/g))
+                                    {
+                                        setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
+                                        setTravellerId(0);
+                                    }
+                                else
+                                    setError(true)
                             }}
                         />
+                        {error ? <Alert
+                            severity="warning"
+                            action={<IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setError(false);
+                                }}>
+                                <CloseIcon fontSize="inherit"/>
+                            </IconButton>}
+                            sx={{mb: 2}}>
+                            Please fill request form properly.
+                        </Alert> : null}
                         <Stack
                             direction="row"
                             justifyContent="center"
