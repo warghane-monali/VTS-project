@@ -369,7 +369,6 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
     const [ischeckin,setischeckin] = useState(false);
-    const [showcheckin,setshowcheckin] = useState(true);
     const [chekinodometer,setchekinodometer] = useState('');
     const [checkinLocation,setcheckinLocation] = useState(null);
     const [checkOutTime,setcheckOutTime] = useState('');
@@ -541,14 +540,14 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             vehicleNo:selectedVehicle.vehicleNo,
             vehicleName:selectedVehicle.vehicleName,
         })
-        setshowcheckin(false)
+        
         getCheckinVehicle()
 
     }
 
     const setCheckOutvehicle = async () => {
         setischeckOut(false)
-        setshowcheckin(true)
+        
        const res = await setJourneyCheckOutData({
            checkoutLocation:checkoutLocation,
            vehicleCheckinCheckOutId: checkoutVehicle._id ,
@@ -1115,7 +1114,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                         </Box>
                             <div>
-                                { popup === false && showcheckin && 
+                                { popup === false &&  
                                     <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setischeckin(true) } } style={{ margin:8 }} >
                                         Daily Check in
                                     </Button>
@@ -1377,20 +1376,20 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                     </TabPanel>
                     <TabPanel value="1">
                         {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? <div style={{width: "100%",  height:"100%"}}>
-                            {upcomingPreviousRides.map((item, index)=>{
+                            {driverAllUpcomingRideswithdate.map((item, index)=>{
                                 return renderList(item, index)
                             })}
                         </div>:null}
                     </TabPanel>
                     <TabPanel value="2">
                         {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? <div style={{width: "100%",  height:"100%"}}>
-                            { upcomingPreviousRides.map((item, index)=>{
+                            { driverAllUpcomingRideswithdate.map((item, index)=>{
                                 return renderList(item, index)
                             })}
                         </div>:null}
                     </TabPanel>
                     { filter?<TabPanel style={{width: '95%',  padding:12}} value="3">
-                        {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? upcomingPreviousRides.map((item, index) => {
+                        {driverAllUpcomingRideswithdate && driverAllUpcomingRideswithdate.length > 0 ? driverAllUpcomingRideswithdate.map((item, index) => {
                             return renderList(item, index)
                         }) : null}
                     </TabPanel>:null}

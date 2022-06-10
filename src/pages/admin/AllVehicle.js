@@ -432,7 +432,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                         {/*<TableCell>{row.contactNo}</TableCell>*/}
                                         <TableCell>
                                         <Button style={{margin:4, padding:2, width:40}} variant="contained" size="small" onClick={()=>handleEditClickOpen(row)}>Edit</Button>
-                                        <Button style={{margin:4, padding:2}} variant="contained" size="large" onClick={()=>handleMaintenanceClickOpen(row)}>Maintenance</Button>
+                                        {/* <Button style={{margin:4, padding:2}} variant="contained" size="large" onClick={()=>handleMaintenanceClickOpen(row)}>Maintenance</Button> */}
                                         </TableCell>
                                     </TableRow>
                                 );
