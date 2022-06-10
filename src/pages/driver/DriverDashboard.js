@@ -392,6 +392,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const driver = useSelector(state => state.driver);
     const [selectedVehicle,setselectedVehicle] = useState(''); 
     const [data, setData] = useState([]);
+    const [checkoutVehicle,setcheckoutVehicle] = useState('');
 
 
     useEffect(() => {
@@ -550,7 +551,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setshowcheckin(true)
        const res = await setJourneyCheckOutData({
            checkoutLocation:checkoutLocation,
-           vehicleCheckinCheckOutId: vehicleCheckIn._id,
+           vehicleCheckinCheckOutId: checkoutVehicle._id ,
            vehicleCheckoutOdoMeter: chekoutodometer,
            vehicleCheckoutOdoMeterImgURL: selectedFileUrl,
         })
@@ -660,6 +661,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     }
 
     console.log('Driver Details',userDetails.user)
+    console.log('-----Vehicle CheckIN ----',vehicleCheckIn)
+    console.log('-----Vehicle Checkout----',vehicleCheckOut)
 
     return (
         <>
@@ -1117,7 +1120,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         Daily Check in
                                     </Button>
                                 }
-                                {vehicleCheckIn && vehicleCheckIn.status === "CHECKIN" && vehicleCheckIn.vehicleCheckinDateTime !== vehicleCheckOut.vehicleCheckinDateTime &&
+                                {/* {vehicleCheckIn && vehicleCheckIn._id  &&
                                     <TableContainer component={Paper}>
                                         <Table sx={{ width:'100%'  }} aria-label="simple table">
                                         <TableHead>
@@ -1144,7 +1147,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         </TableBody>
                                         </Table>
                                     </TableContainer>
-                                }
+                                } */}
                             </div>
                             <div>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
@@ -1160,6 +1163,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             <TableCell>Vehicle Check In Location</TableCell>
                                             <TableCell>Vehicle Check Out Location</TableCell>
                                             <TableCell>Vehicle Check Out Time</TableCell>
+                                            <TableCell>Action</TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -1171,6 +1175,13 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                                     <TableCell>{dailydata.checkinLocation}</TableCell>
                                                     <TableCell>{dailydata.checkoutLocation ? dailydata.checkoutLocation : '-'}</TableCell>
                                                     <TableCell>{dailydata.vehicleCheckoutDateTime ? moment(dailydata.vehicleCheckoutDateTime).format('DD-MMM-YYYY hh:mm:a') :'-' }</TableCell>
+                                                    <TableCell>
+                                                        {dailydata.status === 'CHECKIN' ?
+                                                            <Button variant="contained" className={classes.button} onClick={ e => { e.preventDefault();setcheckoutVehicle(dailydata);setischeckOut(true); } } >
+                                                                Checkout
+                                                            </Button>
+                                                    : 'Done'}
+                                                    </TableCell>
                                                 </TableRow>
                                                 ))
                                             }
