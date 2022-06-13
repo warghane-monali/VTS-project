@@ -820,7 +820,7 @@ export function addEmployeeData(data) {
         urlencoded.append("mainLocation", data.mainLocation);
         urlencoded.append("vertical", data.vertical);
         urlencoded.append("subVertical", data.subVertical);
-        urlencoded.append("createdBy", data.createdBy);
+        // urlencoded.append("createdBy", data.createdBy);
        
         let requestOptions = {
             method: 'POST',
