@@ -95,12 +95,9 @@ const RequestForRide = ({
     const [selectedProduct, setSelectedProduct] = useState([]);
     const [hover1, setHover1] = React.useState(-1);
     const [textValue, setTextValue] = React.useState('');
-<<<<<<< HEAD
     // console.log('journey data',travellersLatestJourney)
-=======
     const [popup,setpopup] = useState(false)
 
->>>>>>> 865e1fb1ff3e309c43a01fc4afba8eb762dea373
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
