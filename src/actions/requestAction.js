@@ -116,6 +116,25 @@ export const setjourneyextendList = data => {
         payload : data
     }
 }
+export const getextendrequestallocatedriverList = data => {
+    return {
+        type: "GET_EXTENDREQUEST_DRIVER_LIST",
+        payload : data
+    }
+}
+export const getdriverDealocatedData = data => {
+    return {
+        type: "GET_DRIVER_DEALOCATION_LIST",
+        payload : data
+    }
+}
+export const getextendrequestallocatevehicleList = data => {
+    return {
+        type: "GET_EXTENDREQUEST_VEHICLE_LIST",
+        payload : data
+    }
+}
+
 
 export function getVehicleListData() {
     return dispatch => {
@@ -638,6 +657,87 @@ export function settravellersExtendJourneyData(data) {
         return fetch(BASE_URL + '/journey/extendrequest', requestOptions).then(response => response.json()).then(res => {
             dispatch(setjourneyextendList(res));
             console.log('-----response from extendtravellerjourney api----',res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function extendrequestallocatedriverlistData(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+         urlencoded.append("driverId", requestBody.driverId);
+         urlencoded.append("extendRequestDate", requestBody.extendRequestDate);
+         urlencoded.append("endDateTime", requestBody.endDateTime);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/journey/extendrequestallocatedriver', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getextendrequestallocatedriverList(res));
+            console.log("response",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function DealocationdriverListData(data) {
+    console.log('---------qwgsjhwsk--------',data)
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId",data);
+     
+       
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/journey/extendrequestdeallocatedriverjourney', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getdriverDealocatedData(res));
+            console.log("response",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+export function extendrequestallocatevehiclelistData(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+         urlencoded.append("vehicleId",requestBody.vehicleId);
+         urlencoded.append("extendRequestDate",requestBody.extendRequestDate);
+         urlencoded.append("endDateTime", requestBody.endDateTime);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/journey/extendrequestallocatevehicle', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getextendrequestallocatevehicleList(res));
+            console.log("response",res)
             return res
         })
         .catch((error) => {

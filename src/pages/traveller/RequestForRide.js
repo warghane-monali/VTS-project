@@ -80,8 +80,11 @@ const RequestForRide = ({
     const [selectedDate, setSelectedDate] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(null); 
     const [tabValue, setTabValue] = useState(0);
+    const currentDateTime = new Date();
+    const currentAddDateTime = currentDateTime.setMinutes(15);
+    const [extendDate, setextendDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
@@ -541,7 +544,7 @@ const RequestForRide = ({
                                                     margin: '12px 0'
                                                 }}>
                                                     <Typography variant='body-1' component='h4'>
-                                                        Driver Name
+                                                        Driver Name 
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverName}
@@ -557,6 +560,18 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverNo}
+                                                    </Typography>
+                                                </div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '12px 0'
+                                                }}>
+                                                    <Typography variant='body-1' component='h4'>
+                                                      Start Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                    {moment(travellersLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -584,6 +599,7 @@ const RequestForRide = ({
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleName}
                                                     </Typography>
+                                                    
                                                 </div>
                                                 <div style={{
                                                     display: 'flex',
@@ -595,6 +611,12 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleNo}
+                                                    </Typography>
+                                                    <Typography variant='body-1' component='h4'style={{marginTop: 44}}>
+                                                       End Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                        {moment(travellersLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -652,9 +674,10 @@ const RequestForRide = ({
             <DesktopDatePicker
                 renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                 mask="__/__/____"
-                format="dd-MM-yyyy"
+                // minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000)}
+                //minDateTime={new Date(travellersLatestJourney.endDateTime && travellersLatestJourney.endDateTime.getTime() + 15*60*1000)}
                 label="Select Date"
-                value={value}
+               value={value}
                 onChange={(newValue) => {
                     setValue(newValue);
                 }}

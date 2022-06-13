@@ -309,7 +309,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                editVehicleJourney,  getFeedBackAnsData,
                                getFeedBackQueData,
                                feedBackQueList,
-                               setFeedBackQueData}) => {
+                               setFeedBackQueData,extendrequestallocatedriverlistData,DriverExtendList,requestStatusAdmin,DealocationdriverListData,extendrequestallocatevehiclelistData,VehicleExtendList}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -341,11 +341,33 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         // getDriverUserListData();
         getRideInfo(requestDetails );
         // getLocationInfo()
+        
+      
     }, []);
 
     useEffect(() => {
-        getFeedBack()
+        getFeedBack();
+        if(requestDetails.requestStatus === 'EXTENDREQUEST')
+        allocatedriversdata();
+        allocatevehicledata()
     }, []);
+
+    const allocatedriversdata = async () => {
+        console.log("In driver allocation")
+        const res = await extendrequestallocatedriverlistData({
+            driverId:requestDetails.driverId,
+           extendRequestDate:requestDetails.extendRequestDate,
+           endDateTime:requestDetails.endDateTime,
+        })
+    }
+    const allocatevehicledata = async () => {
+        console.log("In vehicle allocation")
+        const res = await extendrequestallocatevehiclelistData({
+            vehicleId:requestDetails.vehicleId,
+           extendRequestDate:requestDetails.extendRequestDate,
+           endDateTime:requestDetails.endDateTime,
+        })
+    }
 
     const handelAns = async () => {
         setChecked(!checked);
@@ -492,6 +514,8 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
 
     };
 
+  
+
     const goToMap = ( sourceLocationLat,sourceLocationLng, destinationLocationLat, destinationLocationLng)=> {
         let url = "https://www.google.com/maps/dir/?api=1";
         let origin = "&origin=" + sourceLocationLat + "," + sourceLocationLng;
@@ -624,6 +648,31 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         </div>
                                     </Box>
                                 </div>
+
+                               
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                
                                 {(requestDetails && (requestDetails.requestStatus==='APPROVED'))?
                                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -780,6 +829,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                             <TableRow key={index}>
                                                 <TableCell component="th" scope="row">
                                                     {traveller.name}
+                                                    
                                                 </TableCell>
                                                 <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
                                                     {traveller.number}
@@ -793,6 +843,67 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                 </Table>
                             </TableContainer>
                         </Paper>:null}
+                        {(requestDetails && (requestDetails.requestStatus==='EXTENDREQUEST'))?
+                            <Paper className={classes.rightSection} elevation={4}>
+                            <TableContainer>
+                                <Table size="small" aria-label="a dense table">
+                                    <TableBody>
+                                        {/* <TableRow>
+                                            <TableCell component="th" scope="row">
+                                           {requestDetails.driverName}
+                                            </TableCell>
+                                            <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                              
+                                            </TableCell>
+                                            <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                              
+                                            </TableCell>
+                                        </TableRow> */}
+                                         <div><h6>Allocate Driver List</h6></div>
+                                        {DriverExtendList.length > 0 && DriverExtendList.map((traveller, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell component="th" scope="row">
+                                                    {traveller.selfTravellerName}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row">
+                                                    {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row" >
+                                                {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row" >
+                                                <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
+                                                 <Button variant="contained" onClick={() => DealocationdriverListData(traveller._id)} >Dealocation</Button>
+                                                 </div>
+
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                       <div><h6>Allocate Vehicle List</h6></div>
+                        {VehicleExtendList.length > 0 && VehicleExtendList.map((traveller, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell component="th" scope="row">
+                                                    {traveller.vehicleName}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row">
+                                                    {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row" >
+                                                {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
+                                                </TableCell>
+                                                <TableCell  component="th" scope="row" >
+                                                <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
+                                                <Button variant="contained">Dealocation</Button>
+                                                 </div>
+
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>:null}
+
 
                         {(requestDetails && (requestDetails.requestStatus === 'PENDING') &&  (moment().diff(requestDetails.startDateTime, 'days') <= 1) ) ?
                         <Paper className={classes.rightSection} style={{width:'80%'}} elevation={4}>
@@ -1182,6 +1293,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         </div>
     )
 };
+
 const mapStateToProps = state => {
     return {
         adminDetails: state.admin.adminDetails,
@@ -1192,6 +1304,9 @@ const mapStateToProps = state => {
         vehicleList: state.request.vehicleList,
         error: state.request.error,
         feedBackQueList: state.admin.feedBackQueList,
+        requestStatusAdmin:state.admin.requestStatusAdmin,
+        DriverExtendList:state.request.DriverExtendList,
+        VehicleExtendList:state.request.VehicleExtendList,
     }
 };
 
@@ -1209,7 +1324,10 @@ const mapDispatchToProps = dispatch => {
         getFeedBackAnsData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackAnsData(requestBody)),
         getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
         setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
-        flushRequestState: () => dispatch(ActionCreators.flushRequestState())
+        flushRequestState: () => dispatch(ActionCreators.flushRequestState()),
+        extendrequestallocatedriverlistData: (requestBody) => dispatch(ActionCreators.extendrequestallocatedriverlistData(requestBody)),
+        DealocationdriverListData: (data) => dispatch(ActionCreators.DealocationdriverListData(data)),
+        extendrequestallocatevehiclelistData: (requestBody) => dispatch(ActionCreators.extendrequestallocatevehiclelistData(requestBody)),
     }
 };
 

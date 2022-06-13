@@ -124,6 +124,12 @@ export const setPassword = data => {
         payload:data
     }
 }
+export const addEmployee = data => {
+    return{
+        type:"ADD_EMPLOYEE_DETAILS",
+        payload:data
+    }
+}
 
 
 export function setRequestStatusData(data) {
@@ -411,7 +417,7 @@ export function addDriverListData(data) {
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/user/usera', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getVehicleListData());
+            dispatch(getDriverUserListData(res));
             return res
         })
             .catch((error) => {
@@ -653,6 +659,7 @@ export function editVehicleJourney(requestBody) {
         urlencoded.append("vehicleName", requestBody.vehicleName);
         urlencoded.append("vehicleNo", requestBody.vehicleNo);
         urlencoded.append("updatedBy", requestBody.updatedBy);
+        
 
 
         let requestOptions = {
@@ -788,6 +795,42 @@ export function getFeedBackAnsData(data) {
 
         return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res))
+            return res
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+export function addEmployeeData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("firstName", data.firstName);
+        urlencoded.append("middleName", data.middleName);
+        urlencoded.append("lastName", data.lastName);
+        urlencoded.append("emailId", data.emailId);
+        urlencoded.append("contactNo", data.contactNo);
+        urlencoded.append("designation", data.designation);
+        urlencoded.append("identityNumber", data.identityNumber);
+        urlencoded.append("identityType", data.identityType);
+        urlencoded.append("subLocation", data.subLocation);
+        urlencoded.append("mainLocation", data.mainLocation);
+        urlencoded.append("vertical", data.vertical);
+        urlencoded.append("subVertical", data.subVertical);
+        // urlencoded.append("createdBy", data.createdBy);
+       
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/user/usera', requestOptions).then(response => response.json()).then(res => {
+            dispatch(addEmployee(res));
+            console.log('hvjhbs',res)
             return res
         })
             .catch((error) => {

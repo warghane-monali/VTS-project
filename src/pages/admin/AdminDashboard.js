@@ -304,10 +304,10 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
             {selected===0?<div className={classes.root}>
                 <main className={classes.main}>
                 <Box className={classes.smallCardContainer}>
-                        <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
+                        <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'EXTENDREQUEST'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
                                 <Grid container justify="flex-end"  >
-                                <Badge badgeContent={countData['ONGOING']=== 0 ? '0' : countData['ONGOING'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
+                                <Badge badgeContent={countData['EXTENDREQUEST']=== 0 ? '0' : countData['EXTENDREQUEST'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
@@ -317,7 +317,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                                 </Typography>
                             </Box>
                         </Paper>
-                        <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
+                        {/* <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
                                 <Grid container justify="flex-end"  >
                                 <Badge badgeContent={countData['UNSERVICE']=== 0 ? '0' : countData['UNSERVICE']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
@@ -329,7 +329,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                                     Driver Realocation
                                 </Typography>
                             </Box>
-                        </Paper>
+                        </Paper> */}
                     </Box>
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
