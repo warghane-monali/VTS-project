@@ -347,9 +347,9 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
+                                travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
                             <Paper className={classes.rightSection} elevation={4}>
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) ?
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY')) ?
                                     <div className={classes.topicRow}>
                                         <div>
                                             <Typography variant='h6' component='div'
@@ -508,7 +508,7 @@ const RequestForRide = ({
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
+                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
                                     <>
                                         <div style={{
                                             display: 'flex',
@@ -627,7 +627,7 @@ const RequestForRide = ({
 
                             </Paper>
                         }
-                        {travellersLatestJourney && (travellersLatestJourney.requestStatus === 'ENDJPURNEY') &&
+                        {travellersLatestJourney && (travellersLatestJourney.requestStatus === 'ENDJOURNEY') &&
                             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                                 <Button
                                     variant="contained"

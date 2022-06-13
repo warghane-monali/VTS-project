@@ -138,7 +138,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
         }else if(selection==="2"){
             setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(0,'days').format('YYYY-MM-DD')})
         }else if (selection==="3"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1, 'days').format('YYYY-MMM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1, 'days').format('YYYY-MM-DD')})
         }
     };
 
@@ -174,7 +174,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                </div>
                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
                    <ImportExportIcon  sx={{fontSize:40, color: item?.requestStatus ==='PENDING' ? '#f99935': item?.requestStatus ==='APPROVED' ? '#09984c':item?.requestStatus ==='REJECTED' ? '#f93125':
-                           item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='STARTJPURNEY'?'#3681f9' :item?.requestStatus ==='ENDJPURNEY'?'#f95d9f':''}} />
+                           item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='STARTJOURNEY'?'#3681f9' :item?.requestStatus ==='ENDJOURNEY'?'#f95d9f':''}} />
                </div>
                <div className={classes.lowerRow}
                     style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>

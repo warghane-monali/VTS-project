@@ -315,7 +315,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
                                     {traveller?.Status}
                                 </Typography>}
-                                {traveller?.Status==='STARTJPURNEY' &&
+                                {traveller?.Status==='STARTJOURNEY' &&
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
                                     {traveller?.Status}
                                 </Typography>}
@@ -354,7 +354,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                         Cancel ride
                     </Button>
                 </Stack>:null}
-                {requestRideData && (requestRideData.requestStatus === 'ENDJPURNEY') &&
+                {requestRideData && (requestRideData.requestStatus === 'ENDJOURNEY') &&
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                         <Button
                             variant="contained"
@@ -409,11 +409,11 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                                         <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f94928'}}>
                                             {traveller?.Status}
                                         </Typography>:null}
-                                    {traveller?.Status==='STARTJPURNEY'?
+                                    {traveller?.Status==='STARTJOURNEY'?
                                         <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
                                             START JOURNEY
                                         </Typography>:null}
-                                    {traveller?.Status==='ENDJPURNEY'?
+                                    {traveller?.Status==='ENDJOURNEY'?
                                         <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
                                             END JOURNEY
                                         </Typography>:null}

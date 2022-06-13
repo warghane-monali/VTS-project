@@ -622,7 +622,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
                     <ImportExportIcon  sx={{fontSize:40, color: item?.requestStatus ==='PENDING' ? '#f99935': item?.requestStatus ==='APPROVED' ? '#09984c':item?.requestStatus ==='REJECTED' ? '#f93125':
-                            item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='ONGOING'?'#bc9800': item?.requestStatus ==='STARTJPURNEY'?'#3681f9' :item?.requestStatus ==='ENDJPURNEY'?'#f95d9f':''}} />
+                            item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='ONGOING'?'#bc9800': item?.requestStatus ==='STARTJOURNEY'?'#3681f9' :item?.requestStatus ==='ENDJOURNEY'?'#f95d9f':''}} />
                 </div>
                 <div className={classes.lowerRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>
@@ -771,8 +771,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Typography>
                             </div>
                             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                                <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}}>
-                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}} />
+                                <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJOURNEY' ? '#f95d9f':'gray'}}>
+                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJOURNEY' ? '#f95d9f':'gray'}} />
                                     {changeLang?'प्रवास समाप्त ':" End Journey"}
                                 </Typography>
                             </div>
@@ -784,8 +784,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                         </Box>
                         <Box sx={{display: 'flex', justifyContent: 'space-around'}} style={{margin:'20px 0', width:'100%'}}>
                             {/*<div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>*/}
-                            {/*    <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='STARTJPURNEY' ? '#3681F9':'gray'}}>*/}
-                            {/*        <CircleRoundedIcon  sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='STARTJPURNEY' ? '#3681F9':'gray'}} />*/}
+                            {/*    <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='STARTJOURNEY' ? '#3681F9':'gray'}}>*/}
+                            {/*        <CircleRoundedIcon  sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='STARTJOURNEY' ? '#3681F9':'gray'}} />*/}
                             {/*        {changeLang?'प्रवासाला सुरुवात करा':" Start Journey"}*/}
                             {/*    </Typography>*/}
                             {/*</div>*/}
