@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="628be4a1-3290-4e12-87a1-f5c60ca04db5" name="Default Changelist" comment="update date filter">
+    <list default="true" id="628be4a1-3290-4e12-87a1-f5c60ca04db5" name="Default Changelist" comment="update feedback">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/actions/adminAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/adminAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actions/driverAction.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/actions/driverAction.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/admin/RequestPermission.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/admin/RequestPermission.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/driver/DriverDashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/driver/DriverDashboard.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/traveller/RequestForRide.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/traveller/RequestForRide.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/reducer/adminReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducer/adminReducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/traveller/RideStatus.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/traveller/RideStatus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reducer/driverReducer.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reducer/driverReducer.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +141,9 @@
       <workItem from="1653037082431" duration="662000" />
       <workItem from="1653037791174" duration="4000" />
       <workItem from="1653243528119" duration="4031000" />
-      <workItem from="1653327438540" duration="8031000" />
+      <workItem from="1653327438540" duration="8151000" />
+      <workItem from="1653370854979" duration="604000" />
+      <workItem from="1653410782072" duration="11544000" />
     </task>
     <task id="LOCAL-00001" summary="first commite">
       <created>1641786657185</created>
@@ -476,7 +481,14 @@
       <option name="project" value="LOCAL" />
       <updated>1653016159863</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="update feedback">
+      <created>1653370762604</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1653370762604</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -520,7 +532,8 @@
     <MESSAGE value="update" />
     <MESSAGE value="update map and google place geocode" />
     <MESSAGE value="update date filter" />
-    <option name="LAST_COMMIT_MESSAGE" value="update date filter" />
+    <MESSAGE value="update feedback" />
+    <option name="LAST_COMMIT_MESSAGE" value="update feedback" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -543,26 +556,28 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/actions/adminAction.js</url>
           <line>703</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="106" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/actions/adminAction.js</url>
           <line>693</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="107" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/actions/adminAction.js</url>
           <line>702</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="108" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/reducer/adminReducer.js</url>
           <line>128</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="109" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/pages/driver/DriverDashboard.js</url>
+          <line>434</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="110" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

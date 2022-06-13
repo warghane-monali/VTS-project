@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {
     Box,
-    Button,
+    Button, Card,
     FormControl, IconButton,
     InputLabel,
     MenuItem, Modal,
-    Paper,
+    Paper, Rating,
     Select, TextField,
     Typography
 } from '@mui/material'
@@ -33,7 +33,8 @@ import {trackLocationSuccess} from "../../actions/trackLocationAction";
 import {useDispatch, useSelector} from "react-redux";
 import Alert from "@mui/material/Alert";
 import EditIcon from '@mui/icons-material/Edit';
-import {editDriverJourney, editVehicleJourney} from "../../actions/adminAction";
+import {editDriverJourney, editVehicleJourney, getFeedBackQue} from "../../actions/adminAction";
+import Switch from "@mui/material/Switch";
 
 
 const useStyles = makeStyles(theme => ({
@@ -305,7 +306,10 @@ const useStyles = makeStyles(theme => ({
 const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListData, getDriverUserListData, setAcceptStatusData,
                                getCarListData,  getDriverListData, setRejectCancelStatusData, setRejectStatusData,
                                editDriverJourney,
-                               editVehicleJourney}) => {
+                               editVehicleJourney,  getFeedBackAnsData,
+                               getFeedBackQueData,
+                               feedBackQueList,
+                               setFeedBackQueData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -325,6 +329,12 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const [error, setError] = useState(false);
     const [openDriverChange, setOpenDriverChange] = useState(false);
     const [openVehicleType, setOpenVehicleType] = useState(false);
+    const [openFeedBackList, setOpenFeedBackList] = useState(false);
+    const [checked, setChecked] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState([]);
+    const [hover1, setHover1] = React.useState(-1);
+    const [textValue, setTextValue] = React.useState('');
+    const [feedBackAnsData, setFeedBackAnsData] = React.useState([]);
 
     useEffect(() => {
         getVehicleListData();
@@ -332,6 +342,52 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         getRideInfo(requestDetails );
         // getLocationInfo()
     }, []);
+
+    useEffect(() => {
+        getFeedBack()
+    }, []);
+
+    const handelAns = async () => {
+        setChecked(!checked);
+    }
+
+    const handleEditItem = (editedItem, id, fname, seletedIndex) => {
+        const newData = selectedProduct[0].questions.map((item, index) => {
+            if (index === seletedIndex) {
+                const newItem = {...item, [fname]: editedItem};
+                return newItem;
+            }
+            return item
+        });
+        const newArray = [{
+            "journeyId": requestDetails._id,
+            "feedbackEntityNo": selectedProduct[0].feedbackEntityNo,
+            "entityName": selectedProduct[0].entityName,
+            "entityType": selectedProduct[0].entityType,
+            "questions": newData
+        }]
+
+        setSelectedProduct(newArray)
+        dispatch(getFeedBackQue(newArray));
+    };
+
+
+    const getFeedBack = async ()=>{
+        const result = await getFeedBackAnsData(requestDetails._id);
+        setFeedBackAnsData(result)
+        // history.back()
+    };
+
+    const openFeedBackQue = async () => {
+        setOpenFeedBackList(true)
+        const rse = await getFeedBackQueData()
+        setSelectedProduct(rse)
+    }
+
+    const updateFeedBackAns = async (data) => {
+        const res = await setFeedBackQueData(data)
+        setOpenFeedBackList(false)
+    }
 
     const getLocationInfo = ()=>{
         navigator.geolocation.getCurrentPosition(async function(position) {
@@ -820,7 +876,41 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                 </Button>
                             </Box>
                         }
+                        {requestDetails.requestStatus === 'FEEDBACKCOMPLETE'&&<Stack style={{width:'100%', marginTop:24}} direction="column" justifyContent="flex-start" alignItems="flex-start">
+                            <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
+                                <TableContainer component={Paper}>
+                                    <Table size="small" aria-label="a dense table">
+                                        <TableBody>
+                                            {feedBackAnsData && feedBackAnsData[0]?.questions.map((questions, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell component="th" scope="row">
+                                                        {questions.question}
+                                                    </TableCell>
+                                                    <TableCell component="th" scope="row">
+                                                        {questions.questionType}
+                                                    </TableCell>
+                                                    <TableCell  component="th" scope="row" style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                                        {questions.answere}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </div>
+                        </Stack>}
+                        {requestDetails && (requestDetails.requestStatus === 'ENDJPURNEY') &&
+                            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={() => openFeedBackQue()}>
+                                    Feedback
+                                </Button>
+                            </div>
+                        }
                     </div>
+
                     <Box sx={{ display: { xs: 'none', md: 'block' }}} style={{flex:1, flexDirection:'column'}}>
                         {' '}
                     </Box>
@@ -982,6 +1072,113 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                     </div>
                 </Paper>
             </Modal>
+            <Modal className={classes.middlePosition} open={openFeedBackList} onClose={e => {
+                e.preventDefault();
+                setOpenFeedBackList(false)
+            }}>
+                {openFeedBackList && <Paper className={classes.form}
+                                            sx={{p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700'}}>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyItems: 'center',
+                        justifyContent: 'space-between',
+                    }}>
+                        <Typography style={{margin: 8}} variant='h5' component='div'>
+                            Feedback
+                        </Typography>
+                        <IconButton aria-label="delete" onClick={e => {
+                            e.preventDefault();
+                            setOpenFeedBackList(false)
+                        }}>
+                            <CloseIcon/>
+                        </IconButton>
+                    </div>
+                    <hr className={classes.divider}/>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flexWrap: 'wrap',
+                        justifyItems: 'center',
+                        justifyContent: 'space-between'
+                    }}>
+                        <Box className={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <div style={{
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                maxWidth: 400,
+                                flex: 1
+                            }}>
+                                {feedBackQueList && feedBackQueList[0].questions.map((item, index) => {
+                                    return <Card style={{margin: 16}} elevation={3} key={index}>
+                                        <Typography component="legend">{item.question} ?</Typography>
+                                        {item.questionType === 'STARS' &&
+                                            <>
+                                                <Rating name="hover-feedback"
+                                                        value={item.ans}
+                                                        onChange={(event, newValue1) =>
+                                                            handleEditItem(newValue1, item._id, 'ans', index)}
+                                                        onChangeActive={(event, newHover) => {
+                                                            setHover1(newHover);
+                                                        }}
+                                                        defaultValue={item.ans}
+                                                        size="large"
+                                                />
+                                            </>
+                                        }
+                                        {item.questionType === 'TEXTBOX' &&
+                                            <TextField
+                                                style={{margin: 16}}
+                                                value={textValue}
+                                                defaultValue={item.ans}
+                                                id="outlined-password-input"
+                                                onChange={(e) => setTextValue(e.target.value)}
+                                                onBlur={(event) => {
+                                                    handleEditItem(textValue, item._id, 'ans', index)
+                                                }}
+                                                type="text"
+                                            />
+                                        }
+                                        {item.questionType === 'YESNO' &&
+                                            <div style={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                alignContent: 'center'
+                                            }}>
+                                                <Typography>No</Typography>
+                                                <Switch
+                                                    checked={item.ans}
+                                                    onChange={async () => {
+                                                        await handelAns()
+                                                        handleEditItem(!checked, item._id, 'ans', index)
+                                                    }}
+                                                    inputProps={{'aria-label': 'controlled'}}
+                                                />
+                                                <Typography>Yes</Typography>
+                                            </div>
+                                        }
+                                    </Card>
+                                })}
+                                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        onClick={() => updateFeedBackAns(selectedProduct)}>
+                                        Submit
+                                    </Button>
+                                </div>
+                            </div>
+                        </Box>
+                    </div>
+                </Paper>}
+            </Modal>
         </div>
     )
 };
@@ -993,7 +1190,8 @@ const mapStateToProps = state => {
         driverList: state.admin.driverList,
         carList: state.admin.carList,
         vehicleList: state.request.vehicleList,
-        error: state.request.error
+        error: state.request.error,
+        feedBackQueList: state.admin.feedBackQueList,
     }
 };
 
@@ -1008,6 +1206,9 @@ const mapDispatchToProps = dispatch => {
         getCarListData: (requestBody) => dispatch(ActionCreatorsAdmin.getCarListData(requestBody)),
         editDriverJourney: (requestBody) => dispatch(ActionCreatorsAdmin.editDriverJourney(requestBody)),
         editVehicleJourney: (requestBody) => dispatch(ActionCreatorsAdmin.editVehicleJourney(requestBody)),
+        getFeedBackAnsData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackAnsData(requestBody)),
+        getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
+        setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
         flushRequestState: () => dispatch(ActionCreators.flushRequestState())
     }
 };

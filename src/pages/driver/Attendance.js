@@ -19,7 +19,7 @@ import TablePagination from "@mui/material/TablePagination";
 import moment from "moment";
 import * as XLSX from 'xlsx';
 
-const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,driverattendance,getdriverattendanceData }) => {
+const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,driverattendance,getdriverattendanceData,changeLang }) => {
     const [value, setValue] = React.useState([null, null]);
     const classes = useStyles();
     const [startDateTime, setstartDatetime] = useState('');
@@ -51,14 +51,14 @@ const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,dr
 
             <div className="container">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
-                    <div><h1>Driver Attendance</h1></div>
+                    <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " :'Driver Attendance'}</h1></div>
                     {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                 </Box>
                 <Box sx={{ flexDirection: 'row', display: 'flex', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DateRangePicker
-                            startText="StartDate"
-                            endText="EndDate"
+                            startText={changeLang ? "प्रारंभ तारीख" :'Start Date'}
+                            endText={changeLang ? "समाप्तीची तारीख" :"End Date"}
                             value={value}
                             onChange={(newValue) => {
                                 setValue(newValue)
@@ -86,17 +86,17 @@ const Attedance = ({ userDetails, setDriverAttendanceData,setDriverAttendance,dr
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Start Date</TableCell>
-                                    <TableCell>End Date</TableCell>
-                                    <TableCell>Status</TableCell>
+                                    <TableCell><strong>{changeLang ? "प्रारंभ तारीख" :'Start Date'}</strong></TableCell>
+                                    <TableCell><strong>{changeLang ? "समाप्तीची तारीख" :"End Date"}</strong></TableCell>
+                                    <TableCell><strong>{changeLang ? "स्थिती" : "Status"}</strong></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 { driver.driverattendance && driver.driverattendance.length > 0 && driver.driverattendance.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                                     return (
                                         <TableRow key={Math.random() * index} hover role="checkbox" tabIndex={-1}>
-                                            <TableCell>{row && row.startDateTime}</TableCell>
-                                            <TableCell>{row && row.endDateTime}</TableCell>
+                                            <TableCell>{row && moment(row.startDateTime).format('DD MMM YYYY hh:mm:a') }</TableCell>
+                                            <TableCell>{row && moment(row.endDateTime).format('DD MMM YYYY hh:mm:a') }</TableCell>
                                             <TableCell>{row && row.status}</TableCell>
                                         </TableRow>
                                     );
@@ -124,6 +124,7 @@ const mapStateToProps = state => {
         userDetails: state.auth.userDetails,
         setDriverAttendance: state.driver.setDriverAttendance,
         driverattendance : state.driver.driverattendance,
+        changeLang: state.trackLocation.changeLang,
     }
 };
 const mapDispatchToProps = dispatch => {

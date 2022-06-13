@@ -771,3 +771,27 @@ export function setPasswordData(data) {
         });
     }
 }
+export function getFeedBackAnsData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId", data);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getFeedBack(res))
+            return res
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}

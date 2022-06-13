@@ -85,23 +85,22 @@ const RequestForRide = ({
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
-    const [openFeedBackList, setOpenFeedBackList] = useState(false);
-    const [checked, setChecked] = useState(false);
     const [password, setpassword] = useState(null);
     const [confirmpassword, setconfirmpassword] = useState(null);
     const [isvisible1, setisvisible1] = useState(false);
     const [isvisible2, setisvisible2] = useState(false);
     const [error, seterror] = useState(false);
+    const [openFeedBackList, setOpenFeedBackList] = useState(false);
+    const [checked, setChecked] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState([]);
-
-
-    const [value1, setValue1] = React.useState(2);
     const [hover1, setHover1] = React.useState(-1);
-    const [question1, setquestion1] = React.useState(false);
-    const [question2, setquestion2] = React.useState(false);
-    const [question3, setquestion3] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
+<<<<<<< HEAD
     // console.log('journey data',travellersLatestJourney)
+=======
+    const [popup,setpopup] = useState(false)
+
+>>>>>>> 865e1fb1ff3e309c43a01fc4afba8eb762dea373
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
@@ -110,6 +109,8 @@ const RequestForRide = ({
 
     useEffect(() => {
         const data = getTravellerLatestJourney();
+        if(userDetails.user.status === 'NewLogin')
+            setpopup(true)
     }, []);
 
     const getTravellerLatestJourney = async () => {
@@ -230,6 +231,7 @@ const RequestForRide = ({
             seterror(true)
         } else if (password === confirmpassword) {
             await setPasswordData({password: password, userId: userDetails && userDetails.user && userDetails.user._id})
+            setpopup(false)
         }
     }
 
@@ -264,7 +266,7 @@ const RequestForRide = ({
 
     return (
         <div className={classes.root}>
-            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' &&
+            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
                 <div className={classes.popupbox}>
                     <div className={classes.box}>
                         {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
@@ -339,7 +341,7 @@ const RequestForRide = ({
 
                 </div>
                 {selected === 0 &&
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <Paper className={classes.leftSection} elevation={3}
                                onClick={() => navigate('/dashboard/request')}>
                             <Typography variant='body-1' component='div' style={{width: '100%', textAlign: "center"}}>
@@ -686,7 +688,7 @@ const RequestForRide = ({
                         }
                     </div>}
                 {selected === 2 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList
                                 onChange={(e, value) => {
@@ -779,7 +781,7 @@ const RequestForRide = ({
                         </Modal>
                     </div> : null}
                 {selected === 1 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList onChange={(e, value) => {
                                 setSelectedTab(Number(value));
