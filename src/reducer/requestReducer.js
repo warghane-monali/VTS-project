@@ -18,6 +18,9 @@ const initialState = {
     vehiclePetrolExpenseList:[],
     identityPicURL:'',
     JourneyExtendList:[],
+    DriverExtendList:[],
+    DriverDealocationlist:[],
+    VehicleExtendList:[],
     error: null,
 };
 
@@ -130,6 +133,25 @@ const requestReducer = (state = initialState, action) => {
                     JourneyExtendList:action.payload,
                     error:null
                 }
+
+                case 'GET_EXTENDREQUEST_DRIVER_LIST':
+                    return{
+                        ...state,
+                        DriverExtendList:action.payload,
+                        error:null
+                    }
+                    case 'GET_DRIVER_DEALOCATION_LIST':
+                        return{
+                            ...state,
+                            DriverDealocationlist:action.payload,
+                            error:null
+                        }
+                        case 'GET_EXTENDREQUEST_VEHICLE_LIST':
+                            return{
+                                ...state,
+                               VehicleExtendList:action.payload,
+                                error:null
+                            }
         case "LOGOUT": return {};
         default:
             return state

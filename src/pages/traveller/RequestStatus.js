@@ -214,7 +214,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                                     <span>{`${userDetails.user.contactNo}`}</span>
                                                 </TableCell>
                                             </TableRow>
-                                            {requestRideData && requestRideData?.travellersDetails.length>0 && requestRideData?.travellersDetails.map((traveller, index) => (
+                                            {requestRideData && requestRideData.travellersDetails && requestRideData?.travellersDetails?.map((traveller, index) => (
                                                 <TableRow key={index}>
                                                     <TableCell component="th" scope="row">
 
@@ -246,7 +246,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                 <p className={classes.itemLeftSection}>Date</p>
                                 <p className={classes.itemLeftSection}>Request</p>
                             </div>
-                            {requestRideData && requestRideData?.journeyStatus.length>0 && requestRideData?.journeyStatus.map((traveller, index) => (
+                            {requestRideData && requestRideData.journeyStatus && requestRideData.journeyStatus.map((traveller, index) => (
                                 <div className={classes.travellerItem} key={index}>
                                     <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                     <div className={classes.itemRightSection}>
@@ -311,7 +311,7 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                     <p className={classes.itemLeftSection}>Date</p>
                                     <p className={classes.itemLeftSection}>Request</p>
                                 </div>
-                                {requestRideData && requestRideData?.journeyStatus.length>0 && requestRideData?.journeyStatus.map((traveller, index) => (
+                                {requestRideData && requestRideData.journeyStatus && requestRideData.journeyStatus.map((traveller, index) => (
                                  <div className={classes.travellerItem} key={index}>
                                     <div className={classes.itemRightSection}> {moment(traveller.Date).format('DD-MMMM-YYYY hh:mm a')}</div>
                                      <div className={classes.itemRightSection}>

@@ -181,6 +181,10 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                    <Typography variant='body-2' component='span' style={{textAlign: "center", marginTop: 10}}>
                        {moment(item.endDateTime).format('DD MMM YYYY hh:mm:a')}
                    </Typography>
+                   {(item && (item.requestStatus==='EXTENDREQUEST'))?
+                   <Typography variant='body-2' component='span' style={{textAlign: "center", marginTop: 10}}>
+                      Extend Date: {moment(item.extendRequestDate).format('DD MMM YYYY hh:mm:a')}
+                   </Typography>:null}
 
                </div>
            </div>

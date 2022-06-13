@@ -80,28 +80,27 @@ const RequestForRide = ({
     const [selectedDate, setSelectedDate] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(null); 
     const [tabValue, setTabValue] = useState(0);
+    const currentDateTime = new Date();
+    const currentAddDateTime = currentDateTime.setMinutes(15);
+    const [extendDate, setextendDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
-    const [openFeedBackList, setOpenFeedBackList] = useState(false);
-    const [checked, setChecked] = useState(false);
     const [password, setpassword] = useState(null);
     const [confirmpassword, setconfirmpassword] = useState(null);
     const [isvisible1, setisvisible1] = useState(false);
     const [isvisible2, setisvisible2] = useState(false);
     const [error, seterror] = useState(false);
+    const [openFeedBackList, setOpenFeedBackList] = useState(false);
+    const [checked, setChecked] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState([]);
-
-
-    const [value1, setValue1] = React.useState(2);
     const [hover1, setHover1] = React.useState(-1);
-    const [question1, setquestion1] = React.useState(false);
-    const [question2, setquestion2] = React.useState(false);
-    const [question3, setquestion3] = React.useState(false);
     const [textValue, setTextValue] = React.useState('');
     // console.log('journey data',travellersLatestJourney)
+    const [popup,setpopup] = useState(false)
+
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function (position) {
             dispatch(trackLocationSuccess({latitude: position.coords.latitude, longitude: position.coords.longitude}));
@@ -110,6 +109,8 @@ const RequestForRide = ({
 
     useEffect(() => {
         const data = getTravellerLatestJourney();
+        if(userDetails.user.status === 'NewLogin')
+            setpopup(true)
     }, []);
 
     const getTravellerLatestJourney = async () => {
@@ -230,6 +231,7 @@ const RequestForRide = ({
             seterror(true)
         } else if (password === confirmpassword) {
             await setPasswordData({password: password, userId: userDetails && userDetails.user && userDetails.user._id})
+            setpopup(false)
         }
     }
 
@@ -264,7 +266,7 @@ const RequestForRide = ({
 
     return (
         <div className={classes.root}>
-            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' &&
+            {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
                 <div className={classes.popupbox}>
                     <div className={classes.box}>
                         {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
@@ -339,7 +341,7 @@ const RequestForRide = ({
 
                 </div>
                 {selected === 0 &&
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <Paper className={classes.leftSection} elevation={3}
                                onClick={() => navigate('/dashboard/request')}>
                             <Typography variant='body-1' component='div' style={{width: '100%', textAlign: "center"}}>
@@ -542,7 +544,7 @@ const RequestForRide = ({
                                                     margin: '12px 0'
                                                 }}>
                                                     <Typography variant='body-1' component='h4'>
-                                                        Driver Name
+                                                        Driver Name 
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverName}
@@ -558,6 +560,18 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverNo}
+                                                    </Typography>
+                                                </div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '12px 0'
+                                                }}>
+                                                    <Typography variant='body-1' component='h4'>
+                                                      Start Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                    {moment(travellersLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -585,6 +599,7 @@ const RequestForRide = ({
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleName}
                                                     </Typography>
+                                                    
                                                 </div>
                                                 <div style={{
                                                     display: 'flex',
@@ -596,6 +611,12 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleNo}
+                                                    </Typography>
+                                                    <Typography variant='body-1' component='h4'style={{marginTop: 44}}>
+                                                       End Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                        {moment(travellersLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -653,9 +674,10 @@ const RequestForRide = ({
             <DesktopDatePicker
                 renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                 mask="__/__/____"
-                format="dd-MM-yyyy"
+                // minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000)}
+                //minDateTime={new Date(travellersLatestJourney.endDateTime && travellersLatestJourney.endDateTime.getTime() + 15*60*1000)}
                 label="Select Date"
-                value={value}
+               value={value}
                 onChange={(newValue) => {
                     setValue(newValue);
                 }}
@@ -686,7 +708,7 @@ const RequestForRide = ({
                         }
                     </div>}
                 {selected === 2 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList
                                 onChange={(e, value) => {
@@ -779,7 +801,7 @@ const RequestForRide = ({
                         </Modal>
                     </div> : null}
                 {selected === 1 ?
-                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 400, flex: 1}}>
+                    <div style={{flexDirection: 'column', justifyContent: 'space-between', maxWidth: 420, flex: 1,width:'100%'}}>
                         <TabContext value={tabValue.toString()}>
                             <TabList onChange={(e, value) => {
                                 setSelectedTab(Number(value));

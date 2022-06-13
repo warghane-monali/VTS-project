@@ -55,6 +55,24 @@ export const getDriverAttendance = data => {
         payload: data
     }
 };
+export const setJourneyCheckIn = data => {
+    return{
+        type:"SET_DRIVER_CHECK_IN",
+        payload:data
+    }
+}
+export const setJourneyCheckOut = data => {
+    return{
+        type:"SET_DRIVER_CHECK_OUT",
+        payload:data
+    }
+}
+export const getJourneyCheckInOut = data => {
+    return{
+        type:"GET_DRIVER_CHECK_IN_OUT",
+        payload: data
+    }
+}
 
 export function getDriverLatestJourneyData(requestBody) {
     return dispatch => {
@@ -73,6 +91,7 @@ export function getDriverLatestJourneyData(requestBody) {
 
         return fetch(BASE_URL + '/journey/driversLatestJourney', requestOptions).then(response => response.json()).then(res => {
             dispatch(getDriverLatestJourney(res));
+            console.log('------Latest jorney API-----',res)
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -183,6 +202,8 @@ export function setEndJourneyData(data) {
         });
     }
 }
+
+
 export function setDriverAttendanceData(userDetails,startDateTime, endDateTime) {
     return dispatch => {
         console.log("---------setDriverAttendanceData--------------",userDetails.user);
@@ -198,9 +219,9 @@ export function setDriverAttendanceData(userDetails,startDateTime, endDateTime) 
         urlencoded.append("driverNo", userDetails.user.contactNo);
         // urlencoded.append("username", userDetails.user.firstName);
         // urlencoded.append("username", userDetails.user.name);
-       
+
         console.log("---------setDriverAttendanceData urlencoded--------------",urlencoded);
-       
+
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
@@ -217,14 +238,14 @@ export function setDriverAttendanceData(userDetails,startDateTime, endDateTime) 
             });
     }
 
-    
+
 }
 // export function getdriverattendanceData(data) {
 //     return dispatch => {
 
 //         let urlencoded = new URLSearchParams();
 //         urlencoded.append("driverId",data.driverId);
-       
+
 //         return fetch(BASE_URL + '/driverattendance/getdriverattendance'+ data, {
 //             method: 'POST',
 //         }).then(response => response.json()).then(res => {
@@ -264,6 +285,90 @@ export function getdriverattendanceData(requestBody) {
             dispatch(getDriverAttendance(res));
         })
         .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function getCheckinVehicleData(requestBody) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("driverId", requestBody);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch("http://3.110.60.38:9001/v1/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.json()).then(result =>{
+            dispatch(getJourneyCheckInOut(result))
+            return result
+        }).catch(error => console.log('error', error));
+    }
+}
+
+export function setJourneyCheckInData(data){
+    console.log('In set Journey Checkin',data)
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("checkinLocation",data.checkinLocation);
+        urlencoded.append("vehicleCheckinOdoMeter",data.vehicleCheckinOdoMeter);
+        urlencoded.append("vehicleCheckinOdoMeterImgURL",data.vehicleCheckinOdoMeterImgURL);
+        urlencoded.append("journeyId",data.journeyId);
+        urlencoded.append("driverId",data.driverId);
+        urlencoded.append("driverName",data.driverName);
+        urlencoded.append("driverNo",data.driverNo);
+        urlencoded.append("vehicleId",data.vehicleId);
+        urlencoded.append("vehicleNo",data.vehicleNo);
+        urlencoded.append("vehicleName",data.vehicleName);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckin',requestOptions).then(response => response.json()).then(res => {
+            dispatch(getJourneyCheckInOut(res))
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function setJourneyCheckOutData(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleCheckinCheckOutId", data.vehicleCheckinCheckOutId);
+        urlencoded.append("vehicleCheckoutOdoMeterImgURL", data.vehicleCheckoutOdoMeterImgURL);
+        urlencoded.append("checkoutLocation", data.checkoutLocation);
+        urlencoded.append("vehicleCheckoutOdoMeter", data.vehicleCheckoutOdoMeter);
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckout',requestOptions).then(response => response.json()).then(res => {
+            dispatch(getJourneyCheckInOut(res))
+            return res
+        }).catch((error) => {
             console.error('Error:', error);
         });
     }

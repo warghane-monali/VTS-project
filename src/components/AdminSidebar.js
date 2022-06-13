@@ -18,7 +18,8 @@ const upperList = [
     { icon: <DirectionsCarRoundedIcon />, title: 'Vehicles', url:'/admin/all-vehicle' },
     { icon: <CarRepairIcon /> , title: 'Vehicle Maintenance', url : '/admin/VehicleMaintenancepage'  },
     { icon: <LocalGasStationIcon /> ,title:'Petrol Expense',url:'/admin/petrol-expense' },
-    { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' }
+    { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' },
+ 
 
 ];
 

@@ -40,6 +40,7 @@ import VehicleMaintenancepage from "./pages/admin/VehicleMaintenancepage";
 import PetrolExpense from "./pages/admin/PetrolExpense";
 
 
+
 function App({userDetails, adminDetails}) {
 
   const navigate = useNavigate();
@@ -94,13 +95,10 @@ function App({userDetails, adminDetails}) {
             <Route path='drivers' element={<AllDrivers/>}/>
             <Route path='all-vehicle' element={<AllVehicle/>}/>
             <Route path='reports' element={<Reports/>}/>
-
             <Route path='attendance-status' element={<AttendanceStatus/>}/>
-
-
             <Route path='VehicleMaintenancepage' element={ <VehicleMaintenancepage /> } />
             <Route path="petrol-expense" element={<PetrolExpense />} />
-
+      
           </Route>
         </Routes>
       </div>
