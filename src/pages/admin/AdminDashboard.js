@@ -557,7 +557,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         }}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon />} />
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon />} />
-                        <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon />} />
+                        {/* <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon />} /> */}
                     </BottomNavigation>
                     <div>
                         <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>

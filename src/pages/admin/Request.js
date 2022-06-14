@@ -529,7 +529,10 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                                         setTravellerId(0);
                                     }
                                 else
-                                    setError(true)
+                                    setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
+                                    setTravellerId(0);
+                                    if(travellerNumber.length<=9 || travellerNumber.match(/[^0-9]/g))
+                                        setError(true)
                             }}
                         />
                         {error ? <Alert
