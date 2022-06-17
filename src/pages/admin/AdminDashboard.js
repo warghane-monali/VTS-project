@@ -185,6 +185,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
     const [selectedTab, setSelectedTab] = useState(null);
     const [countData, setCountData] = useState([]);
 
+    console.log("------Admin Details---------",adminDetails.user)
 
     // const handleChange = (event, newValue) => {
     //     if(selected===2){
@@ -207,12 +208,12 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
     }, []);
 
     const getUserPreviousRidesDataList = async () => {
-        await getUserPreviousRidesData();
+        await getUserPreviousRidesData({"requestLocationOfAdmin":adminDetails.user.userLocation});
 
     };
 
     const getUserUpcomingRidesDataList = async () => {
-        await getUserUpcomingRidesData();
+        await getUserUpcomingRidesData({"requestLocationOfAdmin":adminDetails.user.userLocation});
     };
 
     const getUserPreviousRides = async () => {
@@ -230,14 +231,14 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
             setTabValue(3);
         }
         if(selected===2){
-            getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
+            getUpcomingPreviousRidesAdminData({"startDateTime":moment(date).format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.userLocation})
         } else if (selected===1){
-            getUpcomingPreviousRidesAdminData(moment(date).format('YYYY-MM-DD'))
+            getUpcomingPreviousRidesAdminData({"startDateTime":moment(date).format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.userLocation})
         }
     };
 
     const getallcountlist = async () => {
-        const count = await getJourneyAllCountData()
+        const count = await getJourneyAllCountData({"requestLocationOfAdmin":adminDetails.user.userLocation})
         console.log("Count Data",count)
         setCountData(count)
     }
@@ -246,11 +247,11 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
         setSelectedUpDate(selection);
         setTabValue(selection);
         if(selection===0){
-            getUpcomingPreviousRidesAdminData(moment().format('YYYY-MM-DD'))
+            getUpcomingPreviousRidesAdminData({"startDateTime":moment().format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.userLocation})
         }else if(selection===1){
-            getUpcomingPreviousRidesAdminData(moment().add(1,'days').format('YYYY-MM-DD'))
+            getUpcomingPreviousRidesAdminData({"startDateTime":moment().add(1,'days').format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.userLocation})
         }else if (selection===2){
-            getUpcomingPreviousRidesAdminData(moment().add(2,'days').format('YYYY-MM-DD'))
+            getUpcomingPreviousRidesAdminData({"startDateTime":moment().add(2,'days').format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.userLocation})
         }
     };
 
@@ -306,31 +307,44 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'EXTENDREQUEST'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
+                                <Grid justify="flex-end" style={ { marginLeft:120 } }  >
                                 <Badge badgeContent={countData['EXTENDREQUEST']=== 0 ? '0' : countData['EXTENDREQUEST'] } color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
-                                     src="/static/img/cab_ongoing.png"/>
+                                     src="/static/img/cab_extend.png"/>
                                 <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
                                   Extend Journey Request
                                 </Typography>
                             </Box>
                         </Paper>
-                        {/* <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'UNSERVICE'})}}>
+                        <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'EXTENDREQUESTDEALLOCATE'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                                <Grid container justify="flex-end"  >
-                                <Badge badgeContent={countData['UNSERVICE']=== 0 ? '0' : countData['UNSERVICE']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
+                                <Grid  justify="flex-end" style={ { marginLeft:120 } }   >
+                                <Badge badgeContent={countData['EXTENDREQUESTDEALLOCATE']=== 0 ? '0' : countData['EXTENDREQUESTDEALLOCATE']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
                                 </Grid>
                                 <img style={{width: '50%'}}
                                      alt="React"
-                                     src="/static/img/cab_unserviced.png"/>
+                                     src="/static/img/cab_driverallocation.png"/>
                                 <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
-                                    Driver Realocation
+                                    Driver Reallocation
                                 </Typography>
                             </Box>
-                        </Paper> */}
+                        </Paper>
                     </Box>
+                    <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
+                        <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
+                            <Grid  justify="flex-end" style={ { marginLeft:320 } }>
+                            <Badge badgeContent={countData['PENDING']=== 0 ? '0' : countData['PENDING']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
+                            </Grid>
+                            <img style={{width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
+                                 alt="React"
+                                 src="/static/img/cab_pending.png"/>
+                            <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
+                                Pending Request
+                            </Typography>
+                        </Box>
+                    </Paper>
                 <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'ONGOING'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
@@ -359,19 +373,6 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                             </Box>
                         </Paper>
                     </Box>
-                    <Paper className={classes.card} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'PENDING'})}}>
-                        <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
-                            <Grid  justify="flex-end" style={ { marginLeft:320 } }>
-                            <Badge badgeContent={countData['PENDING']=== 0 ? '0' : countData['PENDING']} color="primary" style={ { justifyContent:'right',alignItems:'right' } } />
-                            </Grid>
-                            <img style={{width: '50%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
-                                 alt="React"
-                                 src="/static/img/cab_pending.png"/>
-                            <Typography variant='body-1' component='div' style={{width: '100%', textAlign: 'center'}}>
-                                Pending Request
-                            </Typography>
-                        </Box>
-                    </Paper>
                     <Box className={classes.smallCardContainer}>
                         <Paper className={classes.card} sx={{ marginRight: '20px' }} onClick={e=>{e.preventDefault();navigate('/admin/request-list', {state:'APPROVED'})}}>
                             <Box style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',cursor: 'pointer'}}>
@@ -613,7 +614,7 @@ const mapDispatchToProps = dispatch => {
         getUpcomingPreviousRidesAdminData: (requestBody) => dispatch(ActionCreators.getUpcomingPreviousRidesAdminData(requestBody)),
         getUserPreviousRidesData: (requestBody) => dispatch(ActionCreators.getUserPreviousRidesData(requestBody)),
         getUserUpcomingRidesData: (requestBody) => dispatch(ActionCreators.getUserUpcomingRidesData(requestBody)),
-        getJourneyAllCountData: () => dispatch(ActionCreators.getJourneyAllCountData())
+        getJourneyAllCountData: (requestBody) => dispatch(ActionCreators.getJourneyAllCountData(requestBody))
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(AdminDashboard)

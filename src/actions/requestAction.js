@@ -128,6 +128,13 @@ export const getdriverDealocatedData = data => {
         payload : data
     }
 }
+export const getvehicleDealocatedData = data => {
+    return {
+        type:'GET_VEHICLE_DEALOCATION_LIST',
+        payload : data
+    }
+}
+
 export const getextendrequestallocatevehicleList = data => {
     return {
         type: "GET_EXTENDREQUEST_VEHICLE_LIST",
@@ -708,7 +715,7 @@ export function DealocationdriverListData(data) {
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
-        };
+        };                    
         return fetch(BASE_URL + '/journey/extendrequestdeallocatedriverjourney', requestOptions).then(response => response.json()).then(res => {
             dispatch(getdriverDealocatedData(res));
             console.log("response",res)
@@ -737,6 +744,33 @@ export function extendrequestallocatevehiclelistData(requestBody) {
         };
         return fetch(BASE_URL + '/journey/extendrequestallocatevehicle', requestOptions).then(response => response.json()).then(res => {
             dispatch(getextendrequestallocatevehicleList(res));
+            console.log("response",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function DealocationvelicleListData(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId",data);
+     
+       
+
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };                    
+        return fetch(BASE_URL + '/journey/extendrequestdeallocatevehiclejourney', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getvehicleDealocatedData(res));
             console.log("response",res)
             return res
         })

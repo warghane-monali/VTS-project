@@ -309,7 +309,8 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                editVehicleJourney,  getFeedBackAnsData,
                                getFeedBackQueData,
                                feedBackQueList,
-                               setFeedBackQueData,extendrequestallocatedriverlistData,DriverExtendList,requestStatusAdmin,DealocationdriverListData,extendrequestallocatevehiclelistData,VehicleExtendList}) => {
+                               setFeedBackQueData,extendrequestallocatedriverlistData,DriverExtendList,requestStatusAdmin,DealocationdriverListData,extendrequestallocatevehiclelistData,VehicleExtendList,
+                               DealocationvelicleListData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -335,31 +336,45 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const [hover1, setHover1] = React.useState(-1);
     const [textValue, setTextValue] = React.useState('');
     const [feedBackAnsData, setFeedBackAnsData] = React.useState([]);
+    const [driverRes,setdriverRes] = useState('');
+    const [vehicleRes,setvehicleRes] = useState('');
 
     useEffect(() => {
+        console.log("IN Use Effect")
         getVehicleListData();
         // getDriverUserListData();
         getRideInfo(requestDetails );
         // getLocationInfo()
-        
-      
+        // if(requestDetails.requestStatus === 'EXTENDREQUEST')
+        // {
+        //     allocatedriversdata();
+        //     allocatevehicledata();
+        // }
     }, []);
 
+    console.log('------Request Details ------',requestDetails)
+
     useEffect(() => {
-        getFeedBack();
+        console.log("IN Use Effect")
+         getFeedBack();
         if(requestDetails.requestStatus === 'EXTENDREQUEST')
-        allocatedriversdata();
-        allocatevehicledata()
+        {
+            allocatedriversdata();
+            allocatevehicledata();
+        }
     }, []);
 
     const allocatedriversdata = async () => {
         console.log("In driver allocation")
         const res = await extendrequestallocatedriverlistData({
             driverId:requestDetails.driverId,
-           extendRequestDate:requestDetails.extendRequestDate,
-           endDateTime:requestDetails.endDateTime,
+           extendRequestDate:moment(requestDetails.extendRequestDate).format('YYYY-MM-DD'),
+           endDateTime:moment(requestDetails.endDateTime).format('YYYY-MM-DD'),
         })
+        console.log('End Time',requestDetails.endDateTime)
+        setdriverRes(res)
     }
+    console.log('Driver response',driverRes)
     const allocatevehicledata = async () => {
         console.log("In vehicle allocation")
         const res = await extendrequestallocatevehiclelistData({
@@ -367,7 +382,9 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
            extendRequestDate:requestDetails.extendRequestDate,
            endDateTime:requestDetails.endDateTime,
         })
+        setvehicleRes(res)
     }
+    console.log('vehicle response',vehicleRes)
 
     const handelAns = async () => {
         setChecked(!checked);
@@ -531,6 +548,8 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const openVehicleTypeChange =()=> {
         setOpenVehicleType(true)
     }
+    
+    console.log('----Driver Extend List data------',DriverExtendList)
 
     return (
         <div className={classes.root}>
@@ -649,30 +668,6 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                     </Box>
                                 </div>
 
-                               
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                
                                 {(requestDetails && (requestDetails.requestStatus==='APPROVED'))?
                                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -859,49 +854,61 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                               
                                             </TableCell>
                                         </TableRow> */}
-                                         <div><h6>Allocate Driver List</h6></div>
-                                        {DriverExtendList.length > 0 && DriverExtendList.map((traveller, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell component="th" scope="row">
-                                                    {traveller.selfTravellerName}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row">
-                                                    {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" >
-                                                {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" >
-                                                <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
-                                                 <Button variant="contained" onClick={() => DealocationdriverListData(traveller._id)} >Dealocation</Button>
-                                                 </div>
+                                         <div><h4>Allocate Driver List:</h4></div>
+                                        { driverRes.msg !== 'Not allocated any journey' ?
+                                        // DriverExtendList.length > 0 && DriverExtendList.map((traveller, index) => (
+                                        //     <TableRow key={index}>
+                                        //         <TableCell component="th" scope="row">
+                                        //             {traveller.selfTravellerName}
+                                        //         </TableCell>
+                                        //         <TableCell  component="th" scope="row">
+                                        //             {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
+                                        //         </TableCell>
+                                        //         <TableCell  component="th" scope="row" >
+                                        //         {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
+                                        //         </TableCell>
+                                        //         <TableCell  component="th" scope="row" >
+                                        //         <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
+                                        //          <Button variant="contained" onClick={() => { DealocationdriverListData(traveller._id); allocatedriversdata(); } } >Deallocate Driver</Button>
+                                        //          </div>
 
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                       <div><h6>Allocate Vehicle List</h6></div>
-                        {VehicleExtendList.length > 0 && VehicleExtendList.map((traveller, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell component="th" scope="row">
-                                                    {traveller.vehicleName}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row">
-                                                    {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" >
-                                                {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
-                                                </TableCell>
-                                                <TableCell  component="th" scope="row" >
-                                                <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
-                                                <Button variant="contained">Dealocation</Button>
-                                                 </div>
+                                        //         </TableCell>
+                                        //     </TableRow>
+                                        // ))
+                                        '' : 'No Journey Allocated to driver'
+                                        }
+                                    <div><h4>Allocate Vehicle List:</h4></div>
+                                    {   vehicleRes.msg !== 'Not allocated any journey' ?
+                                    //  VehicleExtendList.length > 0 && VehicleExtendList.map((traveller, index) => (
+                                    //         <TableRow key={index}>
+                                    //             <TableCell component="th" scope="row">
+                                    //                 {traveller.vehicleName}
+                                    //             </TableCell>
+                                    //             <TableCell  component="th" scope="row">
+                                    //                 {moment(traveller.startDateTime).format('YYYY-MMM-DD')}
+                                    //             </TableCell>
+                                    //             <TableCell  component="th" scope="row" >
+                                    //             {moment(traveller.endDateTime).format('YYYY-MMM-DD')}
+                                    //             </TableCell>
+                                    //             <TableCell  component="th" scope="row" >
+                                    //             <div style={{ margin: 4, marginTop: -4.5, padding: 2 }}>
+                                    //             <Button variant="contained" onClick={ () => { DealocationvelicleListData(traveller._id);allocatevehicledata(); } } >Deallocate Vehicle</Button>
+                                    //              </div>
 
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
+                                    //             </TableCell>
+                                    //         </TableRow>
+                                    //     ))
+                                       '' :  'Not Allocated any journey to vehicle'
+                                    }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
+                            {
+                                        requestDetails.requestStatus === 'EXTENDREQUEST' &&  vehicleRes.msg === 'Not allocated any journey' && driverRes.msg === 'Not allocated any journey' ?
+                                        <Button variant='contained' style={ { marginTop:20 } } >
+                                            Confirm Extention
+                                        </Button>
+                            : null }
                         </Paper>:null}
 
 
@@ -1327,6 +1334,7 @@ const mapDispatchToProps = dispatch => {
         flushRequestState: () => dispatch(ActionCreators.flushRequestState()),
         extendrequestallocatedriverlistData: (requestBody) => dispatch(ActionCreators.extendrequestallocatedriverlistData(requestBody)),
         DealocationdriverListData: (data) => dispatch(ActionCreators.DealocationdriverListData(data)),
+        DealocationvelicleListData : (data) => dispatch(ActionCreators.DealocationvelicleListData(data)),
         extendrequestallocatevehiclelistData: (requestBody) => dispatch(ActionCreators.extendrequestallocatevehiclelistData(requestBody)),
     }
 };

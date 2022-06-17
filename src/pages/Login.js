@@ -28,9 +28,13 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
     const [otpVSuccess, setOtpVSuccess] = React.useState(false);
 
     useEffect(() => {
-        if (adminDetails && adminDetails?.user.userRole==='Admin'){
+        if (adminDetails && adminDetails?.user.userRole==='Admin' ){
             navigate('/admin/dashboard')
-        }else if(userDetails && userDetails?.user.userRole==='Traveller'){
+        }
+        else if( adminDetails && adminDetails?.user.userRole==='SuperAdmin'){
+            navigate('/admin/dashboard')
+        }
+        else if(userDetails && userDetails?.user.userRole==='Traveller'){
             navigate('/dashboard/request-for-ride')
         }else if(userDetails && userDetails?.user.userRole==='Driver'){
             navigate('/driver/dashboard')

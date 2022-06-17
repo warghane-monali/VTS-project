@@ -21,7 +21,7 @@ import {useNavigate} from "react-router-dom";
 import moment from "moment";
 import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
-
+import Alert from "@mui/material/Alert";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -309,7 +309,7 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
         <div className="container">
             <Box sx={{display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper',  '& button': { m: 1 } }}>
                 <div><h1>Employees</h1></div>
-                <div><Button  variant="contained" size="small" onClick={handleClickOpen}>Add Employees</Button></div>
+                <div><Button  variant="contained" size="small" onClick={handleClickOpen} style={ { marginTop:35 } } >Add Employees</Button></div>
             </Box>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer sx={{ maxHeight: 600 }}>
@@ -452,25 +452,6 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
                                        value={identityNumber}
                                        onChange={e => {setidentityNumber(e.target.value)}}
                             />
-                             <TextField
-                               
-                               required
-                            
-                               style={{margin:16}}
-                                      label='identityType'
-                                      className={classes.textFields}
-                                      value={identityType}
-                                      onChange={e => {setidentityType(e.target.value)}}
-                           />
-                       
-                              <TextField
-                               required
-                               style={{margin:16}}
-                                      label='designation'
-                                      className={classes.textFields}
-                                      value={designation}
-                                      onChange={e => {setdesignation(e.target.value)}}
-                           />
 
                             <TextField
                                required
@@ -504,14 +485,29 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
                                       value={subLocation}
                                       onChange={e => {setsubLocation(e.target.value)}}
                            />
-                        
+                            {error ? <Alert
+                            severity="warning"
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        setError(false);
+                                    }}>
+                                    <CloseIcon fontSize="inherit"/>
+                                </IconButton>
+                            }
+                            sx={{mb: 2}}>
+                            Please fill request form properly.
+                        </Alert> : null}
+                        </div>
                         <Button className={classes.button} style={{margin: 16}} variant="contained" onClick={(e)=>{
                             e.preventDefault();
                             addEmployeeDetails(e)
                         }}>
                             Submit
                         </Button>
-                        </div>
                     </div>
                 </Paper>
             </Modal>

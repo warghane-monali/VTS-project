@@ -261,9 +261,10 @@ const RequestForRide = ({
             })
         console.log("journeyid",travellersLatestJourney._id);
         console.log("date",value);
-
+        const data = getTravellerLatestJourney();     
       };
 
+      console.log('-------trvaller latest journey------',travellersLatestJourney)
     return (
         <div className={classes.root}>
             {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
@@ -361,7 +362,8 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
+                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' ||
+                                travellersLatestJourney.requestStatus === 'EXTENDREQUESTDEALLOCATE')) &&
                             <Paper className={classes.rightSection} elevation={4}>
                                 {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) ?
                                     <div className={classes.topicRow}>
@@ -500,7 +502,7 @@ const RequestForRide = ({
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div'
                                                                         style={{marginTop: 8}}>
-                                                                {moment(travellersLatestJourney.startDateTime).format('DD/MMMM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                         <div style={{
@@ -514,7 +516,7 @@ const RequestForRide = ({
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div'
                                                                         style={{marginTop: 8}}>
-                                                                {moment(travellersLatestJourney.endDateTime).format('DD/MMMM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -522,7 +524,9 @@ const RequestForRide = ({
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY')) &&
+                                    
+                                    {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' || 
+                                    travellersLatestJourney.requestStatus === 'EXTENDREQUESTDEALLOCATE')) &&
                                     <>
                                         <div style={{
                                             display: 'flex',
@@ -663,10 +667,12 @@ const RequestForRide = ({
                        justifyContent="flex-start"
                        alignItems="flex-start">
                     <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
-                        <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
-                                onClick={() => setConfirmOpen(true)}>
-                          EXTENSION
-                        </Button>
+                        {   travellersLatestJourney.requestStatus !== 'EXTENDREQUEST' ?
+                            <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
+                            onClick={() => setConfirmOpen(true)}>
+                            EXTENSION
+                            </Button>
+                        : null}
                         <ConfirmModal
       content={  
         <div style={{margin:10}}>

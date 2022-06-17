@@ -121,31 +121,35 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
 
+    
+
     const handleChange = (event, newValue) => {
         getChangeDate(newValue)
     };
 
 
     useEffect(() => {
-        setAllRequestStatusData({requestStatus:status});
+        setAllRequestStatusData({requestStatus:status,requestLocationOfAdmin: adminDetails?.user.userLocation });
     }, []);
+
+    console.log("Admin Details",adminDetails.user)
 
     const getChangeDate = (selection)=> {
         setSelected(selection);
         setTabValue(selection);
         if(selection==="1"){
-            setAllRequestStatusData({requestStatus:status})
+            setAllRequestStatusData({requestStatus:status,requestLocationOfAdmin: adminDetails?.user.userLocation})
         }else if(selection==="2"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(0,'days').format('YYYY-MM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(0,'days').format('YYYY-MM-DD'), requestLocationOfAdmin: adminDetails?.user.userLocation})
         }else if (selection==="3"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1,'days').format('YYYY-MM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1,'days').format('YYYY-MM-DD'),requestLocationOfAdmin: adminDetails?.user.userLocation})
         }
     };
 
     const getRequestDataByDate = (date)=> {
         setFilter(true);
         setTabValue(4);
-        setRequestStatusAdminData({requestStatus:status, startDateTime: moment(date).format('YYYY-MM-DD')})
+        setRequestStatusAdminData({requestStatus:status, startDateTime: moment(date).format('YYYY-MM-DD'),requestLocationOfAdmin: adminDetails.user.userLocation})
     };
 
     const renderList = (item, index) => {
@@ -161,7 +165,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
            <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between',}}>
                <div className={classes.upperRow}
                     style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-
+                        
                    <Typography  variant='subtitle2' style={{textAlign: "center"}}>
                        {item.source}
                    </Typography>

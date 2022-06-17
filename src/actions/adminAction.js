@@ -160,15 +160,16 @@ export function setRequestStatusData(data) {
 export function setAllRequestStatusData(data) {
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus", data.requestStatus);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestStatus", data.requestStatus);
+        // urlencoded.append("requestLocationOfAdmin", JSON.stringify(data.requestLocationOfAdmin));
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(data),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/allStatusWiseJournees', requestOptions).then(response => response.json()).then(res => {
@@ -181,18 +182,20 @@ export function setAllRequestStatusData(data) {
     }
 }
 export function setRequestStatusAdminData(data) {
+
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/son");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus", data.requestStatus);
-        urlencoded.append("startDateTime", data.startDateTime);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestStatus", data.requestStatus);
+        // urlencoded.append("startDateTime", data.startDateTime);
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(data),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/requestStatusDateAdmin', requestOptions).then(response => response.json()).then(res => {
@@ -454,15 +457,16 @@ export function updateDriverListData(data) {
 export function getUpcomingPreviousRidesAdminData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("startDateTime", requestBody);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("startDateTime", requestBody.startDateTime);
+        // urlencoded.append("requestLocationOfAdmin", requestBody.requestLocationOfAdmin);
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(requestBody),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/upcomingPreviousRidesAdmin', requestOptions).then(response => response.json()).then(res => {
@@ -473,11 +477,21 @@ export function getUpcomingPreviousRidesAdminData(requestBody) {
             });
     }
 }
-export function getUserPreviousRidesData() {
+export function getUserPreviousRidesData(data) {
     return dispatch => {
-        return fetch(BASE_URL + '/journey/previousrides', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/journey/previousrides',requestOptions).then(response => response.json()).then(res => {
             dispatch(getUserPreviousRides(res));
         })
         .catch((error) => {
@@ -485,11 +499,22 @@ export function getUserPreviousRidesData() {
         });
     }
 }
-export function getUserUpcomingRidesData() {
+export function getUserUpcomingRidesData(data) {
     return dispatch => {
-        return fetch(BASE_URL + '/journey/upcomingrides', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/journey/upcomingrides',requestOptions).then(response => response.json()).then(res => {
             dispatch(getUserUpcomingRides(res));
 
         })
@@ -739,13 +764,24 @@ export function getFeedBackData(data) {
             });
     }
 }
-export function getJourneyAllCountData() {
+export function getJourneyAllCountData(data) {
     console.log('In getJourneyAllCountData')
     return dispatch => {
-        return fetch(BASE_URL + '/journey/requeststatusdateadmincount', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
-            console.log('-----API RES-----',res)
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.userLocation);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/journey/requeststatusdateadmincount', requestOptions).then(response => response.json()).then(res => {
+            console.log('-----Journey Count API RES-----',res)
             dispatch(getJourneyAllCount(res));
             return res;
         })
