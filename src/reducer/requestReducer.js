@@ -17,6 +17,11 @@ const initialState = {
     vehicleMaintenance:[],
     vehiclePetrolExpenseList:[],
     identityPicURL:'',
+    JourneyExtendList:[],
+    DriverExtendList:[],
+    DriverDealocationlist:[],
+    VehicleDealocationlist:[],
+    VehicleExtendList:[],
     error: null,
 };
 
@@ -123,6 +128,37 @@ const requestReducer = (state = initialState, action) => {
                 vehiclePetrolExpenseList:action.payload,
                 error:null
             }
+            case 'GET_JOURNEY_EXTEND_DATE':
+                return{
+                    ...state,
+                    JourneyExtendList:action.payload,
+                    error:null
+                }
+
+            case 'GET_EXTENDREQUEST_DRIVER_LIST':
+                return{
+                    ...state,
+                     DriverExtendList:action.payload,
+                    error:null
+                }
+            case 'GET_DRIVER_DEALOCATION_LIST':
+                 return{
+                    ...state,
+                    DriverDealocationlist:action.payload,
+                    error:null
+                }
+            case 'GET_VEHICLE_DEALOCATION_LIST':
+                return{
+                    ...state,
+                    VehicleDealocationlist:action.payload,
+                    error:null
+                }
+            case 'GET_EXTENDREQUEST_VEHICLE_LIST':
+                return{
+                    ...state,
+                    VehicleExtendList:action.payload,
+                    error:null
+                }
         case "LOGOUT": return {};
         default:
             return state

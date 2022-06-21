@@ -68,6 +68,9 @@ export function login(data) {
         .then(response => {
             if(response.user && response.user.userRole==='Admin'){
                 dispatch(adminLoginSuccess(response))
+            }
+            else if(response.user && response.user.userRole==='SuperAdmin'){
+                dispatch(adminLoginSuccess(response))
             } else if(response.user && response.user.userRole==='Driver'|| response.user &&response.user.userRole==='Traveller' ){
                 dispatch(loginSuccess(response))
             }

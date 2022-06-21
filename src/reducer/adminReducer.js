@@ -14,6 +14,7 @@ const initialState = {
   feedBackQueList: [],
   feedBackResponse: [],
   getjourneyallcount:[],
+  employeeDetails:[],
   carList: null,
   driverList: null,
   journeyCount: null,
@@ -153,7 +154,12 @@ const adminReducer = (state = initialState, action) => {
         userDetails: action.payload,
         error:null
       }
-
+      case "ADD_EMPLOYEE_DETAILS":
+        return{
+          ...state,
+          employeeDetails: action.payload,
+          error:null
+        }
     case "LOGOUT":
       return {};
     default:

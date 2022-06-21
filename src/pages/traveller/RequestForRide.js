@@ -7,7 +7,9 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar'
 import {connect, useDispatch} from "react-redux";
 import * as ActionCreators from "../../actions/requestAction";
 import {AppBar, Box, Card, IconButton, Modal, Rating} from "@mui/material";
+import ConfirmModal from "./ConfirmModal";
 import moment from "moment";
+import Stack from "@mui/material/Stack";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -35,6 +37,7 @@ import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import Alert from "@mui/material/Alert";
 import {getFeedBackQue} from "../../actions/adminAction";
+
 
 const labels = {
     1: 'Not Good',
@@ -66,7 +69,8 @@ const RequestForRide = ({
                             travellersLatestJourney,
                             getFeedBackQueData,
                             feedBackQueList,
-                            setFeedBackQueData
+                            setFeedBackQueData,
+                            settravellersExtendJourneyData
                         }) => {
     const classes = useStyles();
     const navigate = useNavigate();
@@ -75,8 +79,12 @@ const RequestForRide = ({
     const [selectedUpDate, setSelectedUpDate] = useState(0);
     const [selectedDate, setSelectedDate] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
-    const [value, setValue] = useState(null);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [value, setValue] = useState(null); 
     const [tabValue, setTabValue] = useState(0);
+    const currentDateTime = new Date();
+    const currentAddDateTime = currentDateTime.setMinutes(15);
+    const [extendDate, setextendDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000));
     const [startDate, setStartDate] = useState(new Date());
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
@@ -90,6 +98,7 @@ const RequestForRide = ({
     const [selectedProduct, setSelectedProduct] = useState([]);
     const [hover1, setHover1] = React.useState(-1);
     const [textValue, setTextValue] = React.useState('');
+    // console.log('journey data',travellersLatestJourney)
     const [popup,setpopup] = useState(false)
 
     useEffect(() => {
@@ -162,7 +171,7 @@ const RequestForRide = ({
                         {item.source}
                     </Typography>
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
-                        Start Date :{moment(item.startDateTime).format('DD MMM YYYY')}
+                        Start Date and Time :{moment(item.startDateTime).format('DD MMM YYYY hh:mm a')}
                     </Typography>
 
                 </div>
@@ -186,7 +195,7 @@ const RequestForRide = ({
                     </Typography>
 
                     <Typography variant='body-1' component='span' style={{padding: 10, textAlign: "center"}}>
-                        Start Time :{moment(item.startDateTime).format('hh:mm a')}
+                        End Date and Time :{moment(item.endDateTime).format('DD MMM YYYY hh:mm a')}
                     </Typography>
                 </div>
             </div>
@@ -248,8 +257,17 @@ const RequestForRide = ({
         setSelectedProduct(newArray)
         dispatch(getFeedBackQue(newArray));
     };
+    const handleLogout = () => {
+        settravellersExtendJourneyData({ 
+             "journeyId": travellersLatestJourney._id,
+             "extendRequestDate":value
+            })
+        console.log("journeyid",travellersLatestJourney._id);
+        console.log("date",value);
+        const data = getTravellerLatestJourney();     
+      };
 
-
+      console.log('-------trvaller latest journey------',travellersLatestJourney)
     return (
         <div className={classes.root}>
             {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
@@ -347,7 +365,7 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
+                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' )) &&
                             <Paper className={classes.rightSection} elevation={4}>
                                 {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY')) ?
                                     <div className={classes.topicRow}>
@@ -486,7 +504,7 @@ const RequestForRide = ({
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div'
                                                                         style={{marginTop: 8}}>
-                                                                {moment(travellersLatestJourney.startDateTime).format('DD/MMMM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                         <div style={{
@@ -500,7 +518,7 @@ const RequestForRide = ({
                                                             </Typography>
                                                             <Typography variant='subtitle2' component='div'
                                                                         style={{marginTop: 8}}>
-                                                                {moment(travellersLatestJourney.endDateTime).format('DD/MMMM/YYYY hh:mm a')}
+                                                                {moment(travellersLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm a')}
                                                             </Typography>
                                                         </div>
                                                     </div>
@@ -508,7 +526,8 @@ const RequestForRide = ({
                                             </Box>
                                         </div>
                                     </div> : null}
-                                {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST')) &&
+                                    
+                                    {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' )) &&
                                     <>
                                         <div style={{
                                             display: 'flex',
@@ -530,7 +549,7 @@ const RequestForRide = ({
                                                     margin: '12px 0'
                                                 }}>
                                                     <Typography variant='body-1' component='h4'>
-                                                        Driver Name
+                                                        Driver Name 
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverName}
@@ -546,6 +565,18 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.driverNo}
+                                                    </Typography>
+                                                </div>
+                                                <div style={{
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    margin: '12px 0'
+                                                }}>
+                                                    <Typography variant='body-1' component='h4'>
+                                                      Start Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                    {moment(travellersLatestJourney.startDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -573,6 +604,7 @@ const RequestForRide = ({
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleName}
                                                     </Typography>
+                                                    
                                                 </div>
                                                 <div style={{
                                                     display: 'flex',
@@ -584,6 +616,12 @@ const RequestForRide = ({
                                                     </Typography>
                                                     <Typography variant='body-2' component='div' style={{marginTop: 8}}>
                                                         {travellersLatestJourney.vehicleNo}
+                                                    </Typography>
+                                                    <Typography variant='body-1' component='h4'style={{marginTop: 44}}>
+                                                       End Date
+                                                    </Typography>
+                                                    <Typography variant='body-2' component='div' style={{marginTop: 8}}>
+                                                        {moment(travellersLatestJourney.endDateTime).format('DD-MMM-YYYY hh:mm:a')}
                                                     </Typography>
                                                 </div>
                                             </div>
@@ -620,8 +658,46 @@ const RequestForRide = ({
                                                             {travellersLatestJourney.endOdoMeter}
                                                         </Typography>
                                                     </div>
+                                                    
                                                 </div>}
+
                                         </div>
+
+                                        <Stack style={{width:'100%', marginTop: '20px'}}
+                       direction="column"
+                       justifyContent="flex-start"
+                       alignItems="flex-start">
+                    <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
+                        {   travellersLatestJourney.requestStatus !== 'EXTENDREQUEST' ?
+                            <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
+                            onClick={() => setConfirmOpen(true)}>
+                            EXTENSION
+                            </Button>
+                        : null}
+                        <ConfirmModal
+      content={  
+        <div style={{margin:10}}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+                renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
+                mask="__/__/____"
+                // minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 1440*60*1000)}
+                //minDateTime={new Date(travellersLatestJourney.endDateTime && travellersLatestJourney.endDateTime.getTime() + 15*60*1000)}
+                label="Select Date"
+               value={value}
+                onChange={(newValue) => {
+                    setValue(newValue);
+                }}
+                // maxDate={new Date(moment().subtract(3, 'days').format('DD-MMM-YYYY'))}
+            />
+        </LocalizationProvider>
+    </div>}
+        open={confirmOpen}
+        setOpen={setConfirmOpen}
+        onConfirm={handleLogout}
+      />
+                    </div>
+                </Stack>
                                     </>
                                 }
 
@@ -1260,6 +1336,7 @@ const mapDispatchToProps = dispatch => {
         getFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.getFeedBackQueData(requestBody)),
         setFeedBackQueData: (requestBody) => dispatch(ActionCreatorsAdmin.setFeedBackQueData(requestBody)),
         setPasswordData: (requestBody) => dispatch(ActionCreatorsAdmin.setPasswordData(requestBody)),
+        settravellersExtendJourneyData: (requestBody) => dispatch(ActionCreators.settravellersExtendJourneyData(requestBody)),
     }
 };
 

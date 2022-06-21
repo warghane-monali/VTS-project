@@ -121,24 +121,28 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
 
+    
+
     const handleChange = (event, newValue) => {
         getChangeDate(newValue)
     };
 
 
     useEffect(() => {
-        setAllRequestStatusData({requestStatus:status});
+        setAllRequestStatusData({requestStatus:status,"requestLocationOfAdmin":adminDetails.user.adminLocation });
     }, []);
+
+    console.log("Admin Details",adminDetails.user)
 
     const getChangeDate = (selection)=> {
         setSelected(selection);
         setTabValue(selection);
         if(selection==="1"){
-            setAllRequestStatusData({requestStatus:status})
+            setAllRequestStatusData({requestStatus:status,"requestLocationOfAdmin":adminDetails.user.adminLocation})
         }else if(selection==="2"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(0,'days').format('YYYY-MM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1,'days').format('YYYY-MM-DD'), "requestLocationOfAdmin":adminDetails.user.adminLocation})
         }else if (selection==="3"){
-            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(1, 'days').format('YYYY-MM-DD')})
+            setRequestStatusAdminData({requestStatus:status, startDateTime: moment().add(2,'days').format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.adminLocation})
         }
     };
 
@@ -146,7 +150,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
     const getRequestDataByDate = (date)=> {
         setFilter(true);
         setTabValue(4);
-        setRequestStatusAdminData({requestStatus:status, startDateTime: moment(date).format('YYYY-MM-DD')})
+        setRequestStatusAdminData({requestStatus:status, startDateTime: moment(date).format('YYYY-MM-DD'),"requestLocationOfAdmin":adminDetails.user.adminLocation})
     };
 
     const renderList = (item, index) => {
@@ -165,6 +169,7 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                      <Typography  variant='subtitle2' style={{textAlign: "center",marginBottom:15,fontSize:15}}>
                        <strong>Requested By :- {item.selfTravellerName}</strong>
                     </Typography>
+                        
                    <Typography  variant='subtitle2' style={{textAlign: "center"}}>
                        {item.source}
                    </Typography>
@@ -184,6 +189,10 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                    <Typography variant='body-2' component='span' style={{textAlign: "center", marginTop: 10}}>
                        {moment(item.endDateTime).format('DD MMM YYYY hh:mm:a')}
                    </Typography>
+                   {(item && (item.requestStatus==='EXTENDREQUEST'))?
+                   <Typography variant='body-2' component='span' style={{textAlign: "center", marginTop: 10}}>
+                      Extend Date: {moment(item.extendRequestDate).format('DD MMM YYYY hh:mm:a')}
+                   </Typography>:null}
 
                </div>
            </div>
@@ -202,8 +211,8 @@ const RequestList = ({adminDetails, setRequestStatusAdminData, setAllRequestStat
                             <TabContext value={tabValue.toString()}>
                                 <TabList onChange={handleChange}>
                                     <Tab style={{minWidth:filter?75:115, padding: '12px 8px'}} label={'All Rides'} value="1"/>
-                                    <Tab style={{minWidth:filter?75:115}} label={ moment().add(0, 'days').format('DD-MMM')} value="2"/>
-                                    <Tab style={{minWidth:filter?75:115}} label={ moment().add(1, 'days').format('DD-MMM')} value="3"/>
+                                    <Tab style={{minWidth:filter?75:115}} label={ moment().add(1, 'days').format('DD-MMM')} value="2"/>
+                                    <Tab style={{minWidth:filter?75:115}} label={ moment().add(2, 'days').format('DD-MMM')} value="3"/>
                                     { filter?<Tab style={{minWidth: 105, padding: '12px 8px'}} label={moment(value && value.toString()).format('DD-MMM-YYYY')} value="4"/>:null}
                                     <IconButton  onClick={e => {
                                         e.preventDefault();

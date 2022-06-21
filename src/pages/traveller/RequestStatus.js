@@ -37,6 +37,8 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
         window.open(url+origin+destinationL, '_blank');
     };
 
+    console.log("-----RequestRideData-------",requestRideData)
+
     return (
         <div className={classes.root}>
             {/*<main className={classes.main}>*/}
@@ -214,8 +216,8 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                                     <span>{`${userDetails.user.contactNo}`}</span>
                                                 </TableCell>
                                             </TableRow>
-                                            {requestRideData && requestRideData.travellersDetails && requestRideData?.travellersDetails?.map((traveller, index) => (
-                                                <TableRow key={index}>
+                                            {requestRideData && requestRideData.travellersDetails && requestRideData.travellersDetails.map((traveller) => (
+                                                <TableRow key={traveller.id}>
                                                     <TableCell component="th" scope="row">
 
                                                     </TableCell>

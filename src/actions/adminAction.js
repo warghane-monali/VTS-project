@@ -124,6 +124,12 @@ export const setPassword = data => {
         payload:data
     }
 }
+export const addEmployee = data => {
+    return{
+        type:"ADD_EMPLOYEE_DETAILS",
+        payload:data
+    }
+}
 
 
 export function setRequestStatusData(data) {
@@ -154,15 +160,16 @@ export function setRequestStatusData(data) {
 export function setAllRequestStatusData(data) {
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus", data.requestStatus);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestStatus", data.requestStatus);
+        // urlencoded.append("requestLocationOfAdmin", JSON.stringify(data.requestLocationOfAdmin));
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(data),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/allStatusWiseJournees', requestOptions).then(response => response.json()).then(res => {
@@ -175,18 +182,20 @@ export function setAllRequestStatusData(data) {
     }
 }
 export function setRequestStatusAdminData(data) {
+
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("requestStatus", data.requestStatus);
-        urlencoded.append("startDateTime", data.startDateTime);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestStatus", data.requestStatus);
+        // urlencoded.append("startDateTime", data.startDateTime);
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(data),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/requestStatusDateAdmin', requestOptions).then(response => response.json()).then(res => {
@@ -411,7 +420,7 @@ export function addDriverListData(data) {
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/user/usera', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getVehicleListData());
+            dispatch(getDriverUserListData(res));
             return res
         })
             .catch((error) => {
@@ -450,15 +459,16 @@ export function updateDriverListData(data) {
 export function getUpcomingPreviousRidesAdminData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        myHeaders.append("Content-Type", "application/json");
 
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("startDateTime", requestBody);
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("startDateTime", requestBody.startDateTime);
+        // urlencoded.append("requestLocationOfAdmin", requestBody.requestLocationOfAdmin);
 
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
-            body: urlencoded,
+            body: JSON.stringify(requestBody),
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/journey/upcomingPreviousRidesAdmin', requestOptions).then(response => response.json()).then(res => {
@@ -469,11 +479,21 @@ export function getUpcomingPreviousRidesAdminData(requestBody) {
             });
     }
 }
-export function getUserPreviousRidesData() {
+export function getUserPreviousRidesData(data) {
     return dispatch => {
-        return fetch(BASE_URL + '/journey/previousrides', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/journey/previousrides',requestOptions).then(response => response.json()).then(res => {
             dispatch(getUserPreviousRides(res));
         })
         .catch((error) => {
@@ -481,11 +501,22 @@ export function getUserPreviousRidesData() {
         });
     }
 }
-export function getUserUpcomingRidesData() {
+export function getUserUpcomingRidesData(data) {
     return dispatch => {
-        return fetch(BASE_URL + '/journey/upcomingrides', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.requestLocationOfAdmin);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/journey/upcomingrides',requestOptions).then(response => response.json()).then(res => {
             dispatch(getUserUpcomingRides(res));
 
         })
@@ -655,6 +686,7 @@ export function editVehicleJourney(requestBody) {
         urlencoded.append("vehicleName", requestBody.vehicleName);
         urlencoded.append("vehicleNo", requestBody.vehicleNo);
         urlencoded.append("updatedBy", requestBody.updatedBy);
+        
 
 
         let requestOptions = {
@@ -734,13 +766,24 @@ export function getFeedBackData(data) {
             });
     }
 }
-export function getJourneyAllCountData() {
+export function getJourneyAllCountData(data) {
     console.log('In getJourneyAllCountData')
     return dispatch => {
-        return fetch(BASE_URL + '/journey/requeststatusdateadmincount', {
-            method: 'GET',
-        }).then(response => response.json()).then(res => {
-            console.log('-----API RES-----',res)
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // let urlencoded = new URLSearchParams();
+        // urlencoded.append("requestLocationOfAdmin", data.userLocation);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(data),
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/journey/requeststatusdateadmincount', requestOptions).then(response => response.json()).then(res => {
+            console.log('-----Journey Count API RES-----',res)
             dispatch(getJourneyAllCount(res));
             return res;
         })
@@ -793,6 +836,42 @@ export function getFeedBackAnsData(data) {
         return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res));
             return res;
+        })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+}
+export function addEmployeeData(data) {
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("firstName", data.firstName);
+        urlencoded.append("middleName", data.middleName);
+        urlencoded.append("lastName", data.lastName);
+        urlencoded.append("emailId", data.emailId);
+        urlencoded.append("contactNo", data.contactNo);
+        urlencoded.append("designation", data.designation);
+        urlencoded.append("identityNumber", data.identityNumber);
+        urlencoded.append("identityType", data.identityType);
+        urlencoded.append("subLocation", data.subLocation);
+        urlencoded.append("mainLocation", data.mainLocation);
+        urlencoded.append("vertical", data.vertical);
+        urlencoded.append("subVertical", data.subVertical);
+        // urlencoded.append("createdBy", data.createdBy);
+       
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/user/usera', requestOptions).then(response => response.json()).then(res => {
+            dispatch(addEmployee(res));
+            console.log('hvjhbs',res)
+            return res
         })
             .catch((error) => {
                 console.error('Error:', error);

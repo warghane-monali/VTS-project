@@ -21,7 +21,7 @@ import {useNavigate} from "react-router-dom";
 import moment from "moment";
 import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
-
+import Alert from "@mui/material/Alert";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -117,7 +117,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomingPreviousCountJourneyData, journeyCount}) => {
+const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomingPreviousCountJourneyData, journeyCount,addEmployeeData,adminDetails}) => {
     const classes = useStyles();
     const navigate = useNavigate();
 
@@ -132,10 +132,18 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
     const [middleName, setMiddleName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [identityNumber, setidentityNumber] = useState('');
+    const [identityType, setidentityType] = useState('');
+    const [designation, setdesignation] = useState('');
+    const [vertical, setvertical] = useState('');
+    const [subVertical, setsubVertical] = useState('');
+    const [mainLocation, setmainLocation] = useState('');
+    const [subLocation, setsubLocation] = useState('');
     const [contactNo, setContactNo] = useState('');
-    const [identityNumber, setIdentityNumber] = useState('');
     const [license, setLicense] = useState('');
     const [searched, setSearched] = useState("");
+    const [error, setError] = useState(false);
+    
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -236,13 +244,72 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
     //         updatedBy: adminDetails?.user._id
     //     })
     // };
+    const addEmployeeDetails = async (e) => {
+        if (
+            firstName !==' ' &&
+            middleName !=='' &&
+            lastName !=='' &&
+            email !=='' &&
+            contactNo !=='' &&
+            identityNumber !==''&&
+            vertical !==' ' &&
+            subVertical !==' ' &&
+            mainLocation !==' ' &&
+            subLocation !==' ' 
+        ) {
+            e.preventDefault();
+            setIsOpen(false);
+            const data = await addEmployeeData({
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                emailId: email,
+                contactNo: contactNo,
+                designation:'CEO',
+                identityNumber: identityNumber,
+                identityType: 'License',
+                vertical:vertical,
+                subVertical:subVertical,
+                mainLocation:mainLocation,
+                subLocation:subLocation,
+                createdBy:adminDetails?.user._id
+               
+            });
+            if(data){
+                getEmployeeListData()
+            }
+        }else {
+            setError(true);
+        }
+        
+    };
 
+
+
+
+
+    const handleClickOpen = () => {
+        setUserId('');
+        setFirstName('');
+        setMiddleName('');
+        setLastName('');
+        setEmail('');
+        setContactNo('');
+        setidentityNumber('');
+        setidentityType();
+                setvertical();
+                setsubVertical();
+               setmainLocation();
+                setsubLocation();
+        setIsOpen(true);
+    };
 
 
     return (
         <div className="container">
             <Box sx={{display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper',  '& button': { m: 1 } }}>
                 <div><h1>Employees</h1></div>
+                <div><Button  variant="contained" size="small" onClick={handleClickOpen} style={ { marginTop:35 } } >Add Employees</Button></div>
             </Box>
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer sx={{ maxHeight: 600 }}>
@@ -301,59 +368,150 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
                 e.preventDefault();
                 setIsOpen(false)
             }}>
-                <Paper className={classes.form} sx={{p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700',}}>
-                    <Typography style={{margin:16}}
-                                variant='h5'
-                                component='div'>
-                        Add Driver Details
-                    </Typography>
-                    <hr className={classes.divider}/>
+
+                <Paper sx={{p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700'}}>
                     <div className={classes.form}>
-                        <TextField style={{margin:16}}
-                                   label='First Name'
-                                   className={classes.textFields}
-                                   value={firstName}
-                                   onChange={e => {setFirstName(e.target.value)}}
-                        />
-                        <TextField style={{margin:16}}
-                                   label='Middle Name'
-                                   className={classes.textFields}
-                                   value={middleName}
-                                   onChange={e => {setMiddleName(e.target.value)}}
-                        />
-                        <TextField style={{margin:16}}
-                                   label='Last Name'
-                                   className={classes.textFields}
-                                   value={lastName}
-                                   onChange={e => {setLastName(e.target.value)}}
-                        />
-                        <TextField style={{margin:16}}
-                                   label='Email'
-                                   className={classes.textFields}
-                                   value={email}
-                                   onChange={e => {setEmail(e.target.value)}}
-                        />
-                        <TextField style={{margin:16}}
-                                   label='Contact No'
-                                   className={classes.textFields}
-                                   value={contactNo}
-                                   onChange={e => {setContactNo(e.target.value)}}
-                        />
-                        <TextField style={{margin:16}}
-                                   label='License No'
-                                   className={classes.textFields}
-                                   value={identityNumber}
-                                   onChange={e => {setIdentityNumber(e.target.value)}}
-                        />
+                        <div style={{display: 'flex', flexDirection: 'row',  justifyItems: 'center', justifyContent: 'space-between'}}>
+                            <Typography style={{margin:16}}
+                                        variant='h5'
+                                        component='div'>
+                                Add Employee Details
+                            </Typography>
+                            <IconButton aria-label="delete" onClick={e => {
+                                e.preventDefault();
+                                setIsOpen(false)
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+
+                        </div>
+                        <hr className={classes.divider}/>
+                        <div className={classes.form} sx={{
+                            p: 1,
+                            m: 1,
+                            borderRadius: 1,
+                            textAlign: 'center',
+                            fontSize: '1rem',
+                            fontWeight: '700',
+                        }}>
+                               <TextField
+                                error={firstName.match(/[^a-zA-Z]/g)}
+                                helperText={firstName.match(/[^a-zA-Z]/g) ? 'Invalid entry' : ''}
+                                required
+                                inputProps={{pattern: "[a-z]"}}
+                                style={{margin:16}}
+                                       label='First Name'
+                                       className={classes.textFields}
+                                       value={firstName}
+                                       onChange={e => {setFirstName(e.target.value.replace(/[^a-zA-Z]/g, ""))}}
+                            />
+                            <TextField style={{margin:16}}
+                                       label='Middle Name'
+                                       className={classes.textFields}
+                                       value={middleName}
+                                       onChange={e => {setMiddleName(e.target.value.replace(/[^a-zA-Z]/g, ""))}}
+                            />
+                            <TextField
+                                error={lastName.match(/[^a-zA-Z]/g)}
+                                helperText={lastName.match(/[^a-zA-Z]/g) ? 'Invalid entry' : ''}
+                                required
+                                style={{margin:16}}
+                                       label='Last Name'
+                                       className={classes.textFields}
+                                       value={lastName}
+                                       onChange={e => {setLastName(e.target.value.replace(/[^a-zA-Z]/g, ""))}}
+                            />
+                            <TextField
+                                error={!email.match( /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/)}
+                                helperText={!email.match( /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/) ? 'Invalid entry' : ''}
+                                required
+                                style={{margin:16}}
+                                       label='Email'
+                                       className={classes.textFields}
+                                       value={email}
+                                       onChange={e => {setEmail(e.target.value)}}
+                            />
+                            <TextField
+                                error={contactNo.match( /[^0-9]/g)}
+                                helperText={contactNo.match( /[^0-9]/g) ? 'Please enter valid mobile No.' : ''}
+                                required
+                                inputProps={{maxLength: 10 , pattern: "[0-9]{10,11}" }}
+                                style={{margin:16}}
+                                       label='Contact No'
+                                       className={classes.textFields}
+                                       value={contactNo}
+                                       onChange={e => {setContactNo(e.target.value.replace(/[^0-9]/g, ""))}}
+                            />
+                            <TextField
+                               
+                                required
+                             
+                                style={{margin:16}}
+                                       label='identityNumber'
+                                       className={classes.textFields}
+                                       value={identityNumber}
+                                       onChange={e => {setidentityNumber(e.target.value)}}
+                            />
+
+                            <TextField
+                               required
+                               style={{margin:16}}
+                                      label='vertical'
+                                      className={classes.textFields}
+                                      value={vertical}
+                                      onChange={e => {setvertical(e.target.value)}}
+                           />
+                           <TextField
+                               required
+                               style={{margin:16}}
+                                      label='subVertical'
+                                      className={classes.textFields}
+                                      value={subVertical}
+                                      onChange={e => {setsubVertical(e.target.value)}}
+                           />
+                            <TextField
+                               required
+                               style={{margin:16}}
+                                      label='mainLocation'
+                                      className={classes.textFields}
+                                      value={mainLocation}
+                                      onChange={e => {setmainLocation(e.target.value)}}
+                           />
+                            <TextField
+                               required
+                               style={{margin:16}}
+                                      label='subLocation'
+                                      className={classes.textFields}
+                                      value={subLocation}
+                                      onChange={e => {setsubLocation(e.target.value)}}
+                           />
+                            {error ? <Alert
+                            severity="warning"
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        setError(false);
+                                    }}>
+                                    <CloseIcon fontSize="inherit"/>
+                                </IconButton>
+                            }
+                            sx={{mb: 2}}>
+                            Please fill request form properly.
+                        </Alert> : null}
+                        </div>
+                        <Button className={classes.button} style={{margin: 16}} variant="contained" onClick={(e)=>{
+                            e.preventDefault();
+                            addEmployeeDetails(e)
+                        }}>
+                            Submit
+                        </Button>
                     </div>
-                    {/*<Button className={classes.button} style={{margin: 16}} onClick={(e)=>{*/}
-                    {/*    e.preventDefault();*/}
-                    {/*    addDriverDetails(e)*/}
-                    {/*}}>*/}
-                    {/*    Add Driver Details*/}
-                    {/*</Button>*/}
                 </Paper>
             </Modal>
+          
             <Modal
                 className={classes.middlePosition}
                 open={openEdit} onClose={e => {
@@ -445,7 +603,6 @@ const EmployeeWiseList = ({getEmployeeListData, employeeList, getTravellerUpcomi
                             <Typography variant='h6' component='div' style={{textAlign:"center", color: '#0c1572'}}>
                                 {journeyCount && journeyCount.upcomingRides}
                             </Typography>
-
                         </p>
                     </div>
                     <div className={classes.travellerItem}>
@@ -467,7 +624,8 @@ const mapStateToProps = state => {
         employeeList: state.admin.employeeList,
         journeyCount: state.admin.journeyCount,
         loading: state.request.loading,
-        error: state.request.error
+        error: state.request.error,
+        adminDetails:state.admin.adminDetails,
     }
 };
 
@@ -475,6 +633,7 @@ const mapDispatchToProps = dispatch => {
     return {
         getEmployeeListData: (requestBody) => dispatch(ActionCreatorsAdmin.getEmployeeListData(requestBody)),
         getTravellerUpcomingPreviousCountJourneyData: (requestBody) => dispatch(ActionCreatorsAdmin.getTravellerUpcomingPreviousCountJourneyData(requestBody)),
+        addEmployeeData: (requestBody) => dispatch(ActionCreatorsAdmin.addEmployeeData(requestBody)),
     }
 };
 

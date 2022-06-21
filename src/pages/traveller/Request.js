@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import {makeStyles} from '@mui/styles'
-import {Button, IconButton, Modal, Paper, TextField, Typography} from '@mui/material'
+import {Button, IconButton, Modal, Paper, TextField, Typography,Box} from '@mui/material'
 import {connect, useDispatch} from 'react-redux'
 import DeleteIcon from '@mui/icons-material/Delete'
 import * as ActionCreators from "../../actions/requestAction";
@@ -28,11 +28,23 @@ import {trackDestinationLocation, trackLocationSuccess, trackSourceLocation} fro
 import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
 import Geocode from "react-geocode";
 import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
+import MenuItem from '@mui/material/MenuItem';
 
 Geocode.setApiKey("AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo");
 
 
 const filter = createFilterOptions();
+
+const SakalOffices = [
+    {
+        value:'PUNE',
+        label:'PUNE',
+    },
+    {
+        value:'MUMBAI',
+        label:'MUMBAI',
+    },
+]
 
 const Request = ({sourceLocation, destinationLocation, userDetails, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData}) => {
 
@@ -61,6 +73,9 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [errorMsg, setErrorMsg] = useState(false);
     const [tripStatus, setTripStatus] = useState('');
     const [country, setCountry] = useState("IN");
+    const [requestLocation,setrequestLocation] = useState(null);
+    const [hasRide,sethasRide] = useState('');
+    const [isopenChangedate,setisopenChangedate] = useState(false);
 
 
     const { ref: sourceRef } = usePlacesWidget({
@@ -174,7 +189,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
         }
 
     };
-
+    
     const addTraveller = e => {
         e.preventDefault();
         setTravellerName(travellerName.trim());
@@ -183,7 +198,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             setTravellerList([
                 ...travellerList,
                 {
-                    id: travellerId?travellerId:0,
+                    id: travellerId?travellerId:'0',
                     name: travellerName,
                     number: travellerNumber,
                     designation:''
@@ -193,10 +208,13 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             setTravellerName('');
             setTravellerNumber('');
             setIsOpen(false);
+            console.log("----Traveller list------",travellerList)
             setTravellerListData(travellerList)
+            
         }
-
+        console.log("---Traveller list data var",travellerListData)
     };
+    
 
     const handleRequest = async (e) => {
         setError(false);
@@ -205,6 +223,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             tripStatus !==' ' && tripStatus !=='' &&
             source !=='' && source !== null && source !== undefined &&
             destination !=='' && destination !==null && destination !==undefined &&
+            requestLocation !== '' &&
             startDate !=='' &&
             endDate !=='' &&
             reason !==''
@@ -232,8 +251,9 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                     source: source,
                     oneWayOrRoundTrip:tripStatus,
                     destination: destination,
-                    startDateTime : moment(startDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
-                    endDateTime : moment(endDate).subtract({hours:5, minute:30}).format('YYYY-MM-DD hh:mm a'),
+                    requestLocation:requestLocation,
+                    startDateTime : startDate,
+                    endDateTime : endDate,
                     // requestedVehicleType : selectedVehicle.vehicleType,
                     sourceLat: sourceLocation && sourceLocation.lat,
                     sourceLong: sourceLocation && sourceLocation.lng,
@@ -244,14 +264,20 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                     createdBy: userDetails.user._id
                 }
             );
-            if(data){
+            if(data.message !== 'Traveller already have ride' ){
                 navigate('/dashboard/request-status')
+            }
+            else{
+                sethasRide(data)
+                setisopenChangedate(true)
             }
         }
         else{
             setError(true);
         }
-    };
+    }; 
+
+    console.log('-----Response has ride',hasRide)
 
     const onInputChange =(event,value) => {
         const xyz = value.replace(/^\s+/g, '')
@@ -328,6 +354,24 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                             </InputAdornment>
                     }}
                 />
+               
+                                <TextField
+                                    
+                                    id="outlined-select-currency"
+                                    select
+                                    label="Select Request location"
+                                    helperText="Please select Request location"
+                                    value={requestLocation}
+                                    className={classes.textFields}
+                                    onChange={ e => { setrequestLocation(e.target.value) } }
+                                >
+                                    {SakalOffices.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <MobileDateTimePicker
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
@@ -519,6 +563,33 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                                 Add Traveller
                             </Button>
                         </Stack>
+                    </Paper>
+                </Modal>
+
+                <Modal
+                 className={classes.middlePosition}
+                 open={isopenChangedate}
+                 onClose={e => {
+                     e.preventDefault();
+                     setisopenChangedate(false)
+                 }}>
+                    <Paper className={classes.form} style={{padding: 16}}>
+                    <Stack direction="row" justifyContent="space-between"
+                               alignItems="center" spacing={2}>
+                            <Stack direction="column" style={ { margin:5 } }>
+                                <Typography variant='h6' component='div'>There seems to be an Error</Typography>
+                                <Typography variant='caption' component='div' style={{ fontSize:16 }}>This ride seems to be overlapping with your already booked rides.
+                                <br />Please check ride details for more Information
+                                </Typography>
+                            </Stack>
+                            <IconButton aria-label="delete" onClick={e => {
+                                e.preventDefault();
+                                setisopenChangedate(false)
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Stack>
+                        <Button variant='contained' onClick={ () => setisopenChangedate(false) } >Ok</Button>
                     </Paper>
                 </Modal>
             </main>
