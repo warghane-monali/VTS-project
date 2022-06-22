@@ -29,6 +29,7 @@ import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
 import Geocode from "react-geocode";
 import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
 import MenuItem from '@mui/material/MenuItem';
+import { format } from 'date-fns'
 
 Geocode.setApiKey("AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo");
 
@@ -76,6 +77,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [requestLocation,setrequestLocation] = useState(null);
     const [hasRide,sethasRide] = useState('');
     const [isopenChangedate,setisopenChangedate] = useState(false);
+    
 
 
     const { ref: sourceRef } = usePlacesWidget({
@@ -217,6 +219,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     
 
     const handleRequest = async (e) => {
+        console.log("-----Start Date time----",startDate)
+        console.log("-----End Date time----",endDate)
         setError(false);
         e.preventDefault();
         if (
@@ -390,7 +394,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="End Date and Time"
                         value={endDate}
-                        minDateTime={new Date(startDate && startDate.getTime() + 15*60*1000)}
+                        minDateTime={new Date ( startDate && startDate.getTime() + 15*60*1000)}
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}
