@@ -310,7 +310,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                getFeedBackQueData,
                                feedBackQueList,
                                setFeedBackQueData,extendrequestallocatedriverlistData,DriverExtendList,requestStatusAdmin,DealocationdriverListData,extendrequestallocatevehiclelistData,VehicleExtendList,
-                               DealocationvelicleListData}) => {
+                               DealocationvelicleListData,extendRequestApproveData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -376,6 +376,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             driverId:requestDetails.driverId,
            extendRequestDate:requestDetails.extendRequestDate,
            endDateTime:requestDetails.endDateTime,
+           journeyId:requestDetails._id,
         })
         console.log('End Time',requestDetails.endDateTime)
         setdriverRes(res)
@@ -388,6 +389,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             vehicleId:requestDetails.vehicleId,
            extendRequestDate:requestDetails.extendRequestDate,
            endDateTime:requestDetails.endDateTime,
+           journeyId:requestDetails._id,
         })
         setvehicleRes(res)
     }
@@ -488,6 +490,84 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
             setError(true);
         }
     };
+
+    const reallocateRequestData = async () => {
+        if( requestDetails.driverId !== null && vehicle && vehicle?.vehicleId ){
+            const result = await setAcceptStatusData({
+                journeyId: requestDetails._id,
+                vehicleId: vehicle?.vehicleId,
+                agencyName: vehicle?.agencyName,
+                vehicleName: vehicle?.vehicleName,
+                vehicleNo: vehicle?.vehicleNo,
+                driverId: requestDetails.driverId,
+                driverName: requestDetails.driverName,
+                driverNo: requestDetails.contactNo,
+                updatedBy: adminDetails?.user._id,
+            });
+            if(result){
+                navigate('/admin/request-list',{state:'APPROVED'});
+            }else {
+                setError(true);
+            }
+        }
+        else if( requestDetails.vehicleId !== null &&  driverInfo && driverInfo.firstName !==' ' && driverInfo && driverInfo.contactNo !==''  ){
+            const firstName = driverInfo?.firstName !== null ? driverInfo?.firstName : '';
+            const middleName = driverInfo?.middleName !== null ? driverInfo?.middleName : '';
+            const lastName = driverInfo?.lastName !== null ? driverInfo?.lastName : '';
+            const fullName = firstName +' '+ middleName +' '+ lastName;
+            const result = await setAcceptStatusData({
+                journeyId: requestDetails._id,
+                vehicleId: requestDetails.vehicleId,
+                agencyName: requestDetails.agencyName,
+                vehicleName: requestDetails.vehicleName,
+                vehicleNo: requestDetails.vehicleNo,
+                driverId: driverInfo._id,
+                driverName: fullName,
+                driverNo: driverInfo.contactNo,
+                updatedBy: adminDetails?.user._id,
+            });
+            if(result){
+                navigate('/admin/request-list',{state:'APPROVED'});
+            }else {
+                setError(true);
+            }
+        }
+        else {
+            const firstName = driverInfo?.firstName !== null ? driverInfo?.firstName : '';
+            const middleName = driverInfo?.middleName !== null ? driverInfo?.middleName : '';
+            const lastName = driverInfo?.lastName !== null ? driverInfo?.lastName : '';
+            const fullName = firstName +' '+ middleName +' '+ lastName;
+            const result = await setAcceptStatusData({
+                journeyId: requestDetails._id,
+                vehicleId: vehicle?.vehicleId,
+                agencyName: vehicle?.agencyName,
+                vehicleName: vehicle?.vehicleName,
+                vehicleNo: vehicle?.vehicleNo,
+                driverId: driverInfo._id,
+                driverName: fullName,
+                driverNo: driverInfo.contactNo,
+                updatedBy: adminDetails?.user._id,
+            });
+            if(result){
+                navigate('/admin/request-list',{state:'APPROVED'});
+            }else {
+                setError(true);
+            }
+        }
+    } 
+
+    const extendAprroveRide = async () => {
+        console.log("-------IN Extend Aprrove Ride-------")
+        const result = await extendRequestApproveData({
+            requestStatus:requestDetails.journeyStatus[1].Status,
+            journeyId:requestDetails._id
+        })
+        if(result){
+            navigate('/admin/request-list',{state:requestDetails.journeyStatus[1].Status});
+        }else{
+            setError(true);
+        }
+    }
 
     const rejectRequestDataPopUp = async ()=>{
         setIsRejectPopUp(true)
@@ -601,6 +681,14 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                         {(requestDetails && (requestDetails.requestStatus !== '' || requestDetails.requestStatus !== null || true)) ?
                             <Paper className={classes.rightSection} elevation={4}>
                                 <div className={classes.topicRow}>
+                                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%',margin:8}} >
+                                <Typography variant='body-1'  style={{marginRight:8,fontSize:14}} >
+                                     Approved By :-
+                                </Typography>
+                                <Typography variant='subtitle-2' component='h4' style={{ fontSize:14 }}  >
+                                    {requestDetails.headName}
+                                </Typography>
+                                </Box>
                                     <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', width:'100%'}}>
                                         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                             <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center"}}>
@@ -760,70 +848,6 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
 
                                     </div>
                                     :null}
-                                {(requestDetails && (requestDetails.requestStatus==='EXTENDREQUESTDEALLOCATE'))?
-                                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', margin: '16px 0'}}>
-                                        <div style={{display: 'flex', flexDirection: 'column'}}>
-                                            <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
-                                                <Typography variant='body-1' component='h4'>
-                                                    Driver Name <IconButton
-                                                    aria-label="close"
-                                                    color="inherit"
-                                                    size="small"
-                                                    onClick={() => {
-                                                        openDriverNameChange()
-                                                    }}>
-                                                    <EditIcon fontSize="inherit" />
-                                                </IconButton>
-                                                </Typography>
-                                                <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                    {requestDetails.driverName}
-                                                </Typography>
-                                            </div>
-                                            <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
-                                                <Typography variant='body-1' component='h4'>
-                                                    Mobile No.
-                                                </Typography>
-                                                <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                    {requestDetails.driverNo}
-                                                </Typography>
-                                            </div>
-                                            <div style={{display: 'flex', flexDirection: 'column', margin: '12px 0'}}>
-                                                <Typography variant='body-1' component='h4'>
-                                                    Company Name
-                                                </Typography>
-                                                <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                    {requestDetails.agencyName}
-                                                </Typography>
-                                            </div>
-                                        </div>
-                                        <div style={{display: 'flex', flexDirection: 'column',}}>
-                                            <div style={{display: 'flex', flexDirection: 'column', margin: '16px 0'}}>
-                                                <Typography variant='body-1' component='h4'>
-                                                    Vehicle Type Name <IconButton
-                                                    aria-label="close"
-                                                    color="inherit"
-                                                    size="small"
-                                                    onClick={() => {
-                                                       openVehicleTypeChange()
-                                                    }}>
-                                                    <EditIcon fontSize="inherit" />
-                                                </IconButton>
-                                                </Typography>
-                                                <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                    {requestDetails.vehicleName}
-                                                </Typography>
-                                            </div>
-                                            <div style={{display: 'flex', flexDirection: 'column', margin: '16px 0'}}>
-                                                <Typography variant='body-1' component='h4'>
-                                                    Vehicle NO.
-                                                </Typography>
-                                                <Typography variant='body-2' component='div' style={{marginTop: 8}}>
-                                                    {requestDetails.vehicleNo}
-                                                </Typography>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    :null}
                             </Paper>
                             : null}
                         {(requestDetails && (requestDetails.requestStatus==='STARTJPURNEY'))?
@@ -930,7 +954,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                             </TableCell>
                                         </TableRow> */}
                                          <div><h4>Allocate Driver List:</h4></div>
-                                        { showData && driverRes.msg === 'Not allocated any journey' ?
+                                        { showData || driverRes.msg === 'Not allocated any journey' ?
                                         DriverExtendList?.length > 0 && DriverExtendList.map((traveller, index) => (
                                             <TableRow key={index}>
                                                 <TableCell component="th" scope="row">
@@ -952,8 +976,11 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         ))
                                          : 'No Journey Allocated to driver'
                                         }
+                                        {
+                                            driverRes.msg === 'Not allocated any journey' ? 'No Journey Allocated to driver' : ''
+                                        }
                                     <div><h4>Allocate Vehicle List:</h4></div>
-                                    {   showData && vehicleRes.msg === 'Not allocated any journey' ?
+                                    {   showData || vehicleRes.msg === 'Not allocated any journey' ?
                                      VehicleExtendList?.length > 0 && VehicleExtendList.map((traveller, index) => (
                                             <TableRow key={index}>
                                                 <TableCell component="th" scope="row">
@@ -976,12 +1003,15 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         ))
                                         :  'Not Allocated any journey to vehicle'
                                     }
+                                        {
+                                            vehicleRes.msg === 'Not allocated any journey' ? 'No Journey Allocated to driver' : ''
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
                             {
                                         requestDetails.requestStatus === 'EXTENDREQUEST' &&  vehicleRes.msg === 'Not allocated any journey' && driverRes.msg === 'Not allocated any journey' ?
-                                        <Button variant='contained' style={ { marginTop:20 } } >
+                                        <Button variant='contained' style={ { marginTop:20 } } onClick={ () => extendAprroveRide() } >
                                             Confirm Extention
                                         </Button>
                             : null }
@@ -1055,6 +1085,90 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                             </Alert>:null}
                             <Box className={classes.centerPosition}>
                                 <Button className={classes.acceptButton} onClick={() => acceptRequestData()}>
+                                    Accept
+                                </Button>
+                                <Button className={classes.rejectButton} onClick={() => rejectRequestDataPopUp()}>
+                                    Reject
+                                </Button>
+                            </Box>
+                        </Paper>
+                            : null}
+                        {(requestDetails && (requestDetails.requestStatus === 'EXTENDREQUESTDEALLOCATE') &&  (moment().diff(requestDetails.startDateTime, 'days') <= 1) ) ?
+                        <Paper className={classes.rightSection} style={{width:'80%'}} elevation={4}>
+                            <Typography variant='body-1' component='div' style={{textAlign: "center", marginTop: 16, marginBottom: 24}}>
+                                Accept Ride
+                            </Typography>
+                            <div className={classes.inputContainer}>
+                                { requestDetails.vehicleId === null ?
+                                 carList && carList.length>0 &&
+                                 <FormControl style={{width:'80%', margin:16}}>
+                                    <InputLabel id="selected-cars">Select Cars</InputLabel>
+                                    <Select
+                                        labelId="selected-cars"
+                                        label="Select Vehicle"
+                                        className={classes.textFields}
+                                        value={vehicle}
+                                        defaultValue={vehicle}
+                                        onChange={e => onChangeVehicleInfo(e.target.value)}>
+                                        {
+                                            carList && carList.map(vehicle => (
+                                                <MenuItem key={vehicle._id} value={vehicle}>{vehicle.vehicleName} / {vehicle.vehicleNo} / {vehicle.capacity}</MenuItem>
+                                            ))
+                                        }
+                                    </Select>
+                                </FormControl>
+                                : ''
+                                }
+                                { requestDetails.driverId === null ? 
+                                <>
+                                     <FormControl style={{width:'80%', margin:16}}>
+                                <InputLabel id="selected-cars">Select driver</InputLabel>
+                                <Select
+                                    labelId="selected-driver"
+                                    label="Select Driver"
+                                    className={classes.textFields}
+                                    value={driverInfo}
+                                    defaultValue={driverInfo}
+                                    onChange={e => onChangeDriverInfo(e.target.value)}>
+                                    {
+                                        driverList && driverList?.map(driver => (
+                                            <MenuItem key={driver._id} value={driver}>{driver.firstName +' '+ driver.middleName +' '+ driver.lastName}</MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                error={driverNumber && driverNumber.length<=9 }
+                                inputProps={{maxLength: 10 , pattern: "[0-9]{10,11}" }}
+                                helperText={driverNumber && (driverNumber.length<=9 || driverNumber.match(/[^0-9]/g) ? 'Please enter valid mobile No.' : '')}
+                                style={{width:'80%', margin:16}}
+                                       placeholder="Driver Mobile no."
+                                       className={classes.textFields}
+                                       value={driverNumber}
+                            />
+                                </>
+                                : ''
+                                }
+                            </div>
+                            {error? <Alert
+                                severity="warning"
+                                action={
+                                    <IconButton
+                                        aria-label="close"
+                                        color="inherit"
+                                        size="small"
+                                        onClick={() => {
+                                            setError(false);
+                                        }}>
+                                        <CloseIcon fontSize="inherit" />
+                                    </IconButton>
+                                }
+                                sx={{ mb: 2 }}
+                            >
+                                Please fill request form properly.
+                            </Alert>:null}
+                            <Box className={classes.centerPosition}>
+                                <Button className={classes.acceptButton} onClick={() => reallocateRequestData()}>
                                     Accept
                                 </Button>
                                 <Button className={classes.rejectButton} onClick={() => rejectRequestDataPopUp()}>
@@ -1412,6 +1526,7 @@ const mapDispatchToProps = dispatch => {
         DealocationdriverListData: (data) => dispatch(ActionCreators.DealocationdriverListData(data)),
         DealocationvelicleListData : (data) => dispatch(ActionCreators.DealocationvelicleListData(data)),
         extendrequestallocatevehiclelistData: (requestBody) => dispatch(ActionCreators.extendrequestallocatevehiclelistData(requestBody)),
+        extendRequestApproveData: (requestBody) => dispatch(ActionCreators.extendRequestApproveData(requestBody))
     }
 };
 

@@ -142,6 +142,34 @@ export const getextendrequestallocatevehicleList = data => {
     }
 }
 
+export const extendAprroveRide = data => {
+    return {
+        type : "EXTENDREQUEST_APPROVE",
+        payload : data
+    }
+}
+
+export const getjourneyfetch = data => {
+    return {
+        type : "GET_JOURNEY_DATA",
+        payload : data
+    }
+}
+
+export const getProjectheadfetch = data => {
+    return {
+        type : "GET_PROJECT_HEAD",
+        payload : data
+    }
+}
+
+export const setheadApproveReject = data => {
+    return {
+        type:"SET_PROJECT_APPROVEREJECT",
+        payload:data
+    }
+}
+
 
 export function getVehicleListData() {
     return dispatch => {
@@ -687,6 +715,7 @@ export function extendrequestallocatedriverlistData(requestBody) {
          urlencoded.append("driverId", requestBody.driverId);
          urlencoded.append("extendRequestDate", requestBody.extendRequestDate);
          urlencoded.append("endDateTime", requestBody.endDateTime);
+         urlencoded.append("journeyId",requestBody.journeyId)
 
         let requestOptions = {
             method: 'POST',
@@ -741,6 +770,7 @@ export function extendrequestallocatevehiclelistData(requestBody) {
          urlencoded.append("vehicleId",requestBody.vehicleId);
          urlencoded.append("extendRequestDate",requestBody.extendRequestDate);
          urlencoded.append("endDateTime", requestBody.endDateTime);
+         urlencoded.append("journeyId",requestBody.journeyId)
 
         let requestOptions = {
             method: 'POST',
@@ -778,6 +808,114 @@ export function DealocationvelicleListData(data){
         return fetch(BASE_URL + '/journey/extendrequestdeallocatevehiclejourney', requestOptions).then(response => response.json()).then(res => {
             dispatch(getvehicleDealocatedData(res));
             console.log("response",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function extendRequestApproveData(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("requestStatus",data.requestStatus);
+        urlencoded.append("journeyId",data.journeyId)
+     
+        let requestOptions = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };                    
+       
+        return fetch(BASE_URL + '/journey/extendapproveride', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getvehicleDealocatedData(res));
+            console.log("Extention Approved",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function getJourneyfetchdata(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("journeyId",data)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };     
+        
+        return fetch(BASE_URL + '/journey/journeyfetch', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getjourneyfetch(res));
+            console.log("---Request----",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function getProjectheaddata(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("userId",data)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };     
+        
+        return fetch(BASE_URL + '/user/userV', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getProjectheadfetch(res));
+            console.log("---Project Head----",res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function setheadApproveRejectdata(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("headContactNo",data.headContactNo)
+        urlencoded.append("headName",data.headName)
+        urlencoded.append("isApproveByHead",data.isApproveByHead)
+        urlencoded.append("journeyId",data.journeyId)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };     
+    
+        return fetch(BASE_URL + '/journey/headapproveandreject', requestOptions).then(response => response.json()).then(res => {
+            dispatch(setheadApproveReject(res));
+            console.log("---Project Head----",res)
             return res
         })
         .catch((error) => {

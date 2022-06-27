@@ -40,6 +40,7 @@ import VehicleMaintenancepage from "./pages/admin/VehicleMaintenancepage";
 import PetrolExpense from "./pages/admin/PetrolExpense";
 import RequestFromAdmin from "./pages/admin/Request";
 import RequestStatusAdmin from "./pages/admin/RequestStatusAdmin";
+import ProjectMangerApproval from "./pages/ProjectMangerApproval";
 
 
 
@@ -62,6 +63,7 @@ function App({userDetails, adminDetails}) {
         <Routes>
           <Route path="/" element={<MainLayout/>}>
             <Route path='/' element={<Login/>}/>
+            <Route path="/project-head-approoval/:journeyId/:userId" element={<ProjectMangerApproval/>}  />
           </Route>
           <Route path="dashboard" element={<Dashboard/>}>
             <Route path="request-for-ride" element={<RequestForRide/>}/>

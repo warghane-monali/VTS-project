@@ -406,7 +406,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'))
         }
         else if(tabIndexData===3){
-            getdriverattendanceData(userDetails.user);
+           getdriverattendanceData(userDetails.user);
         }
         if(userDetails.user.status === 'NewLogin')
         setpopup(true)
