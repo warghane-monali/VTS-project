@@ -221,6 +221,11 @@ const RequestForRide = ({
         setOpenFeedBackList(false)
     }
 
+    const setupfeedback = async (selectedProduct) => {
+        updateFeedBackAns(selectedProduct);
+        getTravellerLatestJourney();
+    }
+
     const handelAns = async () => {
         setChecked(!checked);
     }
@@ -365,7 +370,7 @@ const RequestForRide = ({
                         </Paper>
 
                         {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'APPROVED' || travellersLatestJourney.requestStatus === 'APPROVED' ||
-                                travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJPURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' )) &&
+                                travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY' || travellersLatestJourney.requestStatus === 'EXTENDREQUEST' )) &&
                             <Paper className={classes.rightSection} elevation={4}>
                                 {(travellersLatestJourney && (travellersLatestJourney.requestStatus === 'PENDING' || travellersLatestJourney.requestStatus === 'ONGOING' || travellersLatestJourney.requestStatus === 'ENDJOURNEY')) ?
                                     <div className={classes.topicRow}>
@@ -997,7 +1002,7 @@ const RequestForRide = ({
                                         <Button
                                             variant="contained"
                                             size="small"
-                                            onClick={() => updateFeedBackAns(selectedProduct)}>
+                                            onClick={() => setupfeedback(selectedProduct) }>
                                             Submit
                                         </Button>
                                     </div>

@@ -711,7 +711,7 @@ export function getFeedBackQueData() {
         let requestOptions = {
             method: 'GET'
         };
-        return fetch(BASE_URL+'/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
+        return fetch('https://testvtsfeedbackapi.foxberry.link/v1/feedbackentityquestion/getfeedbackquestion', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBackQue(res));
             return res
         })
@@ -726,6 +726,7 @@ export function setFeedBackQueData(data) {
         myHeaders.append("Content-Type", "application/json");
 
         let raw = JSON.stringify(data[0]);
+        console.log("---Raw Data---",raw)
 
         let requestOptions = {
             method: 'POST',
@@ -733,7 +734,7 @@ export function setFeedBackQueData(data) {
             body: raw,
             redirect: 'follow'
         };
-        return fetch(BASE_URL+'/feedback/insertfeedbacka', requestOptions).then(response => response.json()).then(res => {
+        return fetch('https://testvtsfeedbackapi.foxberry.link/v1/feedback/insertfeedbacka', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBackQue(data));
         return res
         })
@@ -757,7 +758,7 @@ export function getFeedBackData(data) {
             redirect: 'follow'
         };
 
-        return fetch(BASE_URL+'/feedback/getfeedback', requestOptions).then(response => response.json()).then(res => {
+        return fetch('https://testvtsfeedbackapi.foxberry.link/v1/feedback/getfeedback', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res))
             return res
         })
@@ -833,7 +834,7 @@ export function getFeedBackAnsData(data) {
             redirect: 'follow'
         };
 
-        return fetch('http://3.111.38.219:4001/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
+        return fetch('https://testvtsfeedbackapi.foxberry.link/v1/feedback/getfeedbackans', requestOptions).then(response => response.json()).then(res => {
             dispatch(getFeedBack(res));
             return res;
         })
