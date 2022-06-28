@@ -397,7 +397,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     useEffect(() => {
         getVehicleList();
         getDriverLatestRides();
-        getUserPreviousRides();
+        // getUserPreviousRides();
         getUserUpcomingRides();
         getCheckinVehicle();
         if(tabIndexData===1){
@@ -475,6 +475,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 startDateTime:moment().add(1,'days').format('YYYY-MM-DD')
             })
         }
+        
     };
 
     const getChangeDatePreviousRides = (selection)=> {
@@ -524,6 +525,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setOtp('');
         setOdoMeter('');
         setSelectedFileUrl(null);
+        getDriverLatestRides();
     };
 
     const setCheckInvehicle = () => {
@@ -622,7 +624,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
                     <ImportExportIcon  sx={{fontSize:40, color: item?.requestStatus ==='PENDING' ? '#f99935': item?.requestStatus ==='APPROVED' ? '#09984c':item?.requestStatus ==='REJECTED' ? '#f93125':
-                            item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='ONGOING'?'#bc9800': item?.requestStatus ==='STARTJOURNEY'?'#3681f9' :item?.requestStatus ==='ENDJPURNEY'?'#f95d9f':''}} />
+                            item?.requestStatus ==='CANCEL'?'#f93125': item?.requestStatus ==='ONGOING'?'#bc9800': item?.requestStatus ==='STARTJOURNEY'?'#3681f9' :item?.requestStatus ==='ENDJOURNEY'?'#f95d9f':''}} />
                 </div>
                 <div className={classes.lowerRow}
                      style={{display: 'flex', flexDirection: 'column', justifyContent: 'center',}}>
@@ -741,7 +743,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                   {changeLang?'पुढचा प्रवास':"Upcoming Rides"}
                 </Typography>
             </div>
-            {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJPURNEY' && popup === false ? <main className={classes.main}>
+            {driversLatestJourney  && driversLatestJourney.requestStatus!=='ENDJOURNEY' && popup === false ? <main className={classes.main}>
                 <Box sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1, flexDirection:'column'}}>
 
                 </Box>
@@ -772,7 +774,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             </div>
                             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                                 <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}}>
-                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}} />
+                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJOURNEY' ? '#f95d9f':'gray'}} />
                                     {changeLang?'प्रवास समाप्त ':" End Journey"}
                                 </Typography>
                             </div>
@@ -1418,7 +1420,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                     onChange={(newValue) => {
                                         setValue(newValue);
                                     }}
-                                    minDate={new Date(moment().add(3, 'days').format('DD-MMM-YYYY'))}
+                                    minDate={new Date(moment().add(2, 'days').format('DD-MMM-YYYY'))}
                                 />
                             </LocalizationProvider>
                         </div>

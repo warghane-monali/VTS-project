@@ -56,7 +56,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [locationData, setLocationData] = useState(routeLocation?.state);
     let dispatch = useDispatch();
     const currentDateTime = new Date();
-    const currentAddDateTime = currentDateTime.setMinutes(15);
+
     const [travellerList, setTravellerList] = useState(travellerListData&&travellerListData.length>0?travellerListData:[]);
     const [isOpen, setIsOpen] = useState(false);
     const [travellerCounter, setTravellerCounter] = useState(0);
@@ -66,8 +66,8 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [travellerId, setTravellerId] = useState('');
     const [source, setSource] = useState(null);
     const [destination, setDestination] = useState(null);
-    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000));
-    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000));
+    const [startDate, setStartDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000));
+    const [endDate, setEndDate] = useState(new Date(currentDateTime && currentDateTime.getTime() + 120*60*1000));
     const [vehicle, setVehicle] = useState('');
     const [reason, setReason] = useState('');
     const [error, setError] = useState(false);
@@ -77,6 +77,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
     const [requestLocation,setrequestLocation] = useState(null);
     const [hasRide,sethasRide] = useState('');
     const [isopenChangedate,setisopenChangedate] = useState(false);
+    console.log("--current time----",currentDateTime)
     
 
 
@@ -381,7 +382,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="Start Date and Time"
                         value={startDate}
-                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 30*60*1000)}
+                        minDateTime={new Date(currentDateTime && currentDateTime.getTime() + 60*60*1000)}
                         onChange={(newValue) => {
                             setStartDate(newValue);
                         }}
@@ -394,7 +395,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="End Date and Time"
                         value={endDate}
-                        minDateTime={new Date ( startDate && startDate.getTime() + 15*60*1000)}
+                        minDateTime={new Date ( startDate && startDate.getTime() + 120*60*1000)}
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}

@@ -331,6 +331,7 @@ export function AddPetrolExpenseData(data){
 }
 
 export function setTravellerRequestData(data) {
+    console.log("---Set Request DATA---",JSON.stringify(data))
     return dispatch => {
         return fetch(BASE_URL + '/journey/travellerRequest', {
             method: 'POST',

@@ -592,7 +592,7 @@ const RequestForRide = ({
                                                                 style={{margin: '6px 0'}}>
                                                         Start OTP : {travellersLatestJourney.startOTP}
                                                     </Typography>
-                                                    {travellersLatestJourney.requestStatus === 'STARTJPURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' &&
+                                                    {travellersLatestJourney.requestStatus === 'STARTJOURNEY' || travellersLatestJourney.requestStatus === 'ONGOING' &&
                                                         <Typography variant='body-1' component='h4'
                                                                     style={{margin: '6px 0'}}>
                                                             End OTP : {travellersLatestJourney.endOTP}
@@ -638,7 +638,7 @@ const RequestForRide = ({
                                             width: '100%',
                                             margin: '16px 0'
                                         }}>
-                                            {travellersLatestJourney.requestStatus === 'STARTJPURNEY' &&
+                                            {travellersLatestJourney.requestStatus === 'STARTJOURNEY' &&
                                                 <div style={{
                                                     display: 'flex',
                                                     flexDirection: 'row',
@@ -673,7 +673,7 @@ const RequestForRide = ({
                        justifyContent="flex-start"
                        alignItems="flex-start">
                     <div style={{ width:'100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start'}}>
-                        {   travellersLatestJourney.requestStatus !== 'EXTENDREQUEST' ?
+                        {   travellersLatestJourney.requestStatus !== 'EXTENDREQUEST' && travellersLatestJourney.requestStatus !== 'ENDJOURNEY' ?
                             <Button variant="contained" size="medium" style={{padding:'4px 15px' }}
                             onClick={() => setConfirmOpen(true)}>
                             EXTENSION
