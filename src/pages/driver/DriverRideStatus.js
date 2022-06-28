@@ -187,6 +187,10 @@ const DriverRideStatus = ({changeLang, sourceLocation, destinationLocation }) =>
                                     <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
                                         {traveller?.Status}
                                     </Typography>}
+                                    {traveller?.Status==='FEEDBACKCOMPLETE' &&
+                                    <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95s9f'}}>
+                                        {traveller?.Status}
+                                    </Typography>}
                                 </div>
                             </div>))}
                     </Paper>

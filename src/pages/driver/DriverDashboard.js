@@ -773,8 +773,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                 </Typography>
                             </div>
                             <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                                <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJPURNEY' ? '#f95d9f':'gray'}}>
-                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJOURNEY' ? '#f95d9f':'gray'}} />
+                                <Typography variant='body-1' component='div' style={{textAlign:"center", color: driversLatestJourney?.requestStatus ==='ENDJPURNEY'  && driversLatestJourney?.requestStatus === 'FEEDBACKCOMPLETE'  ? '#f95d9f':'gray'}}>
+                                    <CircleRoundedIcon sx={{fontSize:12, color: driversLatestJourney?.requestStatus ==='ENDJOURNEY' && driversLatestJourney?.requestStatus === 'FEEDBACKCOMPLETE' ? '#f95d9f':'gray'}} />
                                     {changeLang?'प्रवास समाप्त ':" End Journey"}
                                 </Typography>
                             </div>
