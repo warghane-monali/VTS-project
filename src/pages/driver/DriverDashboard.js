@@ -392,7 +392,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
     const [selectedVehicle,setselectedVehicle] = useState(''); 
     const [data, setData] = useState([]);
     const [checkoutVehicle,setcheckoutVehicle] = useState('');
-
+    const [record,setRecord] = useState(false);
 
     useEffect(() => {
         getVehicleList();
@@ -400,17 +400,22 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         // getUserPreviousRides();
         getUserUpcomingRides();
         getCheckinVehicle();
+        getattendance();
         if(tabIndexData===1){
             getRequestDataByDate(moment().format('YYYY-MM-DD'))
         } else if(tabIndexData===2){
             getRequestDataByDate(moment().subtract(1,'days').format('YYYY-MM-DD'))
         }
         else if(tabIndexData===3){
-           getdriverattendanceData(userDetails.user);
+            getattendance();
         }
         if(userDetails.user.status === 'NewLogin')
         setpopup(true)
     }, []);
+
+    const getattendance = async () => {
+        const data = await getdriverattendanceData(userDetails.user);
+    }
 
     const getVehicleList = async () => {
         const data = await getVehicleListData()
@@ -430,7 +435,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         await getUpcomingPreviousRidesAdminData(moment().subtract(1,'days').format('YYYY-MM-DD'));
     };
     const getCheckinVehicle = async () => {
-        await getCheckinVehicleData(userDetails && userDetails.user && userDetails.user._id);
+      const data =  await getCheckinVehicleData(userDetails && userDetails.user && userDetails.user._id);
+            setRecord(data)
     };
 
     const getUserUpcomingRides = async () => {
@@ -455,7 +461,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
             })
         }
         else if (selected===3 || newValue===3){
-            await  getdriverattendanceData(userDetails.user);
+            getattendance();
         }
     };
 
@@ -525,12 +531,11 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         setOtp('');
         setOdoMeter('');
         setSelectedFileUrl(null);
-        getDriverLatestRides();
     };
 
-    const setCheckInvehicle = () => {
+    const setCheckInvehicle = async () => {
         setischeckin(false)
-        const res = setJourneyCheckInData({
+        const res = await setJourneyCheckInData({
             checkinLocation:checkinLocation,
             vehicleCheckinOdoMeter:chekinodometer,
             vehicleCheckinOdoMeterImgURL: selectedFileUrl,
@@ -601,9 +606,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
         }
     };
 
-    const setattendance = () => {
-        setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1]);
-        getdriverattendanceData(userDetails.user);
+    const setattendance = async () => {
+       const data = await setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1]);
+        getattendance();
     }
 
 
@@ -803,7 +808,9 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             {driversLatestJourney?.requestStatus ==='APPROVED' ? changeLang?'स्वीकृत':"Accepted Status":null}
                             {driversLatestJourney?.requestStatus ==='REJECTED' ? changeLang?'नाकारले':"Rejected Status":null}
                         </Typography>
-                        <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin:12}}>
+                        {
+                            driversLatestJourney === '' ? 
+                            <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin:12}}>
                             <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', padding:12}}>
                                     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                         <Box style={{display: 'flex', flexDirection: 'column', textAlign:"center"}}>
@@ -875,7 +882,8 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         </div>
                                     </div>
                                 </Box>
-                        </Paper>
+                        </Paper> : ''
+                        }
                     </>}
                     {(driversLatestJourney.requestStatus==='APPROVED' || driversLatestJourney.requestStatus==='EXTENDREQUEST') ?
                         <>
@@ -1168,7 +1176,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {
+                                            {   record.message === 'NO RECORD FOUND' ? 'NO Data Found':
                                                 vehicleCheckInOut.map( (dailydata) => (
                                                 <TableRow key={dailydata.id} >
                                                     <TableCell>{dailydata.vehicleNo}</TableCell>

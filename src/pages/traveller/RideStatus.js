@@ -99,6 +99,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
         });
         history.back()
     };
+    console.log("---Ride Status---",requestRideData)
 
     return (
         <div className={classes.root}>
@@ -262,7 +263,7 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                                     {requestRideData && requestRideData?.travellersDetails.map((traveller, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
-
+                                               
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 {traveller.name}
@@ -319,7 +320,11 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#3681f9'}}>
                                     {traveller?.Status}
                                 </Typography>}
-                                {traveller?.Status==='ENDJPURNEY' &&
+                                {traveller?.Status==='ENDJOURNEY' &&
+                                <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
+                                    {traveller?.Status}
+                                </Typography>}
+                                {traveller?.Status==='FEEDBACKCOMPLETE' &&
                                 <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
                                     {traveller?.Status}
                                 </Typography>}
@@ -417,6 +422,14 @@ const RideStatus = ({userDetails, sourceLocation, destinationLocation,
                                         <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
                                             END JOURNEY
                                         </Typography>:null}
+                                    {traveller?.Status==='ENDJOURNEY' &&
+                                        <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
+                                            {traveller?.Status}
+                                        </Typography>}
+                                    {traveller?.Status==='FEEDBACKCOMPLETE' &&
+                                         <Typography variant='h6' component='div' style={{textAlign:"center", color: '#f95d9f'}}>
+                                                {traveller?.Status}
+                                         </Typography>}
                                 </div>
                             </div>))}
                     </Paper>

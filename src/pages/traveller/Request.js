@@ -201,7 +201,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
             setTravellerList([
                 ...travellerList,
                 {
-                    id: travellerId?travellerId:'0',
+                    _id: travellerId?travellerId:'0',
                     name: travellerName,
                     number: travellerNumber,
                     designation:''
