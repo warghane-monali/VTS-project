@@ -45,6 +45,26 @@ const SakalOffices = [
         value:'MUMBAI',
         label:'MUMBAI',
     },
+    {
+        value:'NASHIK',
+        label:'NASHIK',
+    },{
+        value:'GOA',
+        label:'GOA',
+    },{
+        value:'AURANGABAD',
+        label:'AURANGABAD',
+    },{
+        value:'NAGPUR',
+        label:'NAGPUR',
+    },{
+        value:'SOLAPUR',
+        label:'SOLAPUR',
+    },
+    {
+        value:'KOLHAPUR',
+        label:'KOLHAPUR',
+    },
 ]
 
 const Request = ({sourceLocation, destinationLocation, userDetails, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData}) => {

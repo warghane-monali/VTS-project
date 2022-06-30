@@ -1050,7 +1050,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                         defaultValue={driverInfo}
                                         onChange={e => onChangeDriverInfo(e.target.value)}>
                                         {
-                                            driverList && driverList?.map(driver => (
+                                            driverList.length > 0 && driverList?.map(driver => (
                                                 <MenuItem key={driver._id} value={driver}>{driver.firstName +' '+ driver.middleName +' '+ driver.lastName}</MenuItem>
                                             ))
                                         }
@@ -1307,7 +1307,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
                                     defaultValue={driverInfo}
                                     onChange={e => onChangeDriverInfo(e.target.value)}>
                                     {
-                                        driverList && driverList?.map(driver => (
+                                        driverList.length > 0 && driverList?.map(driver => (
                                             <MenuItem key={driver._id} value={driver}>{driver.firstName +' '+ driver.middleName +' '+ driver.lastName}</MenuItem>
                                         ))
                                     }
