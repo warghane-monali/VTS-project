@@ -809,7 +809,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                             {driversLatestJourney?.requestStatus ==='REJECTED' ? changeLang?'नाकारले':"Rejected Status":null}
                         </Typography>
                         {
-                            driversLatestJourney === '' ? 
+                            
                             <Paper style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', margin:12}}>
                             <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', padding:12}}>
                                     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
@@ -882,7 +882,7 @@ const DriverDashboard = ({getTabIndex, tabIndexData, changeLang, getDriverAllUpc
                                         </div>
                                     </div>
                                 </Box>
-                        </Paper> : ''
+                        </Paper> 
                         }
                     </>}
                     {(driversLatestJourney.requestStatus==='APPROVED' || driversLatestJourney.requestStatus==='EXTENDREQUEST') ?

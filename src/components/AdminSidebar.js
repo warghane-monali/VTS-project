@@ -20,7 +20,7 @@ const upperList = [
     { icon: <LocalGasStationIcon /> ,title:'Petrol Expense',url:'/admin/petrol-expense' },
     { icon: <AccountBoxIcon />, title: 'Driver Leave Management', url:'/admin/attendance-status' },
     { icon: <DirectionsCarRoundedIcon />, title: 'Request for Ride' , url:'/admin/requestfromadmin' },
-    { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' },
+    // { icon: <AccountBoxIcon />, title: 'Driver Attendance Details', url:'/admin/attendance-status' },
  
 
 ];
