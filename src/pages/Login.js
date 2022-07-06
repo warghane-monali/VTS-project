@@ -113,15 +113,16 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                     <form >
                         <div style={{display: 'flex', flexDirection: 'column', justifyContent:'center', cursor: 'pointer', marginTop:100}}>
                             <div onClick={() =>navigate('/')} style={{margin:12}}>
-                                <Typography variant="h4" component="div" style={{color:'white', textAlign:'center'}}>
+                                {/* <Typography variant="h4" component="div" style={{color:'white', textAlign:'center'}}>
                                     Vehicle Tracking
                                 </Typography>
                                 <div style={{display: 'flex', flexDirection: 'row', justifyContent:'center',cursor: 'pointer'}}>
                                     <img  style={{width:'32px' }}
                                           alt="React"
-                                          src="/static/img/sakal_logo.png"
+                                          src="/static/img/APGRIDES logo.jpg"
                                     />
-                                </div>
+                                </div> */}
+                                <img style={{ width:390 }} alt = "React" src = "/static/img/APGRIDES_final_logo-01.jpg" />
                             </div>
                         </div>
                         {loginWithEmail?<div style={{width:'90%', display: 'flex', flexDirection: 'column', alignItems: 'center', margin:'5%', marginBottom:'1rem'}} >
@@ -214,7 +215,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                         </div>
                         <div style={{width:'90%', display: 'flex', flexDirection: 'row', alignItems: 'center', margin:'5%', marginTop:'3rem', marginBottom:'3rem'}}>
                             <Typography variant='body-1' component='p' className={classes.heading}>
-                                <span style={{color:'white',}}>{!loginWithEmail?'Need an account?':'Already signed up?'} </span><a style={{color:'#f98c2a'}} onClick={(e)=>changeToLogin(e)}>{loginWithEmail?'Login':'Sign up'}</a>
+                                <span style={{color:'yellow',}}>{!loginWithEmail?'Need an account?':'Already signed up?'} </span><a style={{color:'#f98c2a'}} onClick={(e)=>changeToLogin(e)}>{loginWithEmail?'Login':'Sign up'}</a>
                             </Typography>
                         </div>
 
@@ -273,7 +274,7 @@ const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100vh',
         width: '100%',
-        background: theme.palette.primary.main,
+        background: '#020202',
         display: 'flex',
         flexDirection: 'column'
     },
@@ -301,7 +302,7 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '10px !important',
     },
     button: {
-        background: '#fcfcfc !important',
+        background: '#FFD401 !important',
         fontWeight: 'bold !important',
         height: '40px',
         width: '40%',

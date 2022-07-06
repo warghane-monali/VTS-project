@@ -93,6 +93,7 @@ const useStyles = makeStyles(theme => ({
         flexDirection: 'row !important',
         alignItems: 'center',
         justifyContent: 'space-evenly',
+        
     },
     tabButton: {
         margin: '0 10px !important',
@@ -277,7 +278,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         {item.source}
                     </Typography>
                     <Typography variant='body-2' component='span' style={{textAlign: "center", marginTop: 10}}>
-                        {item.startDateTime}
+                        {moment(item.startDateTime).format('DD MMM YYYY hh:mm:a')}
                     </Typography>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', transform: "rotate(180deg)", alignSelf: 'center' }}>
@@ -587,7 +588,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                         <BottomNavigationAction label="Upcoming Ride" icon={<DirectionsCarIcon />} />
                         {/* <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon />} /> */}
                     </BottomNavigation>
-                    <div>
+                    <div style={{ backgroundColor:'#020202',paddingBottom:5,paddingTop:5 }} >
                         <Typography variant='body-2' component='div' style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
                             Powered By <a style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}} href="https://www.foxberry.in/" target='_blank'> Foxberry Technologies </a> &copy; {new Date().getFullYear()}
                         </Typography>

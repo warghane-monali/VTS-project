@@ -1033,7 +1033,7 @@ const RequestForRide = ({
                         <BottomNavigationAction label="Previous Ride" icon={<DirectionsCarIcon/>}/>
                         {/*<BottomNavigationAction label="Feedback" icon={<FeedbackIcon/>}/>*/}
                     </BottomNavigation>
-                    <div>
+                    <div style={{ backgroundColor:'#020202',paddingBottom:5,paddingTop:5 }}>
                         <Typography variant='body-2' component='div'
                                     style={{color: 'white', textAlign: "center", marginTop: 8, marginBottom: 8}}>
                             Powered By <a style={{color: 'white', textAlign: "center", marginTop: 8, marginBottom: 8}}
@@ -1052,7 +1052,8 @@ const useStyles = makeStyles(theme => ({
     root: {
         minHeight: '100%',
         background: '#fcfcfc',
-        paddingBottom: '130px'
+        paddingBottom: '130px',
+
     },
     tabRoot: {
         maxWidth: '130px !important',
@@ -1073,7 +1074,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '15px',
-        background: '#0c1572 !important',
+        background: '#020202 !important',
     },
     appbarBackIcon: {
         fontSize: '40px !important'

@@ -107,7 +107,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         },
     },
 }));
-const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, AddMaintenanceData, getVehicleMaintenanceData, vehicleMaintenance}) => {
+const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, AddMaintenanceData, getVehicleMaintenanceData, vehicleMaintenance,EndMaintenanceData}) => {
 
     const classes = useStyles();
     const [vehicleId, setVehicleId] = useState("");
@@ -117,10 +117,12 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
     const [maintenancePlaceNo, setMaintenancePlaceNo] = useState("");
     const [maintenanceStartDate, setMaintenanceStartDate] = useState("");
     const [maintenanceEndDate, setMaintenanceEndDate] = useState("");
-    const [odoMeterReading, setodoMeterReading] = useState("");
+    const [odoMeterReadingStart, setodoMeterReadingStart] = useState("");
+    const [odoMeterReadingEnd,setodoMeterReadingEnd] = useState("");
     const [vehicleName, setVehicleName] = useState("");
     const [vehicleNo, setVehicleNo] = useState("");
     const [openMaintenance, setOpenMaintenace] = useState(false);
+    const [endMaintainance,setEndMaintainance] = useState(false);
     const [error, setError] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState({});
     const [dataList, setDataList] = useState([]);
@@ -129,6 +131,7 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [count, setCount] = useState(0);
     const [searched, setSearched] = useState("");
+    const [endMaintainanceId,setendMaintainanceId] = useState("")
 
     useEffect(() => {
         getVehicleList();
@@ -158,28 +161,39 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
         setVehicleName(selectedVehicle.vehicleName)
         setVehicleNo(selectedVehicle.vehicleNo)
         setMaintenanceDescription('');
-        setMaintenanceCost('');
+       // setMaintenanceCost('');
         setMaintenancePlace('');
         setMaintenancePlaceNo('');
         setMaintenanceStartDate('');
-        setMaintenanceEndDate('');
-        setodoMeterReading('');
+      //  setMaintenanceEndDate('');
+      setodoMeterReadingStart('');
         setOpenMaintenace(true);
     };
 
+    const handleEndMaintenanceClickOpen = (selectedVehicle,maintenanceId) => {
+        setendMaintainanceId(maintenanceId)
+        setVehicleId(selectedVehicle._id)
+        setVehicleName(selectedVehicle.vehicleName)
+        setVehicleNo(selectedVehicle.vehicleNo)
+        setMaintenanceCost('');
+        setMaintenanceEndDate('');
+        setodoMeterReadingEnd('')
+        setEndMaintainance(true);
+    }
+
     const AddMaintenanceDetails = async () => {
-        if (vehicleName !== '' && vehicleNo !== '' && maintenanceDescription !== '' && maintenanceCost !== '' && maintenancePlace !== '' && maintenancePlaceNo !== '' && maintenanceStartDate !== '' && maintenanceEndDate !== '' && odoMeterReading !== '' && adminDetails?.user._id !== '') {
+        if (vehicleName !== '' && vehicleNo !== '' && maintenanceDescription !== '' && maintenancePlace !== '' && maintenancePlaceNo !== '' && maintenanceStartDate !== '' && odoMeterReadingStart !== '' && adminDetails?.user._id !== '') {
             const data = await AddMaintenanceData({
                 vehicleId: vehicleId,
                 vehicleName: vehicleName,
                 vehicleNo: vehicleNo,
                 maintenanceDescription: maintenanceDescription,
-                maintenanceCost: maintenanceCost,
+               // maintenanceCost: maintenanceCost,
                 maintenancePlace: maintenancePlace,
                 maintenancePlaceNo: maintenancePlaceNo,
                 maintenanceStartDate: maintenanceStartDate,
-                maintenanceEndDate: maintenanceEndDate,
-                odoMeterReading: odoMeterReading
+              //  maintenanceEndDate: maintenanceEndDate,
+                odoMeterReadingStart: odoMeterReadingStart
             });
             if (data) {
                 await getVehicleMaintenanceList(vehicleId)
@@ -189,6 +203,27 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
             setError(true);
         }
     };
+
+    const EndMaintenanceDetails = async () => {
+            console.log("---End Maintenance ID---", endMaintainanceId)
+        if(vehicleName !== '' && vehicleNo !== '' && maintenanceCost !== '' && maintenanceEndDate !== '' && odoMeterReadingEnd !== '' && adminDetails?.user._id !== ''){
+            const data = await EndMaintenanceData({
+                vehicleMaintenanceId : endMaintainanceId,
+                odoMeterReading : odoMeterReadingEnd,
+                maintenanceEndDate : maintenanceEndDate,
+                maintenanceCost : maintenanceCost,
+                updatedBy : adminDetails?.user._id
+            });
+            if (data) {
+                await getVehicleMaintenanceList(vehicleId)
+                setEndMaintainance(false);
+            }
+        }
+        else {
+            setError(true);
+        }
+
+    } 
 
     const onChangeVehicleInfo = async (value) => {
         setSelectedVehicle(value)
@@ -263,11 +298,11 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                     <TableRow>
                                         <TableCell>Vehicle No</TableCell>
                                         <TableCell>Vehicle Name</TableCell>
-                                        <TableCell>Maintenance Cost</TableCell>
                                         <TableCell>Maintenance Description</TableCell>
                                         <TableCell>Maintenance Start Date</TableCell>
                                         <TableCell>Maintenance End Date</TableCell>
-                                        <TableCell>Odo Meter Reading</TableCell>
+                                        <TableCell>Maintenance Cost</TableCell>
+                                        <TableCell>Status</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -276,11 +311,11 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                             <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                                                 <TableCell>{row.vehicleNo}</TableCell>
                                                 <TableCell>{row.vehicleName}</TableCell>
-                                                <TableCell>{row.maintenanceCost}</TableCell>
                                                 <TableCell>{row.maintenanceDescription}</TableCell>
                                                 <TableCell>{ moment(row.maintenanceStartDate).format('DD-MMM-YYYY hh:mm:a') }</TableCell>
-                                                <TableCell>{ moment(row.maintenanceEndDate).format('DD-MMM-YYYY hh:mm:a') }  {row.make}</TableCell>
-                                                <TableCell>{row.odoMeterReading}</TableCell>
+                                                <TableCell>{ row.maintenanceEndDate ? moment(row.maintenanceEndDate).format('DD-MMM-YYYY hh:mm:a') : '-' }  {row.make}</TableCell>
+                                                <TableCell>{row.maintenanceCost ? row.maintenanceCost : '-' }</TableCell>
+                                                <TableCell>{ row.maintenanceCost ? 'Done' : <Button variant='contained' disabled={!selectedVehicle._id}  onClick={() => handleEndMaintenanceClickOpen(selectedVehicle,row._id)} >Reapairs done</Button> }</TableCell>
                                                 {/*<TableCell>{row.contactNo}</TableCell>*/}
                                             </TableRow>
                                         );
@@ -355,17 +390,6 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                         />
                         <TextField
                             style={{margin: 8}}
-                            label='Maintenace Cost'
-                            required
-                            error={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
-                            helperText={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
-                            value={maintenanceCost}
-                            onChange={e => {
-                                setMaintenanceCost(e.target.value)
-                            }}
-                        />
-                        <TextField
-                            style={{margin: 8}}
                             label='Maintenance Place'
                             required
                             error={maintenancePlace.match(/[^A-Za-z0-9]/g) ? 'Please enter valid Place Name' : ''}
@@ -398,31 +422,15 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                                                helperText={params?.inputProps?.placeholder}/>)}
                             />
                         </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                style={{margin: 8}}
-                                value={maintenanceEndDate}
-                                label="Maintenance End Date"
-                                onChange={(newvalue) => {
-                                    setMaintenanceEndDate(newvalue);
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        className={classes.textFields}
-                                        style={{margin: 8}} {...params}
-                                       helperText={params?.inputProps?.placeholder}/>
-                                )}
-                            />
-                        </LocalizationProvider>
                         <TextField
                             style={{margin: 8}}
                             label='Odo Meter Reading'
                             required
-                            error={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
-                            helperText={odoMeterReading.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
-                            value={odoMeterReading}
+                            error={odoMeterReadingStart.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                            helperText={odoMeterReadingStart.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                            value={odoMeterReadingStart}
                             onChange={e => {
-                                setodoMeterReading(e.target.value)
+                                setodoMeterReadingStart(e.target.value)
                             }}
                         />
                         {error ? <Alert
@@ -448,6 +456,111 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
                     </div>
                 </Paper>
             </Modal>
+            <Modal className={classes.middlePosition}
+                   open={endMaintainance} onClose={e => {
+                e.preventDefault();
+                setEndMaintainance(false)
+            }}>
+                <Paper className={classes.form} sx={{
+                    p: 1, m: 1, borderRadius: 1, textAlign: 'center', fontSize: '1rem', fontWeight: '700',
+                }}>
+                    <div style={{
+                        display: 'flex', flexDirection: 'row', justifyItems: 'center', justifyContent: 'space-between',
+                    }}>
+                        <Typography style={{margin: 8}}
+                                    variant='h5'
+                                    component='div'>
+                            Add Complete Maintenance Details
+                        </Typography>
+                        <IconButton aria-label="delete" onClick={e => {
+                            e.preventDefault();
+                            setEndMaintainance(false)
+                        }}>
+                            <CloseIcon/>
+                        </IconButton>
+                    </div>
+                    <hr className={classes.divider}/>
+                    <div className={classes.form}>
+                        <TextField
+                            style={{margin: 8}}
+                            disabled={true}
+                            label='Vehicle Name'
+                            value={vehicleName}
+                            onChange={e => {
+                                setVehicleName(e.target.value)
+                            }}
+                        />
+                        <TextField
+                            style={{margin: 8}}
+                            label='Vehicle No'
+                            required
+                            disabled={true}
+                            value={vehicleNo}
+                            onChange={e => {
+                                setVehicleNo(e.target.value)
+                            }}
+                        />
+                        <TextField
+                            style={{margin: 8}}
+                            label='Maintenace Cost'
+                            required
+                            error={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            helperText={maintenanceCost.match(/^\d+\.\d{0,1}$/) ? 'Please enter valid Cost' : ''}
+                            value={maintenanceCost}
+                            onChange={e => {
+                                setMaintenanceCost(e.target.value)
+                            }}
+                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                style={{margin: 8}}
+                                value={maintenanceEndDate}
+                                label="Maintenance End Date"
+                                onChange={(newvalue) => {
+                                    setMaintenanceEndDate(newvalue);
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        className={classes.textFields}
+                                        style={{margin: 8}} {...params}
+                                       helperText={params?.inputProps?.placeholder}/>
+                                )}
+                            />
+                        </LocalizationProvider>
+                        <TextField
+                            style={{margin: 8}}
+                            label='End Maintenance OdoMeter'
+                            required
+                            error={odoMeterReadingEnd.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                            helperText={odoMeterReadingEnd.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                            value={odoMeterReadingEnd}
+                            onChange={e => {
+                                setodoMeterReadingEnd(e.target.value)
+                            }}
+                        />
+                        {error ? <Alert
+                            severity="warning"
+                            action={<IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setError(false);
+                                }}>
+                                <CloseIcon fontSize="inherit"/>
+                            </IconButton>}
+                            sx={{mb: 2}}>
+                            Please fill request form properly.
+                        </Alert> : null}
+                        <Button variant="contained" size="small" className={classes.button} style={{margin: 16}}
+                                onClick={(e) => {
+                                    EndMaintenanceDetails(e)
+                                }}>
+                            Add End Maintenance Details
+                        </Button>
+                    </div>
+                </Paper>
+            </Modal>
         </div>
     )
 }
@@ -466,6 +579,7 @@ const mapDispatchToProps = dispatch => {
     return {
         getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
         AddMaintenanceData: (requestBody) => dispatch(ActionCreators.AddMaintenanceData(requestBody)),
+        EndMaintenanceData : (requestBody) => dispatch(ActionCreators.EndMaintenanceData(requestBody)),
         getVehicleMaintenanceData: (requestBody) => dispatch(ActionCreators.getVehicleMaintenanceData(requestBody)),
     }
 }

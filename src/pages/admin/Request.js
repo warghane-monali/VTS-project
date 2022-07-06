@@ -28,12 +28,44 @@ import {trackDestinationLocation, trackLocationSuccess, trackSourceLocation} fro
 import Autocomplete, {createFilterOptions} from '@mui/material/Autocomplete';
 import Geocode from "react-geocode";
 import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
+import MenuItem from '@mui/material/MenuItem';
 import { Label } from '@mui/icons-material'
 
 Geocode.setApiKey("AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo");
 
 
 const filter = createFilterOptions();
+
+const SakalOffices = [
+    {
+        value:'PUNE',
+        label:'PUNE',
+    },
+    {
+        value:'MUMBAI',
+        label:'MUMBAI',
+    },
+    {
+        value:'NASHIK',
+        label:'NASHIK',
+    },{
+        value:'GOA',
+        label:'GOA',
+    },{
+        value:'AURANGABAD',
+        label:'AURANGABAD',
+    },{
+        value:'NAGPUR',
+        label:'NAGPUR',
+    },{
+        value:'SOLAPUR',
+        label:'SOLAPUR',
+    },
+    {
+        value:'KOLHAPUR',
+        label:'KOLHAPUR',
+    },
+]
 
 const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData,adminDetails}) => {
 
@@ -44,7 +76,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
     const [locationData, setLocationData] = useState(routeLocation?.state);
     let dispatch = useDispatch();
     const currentDateTime = new Date();
-    const currentAddDateTime = currentDateTime.setMinutes(15);
+
     const [travellerList, setTravellerList] = useState(travellerListData&&travellerListData.length>0?travellerListData:[]);
     const [isOpen, setIsOpen] = useState(false);
     const [travellerCounter, setTravellerCounter] = useState(0);
@@ -62,9 +94,11 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
     const [errorMsg, setErrorMsg] = useState(false);
     const [tripStatus, setTripStatus] = useState('');
     const [country, setCountry] = useState("IN");
-    const [requestBy,setRequestBy] = useState({id:''});
-
-    console.log('-----Admin Details------',adminDetails.user)
+    const [requestBy,setRequestBy] = useState({_id:''});
+    const [requestLocation,setrequestLocation] = useState(null);
+    const [hasRide,sethasRide] = useState('');
+    const [isopenChangedate,setisopenChangedate] = useState(false);
+    console.log("--current time----",currentDateTime)
 
     const { ref: sourceRef } = usePlacesWidget({
         apiKey: 'AIzaSyC1JGc-xX3lFEzCId2g3HQcKv1gpE7Oejo',
@@ -186,7 +220,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
             setTravellerList([
                 ...travellerList,
                 {
-                    id: travellerId?travellerId:0,
+                    _id: travellerId?travellerId:'0',
                     name: travellerName,
                     number: travellerNumber,
                     designation:''
@@ -196,9 +230,11 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
             setTravellerName('');
             setTravellerNumber('');
             setIsOpen(false);
+            console.log("----Traveller list------",travellerList)
             setTravellerListData(travellerList)
+            
         }
-
+        console.log("---Traveller list data var",travellerListData)
     };
 
     const handleRequest = async (e) => {
@@ -225,9 +261,10 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
             travellerList.map((item, index)=>{
                 travellerIdArray.push(item.id)
             });
+            
             const data = await setTravellerRequestData(
                 {
-                    selfTravellerId : requestBy.id,
+                    selfTravellerId : requestBy._id,
                     selfTravellerName : requestBy.name,
                     selfTravellerNo : requestBy.number,
                     travellersId: travellerIdArray,
@@ -235,8 +272,9 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                     source: source,
                     oneWayOrRoundTrip:tripStatus,
                     destination: destination,
-                    startDateTime : moment(startDate).subtract({hours:5, minute:60}).format('YYYY-MM-DD hh:mm a'),
-                    endDateTime : moment(endDate).subtract({hours:5, minute:60}).format('YYYY-MM-DD hh:mm a'),
+                    requestLocation:requestLocation,
+                    startDateTime : startDate,
+                    endDateTime : endDate,
                     // requestedVehicleType : selectedVehicle.vehicleType,
                     sourceLat: sourceLocation && sourceLocation.lat,
                     sourceLong: sourceLocation && sourceLocation.lng,
@@ -247,8 +285,12 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                     createdBy: adminDetails.user._id
                 }
             );
-            if(data){
+            if(data.message !== 'Traveller already have ride' ){
                 navigate('/admin/requeststatusadmin')
+            }
+            else{
+                sethasRide(data)
+                setisopenChangedate(true)    
             }
         }
         else{
@@ -280,7 +322,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
          setRequestBy(traveller)
     }
 
-        console.log("----Requested By--------",requestBy)
+
     return (
         <div className={classes.root}>
             <main className={classes.main}>
@@ -336,6 +378,22 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                             </InputAdornment>
                     }}
                 />
+                                <TextField
+                                    
+                                    id="outlined-select-currency"
+                                    select
+                                    label="Select Request location"
+                                    helperText="Please select Request location"
+                                    value={requestLocation}
+                                    className={classes.textFields}
+                                    onChange={ e => { setrequestLocation(e.target.value) } }
+                                >
+                                    {SakalOffices.map((option) => (
+                                        <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <MobileDateTimePicker
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
@@ -354,7 +412,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                         renderInput={(props) => <TextField  className={classes.textFields} {...props} />}
                         label="End Date and Time"
                         value={endDate}
-                        minDateTime={new Date(startDate && startDate.getTime() + 60*60*1000)}
+                        minDateTime={new Date(startDate && startDate.getTime() + 120*60*1000)}
                         onChange={(newValue) => {
                             setEndDate(newValue);
                         }}
@@ -396,7 +454,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                                             <TableCell component="th" scope="row">
                                                 Requested By
                                                 <Radio 
-                                                    checked={traveller.id === requestBy.id }
+                                                    checked={traveller._id === requestBy._id }
                                                     value={traveller.id}
                                                     // onChange={ () => handleself(traveller) }
                                                     onClick={ () => handleself(traveller) }
@@ -523,16 +581,8 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                             className={classes.textField}
                             value={travellerNumber}
                             onChange={(e )=> {
-                                if(travellerNumber.length<=9 || travellerNumber.match(/[^0-9]/g))
-                                    {
-                                        setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
-                                        setTravellerId(0);
-                                    }
-                                else
-                                    setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
-                                    setTravellerId(0);
-                                    if(travellerNumber.length<=9 || travellerNumber.match(/[^0-9]/g))
-                                        setError(true)
+                                setTravellerNumber(e.target.value.replace(/[^0-9]/g, ""))
+                                setTravellerId(0);
                             }}
                         />
                         {error ? <Alert
@@ -559,6 +609,32 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                                 Add Traveller
                             </Button>
                         </Stack>
+                    </Paper>
+                </Modal>
+                <Modal
+                 className={classes.middlePosition}
+                 open={isopenChangedate}
+                 onClose={e => {
+                     e.preventDefault();
+                     setisopenChangedate(false)
+                 }}>
+                    <Paper className={classes.form} style={{padding: 16}}>
+                    <Stack direction="row" justifyContent="space-between"
+                               alignItems="center" spacing={2}>
+                            <Stack direction="column" style={ { margin:5 } }>
+                                <Typography variant='h6' component='div'>There seems to be an Error</Typography>
+                                <Typography variant='caption' component='div' style={{ fontSize:16 }}>This ride seems to be overlapping with your already booked rides.
+                                <br />Please check ride details for more Information
+                                </Typography>
+                            </Stack>
+                            <IconButton aria-label="delete" onClick={e => {
+                                e.preventDefault();
+                                setisopenChangedate(false)
+                            }}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Stack>
+                        <Button variant='contained' onClick={ () => setisopenChangedate(false) } >Ok</Button>
                     </Paper>
                 </Modal>
             </main>

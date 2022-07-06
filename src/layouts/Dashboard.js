@@ -72,7 +72,7 @@ const Dashboard = ({userDetails, adminDetails, changeLang,  userLogout}) => {
             <AppBar position='fixed' sx={{ flexDirection: 'row' }} className={classes.appbar}>
                 {location && location.pathname !=='/dashboard/request-for-ride' ?<ArrowBackRoundedIcon className={classes.appbarBackIcon} onClick={() => history.back()}/>:<div>{' '}</div>}
                     <div onClick={() =>navigate('/')} style={{margin:12}}>
-                        <Typography variant="h6" component="div" style={{color:'white', textAlign:'center',  cursor: 'pointer'}}>
+                        {/* <Typography variant="h6" component="div" style={{color:'white', textAlign:'center',  cursor: 'pointer'}}>
                             Vehicle Tracking
                         </Typography>
                         <div style={{display: 'flex', flexDirection: 'row', justifyContent:'center',cursor: 'pointer'}}>
@@ -80,7 +80,8 @@ const Dashboard = ({userDetails, adminDetails, changeLang,  userLogout}) => {
                                   alt="React"
                                   src="/static/img/sakal_logo.png"
                             />
-                        </div>
+                        </div> */}
+                        <img style={{ width:180,height:50 }} alt = "React" src = "/static/img/APGRIDES_final_logo-01.jpg" />
                     </div>
                 <Stack direction="row" spacing={1} alignItems="center">
                     {/*<IconButton onClick={() =>navigate('/')} >*/}
@@ -128,6 +129,7 @@ const useStyles = makeStyles( theme => ({
         justifyContent: 'space-between',
         padding: '8px',
         background: theme.palette.primary.main,
+        
     },
     appbarBackIcon: {
         color: 'white !important',

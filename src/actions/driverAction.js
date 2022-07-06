@@ -80,6 +80,13 @@ export const getJourneyCheckInOut = data => {
     }
 }
 
+export const setCheckINfirst = data => {
+    return{
+        type:"CHECKINING_CHECK_IN_OR_NOT",
+        payload:data
+    }
+}
+
 export function getDriverLatestJourneyData(requestBody) {
     return dispatch => {
         let myHeaders = new Headers();
@@ -338,6 +345,7 @@ export function getCheckinVehicleData(requestBody) {
 
         return fetch(BASE_URL+"/vehiclecheckincheckout/getCheckinVehicle", requestOptions).then(response => response.json()).then(result =>{
             dispatch(getJourneyCheckInOut(result))
+            console.log("---All checked IN vehicles",result)
             return result
         }).catch(error => console.log('error', error));
     }
@@ -398,6 +406,31 @@ export function setJourneyCheckOutData(data){
 
         return fetch(BASE_URL+'/vehiclecheckincheckout/insertvehiclecheckout',requestOptions).then(response => response.json()).then(res => {
             dispatch(setJourneyCheckOut(res))
+            return res
+        }).catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function journeyVehicleCheckinDeatils(data){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("driverId",data.driverId)
+        urlencoded.append("vehicleId",data.vehicleId)
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL+'/vehiclecheckincheckout/validatecheckinvehicle',requestOptions).then(response => response.json()).then(res => {
+            dispatch(setCheckINfirst(res))
             return res
         }).catch((error) => {
             console.error('Error:', error);

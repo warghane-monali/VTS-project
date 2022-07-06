@@ -6,12 +6,12 @@ const defaultTheme = createTheme({
     },
     palette: {
         primary: {
-            main: "#0c1572",
-            dark: "#0c1572",
+            main: "#020202",
+            dark: "#D4AC0D",
         },
         secondary: {
             main: "#fcfcfc",
-            dark: "#0c1572",
+            dark: "#020202",
         },
     },
     breakpoints: {

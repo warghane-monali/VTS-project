@@ -263,6 +263,7 @@ export function updateVehicleListData(data) {
 }
 
 export function AddMaintenanceData(data){
+    console.log('---Maintainance data',data)
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -272,21 +273,53 @@ export function AddMaintenanceData(data){
         urlencoded.append("vehicleName", data.vehicleName);
         urlencoded.append("vehicleNo", data.vehicleNo);
         urlencoded.append("maintenanceDescription", data.maintenanceDescription);
-        urlencoded.append("maintenanceCost", data.maintenanceCost);
+        // urlencoded.append("maintenanceCost", data.maintenanceCost);
         urlencoded.append("maintenancePlace", data.maintenancePlace);
         urlencoded.append("maintenancePlaceNo", data.maintenancePlaceNo);
         urlencoded.append("maintenanceStartDate", data.maintenanceStartDate);
-        urlencoded.append("maintenanceEndDate", data.maintenanceEndDate);
-        urlencoded.append("odoMeterReading", data.odoMeterReading);
-        urlencoded.append("homeLocation", data.homeLocation);
-        urlencoded.append("createdBy", data.createdBy);
+        // urlencoded.append("maintenanceEndDate", data.maintenanceEndDate);
+         urlencoded.append("odoMeterReadingStart", data.odoMeterReadingStart);
+        // urlencoded.append("homeLocation", data.homeLocation);
+        // urlencoded.append("createdBy", data.createdBy);
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
+        
         return fetch(BASE_URL + '/vehiclemaintenance/insertvehiclemaintenance', requestOptions).then(response => response.json()).then(res => {
+            console.log('---Maintainance Added-----',res)
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+export function EndMaintenanceData(data){
+    console.log('---EndMaintainance data',data)
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("vehicleMaintenanceId",data.vehicleMaintenanceId)
+        urlencoded.append("maintenanceCost", data.maintenanceCost);
+        urlencoded.append("maintenanceEndDate", data.maintenanceEndDate);
+        urlencoded.append("odoMeterReading", data.odoMeterReading);
+        urlencoded.append("updatedBy", data.updatedBy);
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+
+        return fetch(BASE_URL + '/vehiclemaintenance/vehiclebackfrommaintenance', requestOptions).then(response => response.json()).then(res => {
+            console.log('---Maintainance Completed-----',res)
             return res
         })
         .catch((error) => {
@@ -561,6 +594,7 @@ export function getVehicleMaintenanceData(requestBody) {
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/vehiclemaintenance/getvehiclemaintenancebyvehicle', requestOptions).then(response => response.json()).then(res => {
+            console.log('---Vehicle Maintainance---',res)
             dispatch(getVehicleMaintenance(res));
             return res
         })
