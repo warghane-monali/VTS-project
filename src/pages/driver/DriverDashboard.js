@@ -415,8 +415,8 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     }, []);
 
     useEffect(() => {
-        setselectedVehicle(data[data.findIndex(item => item.vehicleNo === driversLatestJourney.vehicleNo)])
-    }, [driversLatestJourney.vehicleNo, data, setselectedVehicle])
+        setselectedVehicle(data[data.findIndex(item => item.vehicleNo === driversLatestJourney?.vehicleNo)])
+    }, [driversLatestJourney?.vehicleNo, data, setselectedVehicle])
 
     const getattendance = async () => {
         const data = await getdriverattendanceData(userDetails.user);
@@ -689,7 +689,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     console.log('Driver Details', userDetails.user)
     console.log('-----Vehicle CheckIN ----', vehicleCheckIn)
     console.log('-----Vehicle Checkout----', vehicleCheckOut)
-    console.log('-----Ride vehicle no----', driversLatestJourney.vehicleNo)
+    console.log('-----Ride vehicle no----', driversLatestJourney?.vehicleNo)
     return (
         <>
             {selected === 1 ? <div className={classes.root}>

@@ -56,7 +56,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
             }else{
                 setSuccess(true)
             }
-            console.log(result)
+            console.log("Login result",result)
         }else if(contact.length===10 && loginWithEmail){
             setSendOtpForSignUp(true);
             const result = await sendOtp(contact);
