@@ -247,7 +247,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
             </Stack>
             <div>
                 <Typography variant='body-2' component='div' style={{color:'white',
-                    position: "absolute", left:0, right:0, bottom:0,  textAlign: "center", marginTop: 8, marginBottom: 8}}>
+                    position: "fixed", left:0, right:0, bottom:0,  textAlign: "center", marginTop: 8, marginBottom: 8}}>
                     Powered By <a style={{color:'white', textAlign: "center", marginTop: 8, marginBottom: 8}} href="https://www.foxberry.in/" target='_blank'> Foxberry Technologies </a> &copy; {new Date().getFullYear()}
                 </Typography>
             </div>
