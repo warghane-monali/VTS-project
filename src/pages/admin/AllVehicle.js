@@ -410,7 +410,6 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                         <TableHead>
                             <TableRow>
                                 <TableCell>Company Name</TableCell>
-                                <TableCell>Company Number</TableCell>
                                 <TableCell>Vehicle Type</TableCell>
                                 <TableCell>Vehicle Name</TableCell>
                                 <TableCell>Capacity</TableCell>
@@ -424,7 +423,6 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row._id}>
                                         <TableCell>{row.agencyName}</TableCell>
-                                        <TableCell>{row.agencyNumber}</TableCell>
                                         <TableCell>{row.vehicleType}</TableCell>
                                         <TableCell>{row.model} - {row.make}</TableCell>
                                         <TableCell>{row.capacity}</TableCell>
