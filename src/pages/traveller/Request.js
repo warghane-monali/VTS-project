@@ -296,6 +296,11 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                 sethasRide(data)
                 setisopenChangedate(true)
             }
+           if(data._message == 'journeys validation failed')
+           {
+            console.log('-------',data)
+            setError(true)
+           }
         }
         else{
             setError(true);
@@ -381,7 +386,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                 />
                
                                 <TextField
-                                    
+                                    error = { requestLocation === null }
                                     id="outlined-select-currency"
                                     select
                                     label="Select Request location"
@@ -617,6 +622,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
                         <Button variant='contained' onClick={ () => setisopenChangedate(false) } >Ok</Button>
                     </Paper>
                 </Modal>
+                
             </main>
             <div style={{height:100, width:'100%'}}> </div>
         </div>

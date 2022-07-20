@@ -568,6 +568,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
             vehicleCheckoutOdoMeterImgURL: selectedFileUrl,
         })
         getCheckinVehicle()
+        setselectedVehicle(null)
     }
 
     const uploadImageToS3 = (event, type) => {
@@ -693,76 +694,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     return (
         <>
             {selected === 1 ? <div className={classes.root}>
-                {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
-                    <div className={classes.popupbox}>
-                        <div className={classes.box}>
-                            {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
-                            <h2>Create Password</h2>
-                            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-password"
-                                    type={isvisible1 ? 'text' : 'password'}
-                                    value={password}
-                                    onChange={e => setpassword(e.target.value)}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={() => setisvisible1(!isvisible1)}
-                                                onMouseDown={() => handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {isvisible1 ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    label="Password"
-                                />
-                            </FormControl>
-                            <br />
-                            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                                <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
-                                <OutlinedInput
-                                    id="outlined-adornment-password"
-                                    type={isvisible2 ? 'text' : 'password'}
-                                    value={confirmpassword}
-                                    onChange={e => setconfirmpassword(e.target.value)}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={() => setisvisible2(!isvisible2)}
-                                                onMouseDown={() => handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {isvisible2 ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                    label="Password"
-                                />
-                            </FormControl>
-                            <br />
-                            {error ? <Alert
-                                severity="warning"
-                                action={<IconButton
-                                    aria-label="close"
-                                    color="inherit"
-                                    size="small"
-                                    onClick={() => {
-                                        seterror(false);
-                                    }}>
-                                    <CloseIcon fontSize="inherit" />
-                                </IconButton>}
-                                sx={{ mb: 2 }}>
-                                Password does not match
-                            </Alert> : null}
-                            <br />
-                            <Button className={classes.Passbutton} onClick={() => updatePassword()}>Set Password</Button>
-                        </div>
-                    </div>
-                }
+
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h5' component='div' style={{ textAlign: "center", margin: "5%" }}>
                         {changeLang ? 'पुढचा प्रवास' : "Upcoming Rides"}
@@ -920,7 +852,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                 </Box>
                             </>
                             : null}
-                        {(driversLatestJourney.requestStatus === 'ONGOING') ?
+                        {(driversLatestJourney.requestStatus === 'ONGOING' || driversLatestJourney.requestStatus === 'STARTJOURNEY') ?
                             <>
                                 <Box className={classes.middlePosition}>
                                     <Button variant="contained" className={classes.button} onClick={e => { e.preventDefault(); setIsEndOpen(true) }}>
@@ -1050,8 +982,8 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                             sx={{ m: 1, width: '25ch' }}
                                             label='Odo Meter Reading / मीटर रीडिंग'
                                             required
-                                            error={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
-                                            helperText={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                            error={odoMeter.match(/[0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                            helperText={odoMeter.match(/[0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
                                             value={odoMeter}
                                             onChange={e => {
                                                 setOdoMeter(e.target.value)
@@ -1139,7 +1071,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                 <Paper className={classes.modal}>
                                   <h3>First Check in the Vehicle</h3>
                                   <Box className={classes.middlePosition}>
-                                    <Button varient="contained" onClick={ () => {
+                                    <Button variant="contained" onClick={ () => {
                                         setcheckinFirst(false)
                                     } } >OK</Button>
                                   </Box>
@@ -1156,14 +1088,86 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
 
                 <div>
                     <div className="container">
+
+                    {userDetails && userDetails.user && userDetails.user.status === 'NewLogin' && popup &&
+                    <div className={classes.popupbox}>
+                        <div className={classes.box}>
+                            {/* <span className={classes.closeicon} onClick={ () => togglepopup()}>x</span> */}
+                            <h2>Create Password</h2>
+                            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    type={isvisible1 ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={e => setpassword(e.target.value)}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={() => setisvisible1(!isvisible1)}
+                                                onMouseDown={() => handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {isvisible1 ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label="Password"
+                                />
+                            </FormControl>
+                            <br />
+                            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password">Confirm Password</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    type={isvisible2 ? 'text' : 'password'}
+                                    value={confirmpassword}
+                                    onChange={e => setconfirmpassword(e.target.value)}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={() => setisvisible2(!isvisible2)}
+                                                onMouseDown={() => handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {isvisible2 ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label="Password"
+                                />
+                            </FormControl>
+                            <br />
+                            {error ? <Alert
+                                severity="warning"
+                                action={<IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        seterror(false);
+                                    }}>
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>}
+                                sx={{ mb: 2 }}>
+                                Password does not match
+                            </Alert> : null}
+                            <br />
+                            <Button variant='contained' onClick={() => updatePassword()}>Set Password</Button>
+                        </div>
+                    </div>
+                }
+
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
-                            <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " : 'Daily Check In - Check Out'}</h1></div>
+                            <div><h1>{changeLang ? "दैनंदिन चेक इन " : 'Daily Check In - Check Out'}</h1></div>
                             {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                         </Box>
                         <div>
                             {popup === false &&
                                 <Button variant="contained" className={classes.button} onClick={e => { e.preventDefault(); setischeckin(true) }} style={{ margin: 8 }} >
-                                    Daily Check in
+                                   {changeLang ? 'दैनंदिन चेक इन' : 'Daily Check in'} 
                                 </Button>
                             }
                             {/* {vehicleCheckIn && vehicleCheckIn._id  &&
@@ -1197,19 +1201,19 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                         </div>
                         <div>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', m: 2, bgcolor: 'background.paper', '& button': { m: 1 } }}>
-                                <div><h1>{changeLang ? "सुट्टी व्यवस्थापन " : 'Previous Data'}</h1></div>
+                                <div><h1>{changeLang ? "मागील डेटा " : 'Previous Data'}</h1></div>
                                 {/* <div><Button  variant="contained" size="small" >Leave</Button></div> */}
                             </Box>
                             <TableContainer component={Paper}  >
                                 <Table sx={{ width: '100%' }} aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Vehicle No</TableCell>
-                                            <TableCell>Vehicle Check In Time</TableCell>
-                                            <TableCell>Vehicle Check In Location</TableCell>
-                                            <TableCell>Vehicle Check Out Location</TableCell>
-                                            <TableCell>Vehicle Check Out Time</TableCell>
-                                            <TableCell>Action</TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? "वाहन क्रमांक" : 'Vehicle No'}</strong></TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? 'वाहन चेक इन वेळ' : 'Vehicle Check In Time'}</strong></TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? 'वाहन चेकइन स्थान' : 'Vehicle Check In Location'}</strong></TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? 'वाहन चेकआउट स्थान' : 'Vehicle Check Out Location'}</strong></TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? 'वाहन चेकआउट वेळ' : 'Vehicle Check Out Time'}</strong></TableCell>
+                                            <TableCell style={ { fontSize : 16 } }><strong>{changeLang ? 'क्रिया' : 'Action'}</strong></TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -1224,7 +1228,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                                     <TableCell>
                                                         {record.status === 'CHECKIN' ?
                                                             <Button variant="contained" className={classes.button} onClick={e => { e.preventDefault(); setcheckoutVehicle(record); setischeckOut(true); }} >
-                                                                Checkout
+                                                                {changeLang ? "चेकआउट" : 'Checkout' }
                                                             </Button>
                                                             : 'Done'}
                                                     </TableCell>
@@ -1247,7 +1251,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                 <Stack direction="row" justifyContent="space-between"
                                     alignItems="center" spacing={2}>
                                     <Stack direction="column">
-                                        <Typography variant='h6' component='div'> {changeLang ? 'प्रवास सुरू करा' : " Daily Check IN"}</Typography>
+                                        <Typography variant='h6' component='div'> {changeLang ? 'चेक इन' : " Daily Check IN"}</Typography>
                                     </Stack>
                                     <IconButton aria-label="delete" onClick={e => {
                                         e.preventDefault();
@@ -1279,9 +1283,12 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                     </TextField>
                                 </Box>
                                 <Box className={classes.middlePosition}>
-                                    <InputBase
-                                        type='text'
+                                    <TextField
+                                        
                                         placeholder='Meter Reading / मीटर रीडिंग'
+                                        required
+                                        error={chekinodometer.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : false}
+                                        helperText={chekinodometer.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : false}
                                         className={classes.input}
                                         value={chekinodometer}
                                         onChange={e => setchekinodometer(e.target.value)}
@@ -1292,8 +1299,9 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                         style={{ margin: 8 }}
                                         id="outlined-select-currency"
                                         select
-                                        label="Select Vehicle Check In location"
-                                        helperText="Please select Vehicle Check In location"
+                                        error = { checkinLocation === null }
+                                        label="वाहनाचे स्थान / Vehicle location  "
+                                        helperText="Vehicle  location  / वाहनाचे स्थान "
                                         value={checkinLocation}
                                         className={classes.textFields}
                                         onChange={e => { setcheckinLocation(e.target.value) }}
@@ -1314,13 +1322,32 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                         onChange={(event) => changeHandler(event, "CIN")}
                                     />
                                 </Box>
+                                {error ? <Alert
+                                        severity="warning"
+                                        action={
+                                            <IconButton
+                                                aria-label="close"
+                                                color="inherit"
+                                                size="small"
+                                                onClick={() => {
+                                                    seterror(false);
+                                                }}>
+                                                <CloseIcon fontSize="inherit" />
+                                            </IconButton>
+                                        }
+                                        sx={{ mb: 2 }}>
+                                        Please eneter valid Readings
+                                    </Alert> : null}
                                 <Box className={classes.middlePosition}>
                                     {spinner ? <CircularProgress color="success" /> :
                                         <Button variant="contained" className={classes.button} onClick={e => {
-                                            e.preventDefault();
-                                            setCheckInvehicle();
+                                           if(error === false)
+                                            { 
+                                                e.preventDefault();
+                                                setCheckInvehicle();
+                                            }
                                         }}>
-                                            {changeLang ? 'प्रवास सुरू करा' : "  Check In Vehicle"}
+                                            {changeLang ? 'चेक इन' : "  Check In Vehicle"}
                                         </Button>}
                                 </Box>
                             </Paper>
@@ -1337,7 +1364,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                 <Stack direction="row" justifyContent="space-between"
                                     alignItems="center" spacing={2}>
                                     <Stack direction="column">
-                                        <Typography variant='h6' component='div'> {changeLang ? 'प्रवास सुरू करा' : "  Check Out"}</Typography>
+                                        <Typography variant='h6' component='div'> {changeLang ? 'चेकआउट' : "  Check Out"}</Typography>
                                     </Stack>
                                     <IconButton aria-label="delete" onClick={e => {
                                         e.preventDefault();
@@ -1388,7 +1415,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                             e.preventDefault();
                                             setCheckOutvehicle();
                                         }}>
-                                            {changeLang ? 'प्रवास सुरू करा' : "  Check Out Vehicle"}
+                                            {changeLang ? 'चेकआउट' : "  Check Out Vehicle"}
                                         </Button>}
                                 </Box>
                             </Paper>
@@ -1578,7 +1605,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
 
                             }
                         }}>
-                        <BottomNavigationAction label={changeLang ? '' : "Daily Check-In Data"} icon={<InsertInvitationIcon />} />
+                        <BottomNavigationAction label={changeLang ? 'दैनंदिन चेक इन' : "Daily Check-In Data"} icon={<InsertInvitationIcon />} />
                         <BottomNavigationAction label={changeLang ? 'पुढचा प्रवास' : "Upcoming Ride"} icon={<DashboardIcon />} />
                         <BottomNavigationAction label={changeLang ? 'भविष्यातील प्रवास' : "Future Ride"} icon={<DirectionsCarIcon />} />
 

@@ -185,6 +185,7 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
     const [filter, setFilter] = useState(false);
     const [selectedTab, setSelectedTab] = useState(null);
     const [countData, setCountData] = useState([]);
+    const [error,setError] = useState(false);
 
     console.log("------Admin Details---------",adminDetails.user)
 
@@ -240,8 +241,13 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
 
     const getallcountlist = async () => {
         const count = await getJourneyAllCountData({"requestLocationOfAdmin":adminDetails.user.adminLocation})
-        console.log("Count Data",count)
-        setCountData(count)
+         if(count){
+             console.log("Count Data",count)
+            setCountData(count)
+         }
+         else {
+            setError(true)
+         }
     }
 
     const getChangeDateUpcomingRides = (selection)=> {
@@ -567,6 +573,21 @@ const AdminDashboard = ({getTabIndex, tabIndexData, adminDetails, getUpcomingPre
                     </Modal>
                 </main>
             </div>:null}
+            <Modal
+            className={classes.middlePosition}
+            open = {error}
+            onClose = {e => {
+                e.preventDefault();
+                setError(false)
+            }}
+            >
+                <Paper className={classes.form} >
+                    <Typography>Something Went Wrong</Typography>
+                    <Box className={classes.middlePosition}>
+                    <Button variant="contained" onClick={ () => navigate('/') }>OK</Button>
+                    </Box>
+                </Paper>
+            </Modal>
             <AppBar className={classes.footer}>
                 <Box sx={{width: {xs:500, sm:786,md:1080, xl:'100%'}}}>
                     <BottomNavigation

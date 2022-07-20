@@ -557,16 +557,31 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     } 
 
     const extendAprroveRide = async () => {
-        console.log("-------IN Extend Aprrove Ride-------")
-        const result = await extendRequestApproveData({
-            requestStatus:requestDetails.journeyStatus[1].Status,
-            journeyId:requestDetails._id
-        })
-        if(result){
-            navigate('/admin/request-list',{state:requestDetails.journeyStatus[1].Status});
-        }else{
-            setError(true);
-        }
+        console.log("-------IN Extend Aprrove Ride-------",requestDetails.journeyStatus[1].Status)
+        if(requestDetails.journeyStatus[2].Status !== 'ONGOING')
+            {
+                const result = await extendRequestApproveData({
+                    requestStatus:requestDetails.journeyStatus[1].Status,
+                    journeyId:requestDetails._id
+                })
+                if(result){
+                    navigate('/admin/request-list',{state:requestDetails.journeyStatus[1].Status});
+                }else{
+                    setError(true);
+                }
+            }
+        else 
+            {
+                const result = await extendRequestApproveData({
+                    requestStatus:requestDetails.journeyStatus[2].Status,
+                    journeyId:requestDetails._id
+                })
+                if(result){
+                    navigate('/admin/request-list',{state:requestDetails.journeyStatus[2].Status});
+                }else{
+                    setError(true);
+                }
+            }
     }
 
     const rejectRequestDataPopUp = async ()=>{
@@ -637,6 +652,7 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     }
     
     console.log('----Driver Extend List data------',DriverExtendList)
+    console.log('----Driver List---',driverList)
 
     return (
         <div className={classes.root}>

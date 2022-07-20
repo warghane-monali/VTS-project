@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { connect } from 'react-redux'
 import {Button, IconButton, Modal, Paper, Typography} from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -14,13 +14,20 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
+import { setRequestStatusAdminDataReports } from "../../actions/adminAction";
 
 
 
 const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sourceLocation, destinationLocation,  }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [error,setError] = useState(false);
     const classes = useStyles();
     const navigate = useNavigate();
+
+    useEffect( () => {
+        if(requestRideData?._message === 'journeys validation failed')
+            setError(true)
+    },[requestRideData] );
 
     const rejectRequestData = async ()=>{
         const result = await setCancelStatusData({
@@ -36,8 +43,6 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
         // let openMapUrl = new URL();
         window.open(url+origin+destinationL, '_blank');
     };
-
-    console.log("-----RequestRideData-------",requestRideData)
 
     return (
         <div className={classes.root}>
@@ -349,6 +354,23 @@ const RequestStatus = ({ requestRideData, userDetails, setCancelStatusData, sour
                                 </div>))}
                             </Paper>
                         </Modal>
+                        
+                        {/* Error */}
+                        <Modal
+                            className={classes.middlePosition}
+                                 open = {error}
+            onClose = {e => {
+                e.preventDefault();
+                setError(false)
+            }}
+            >
+                <Paper className={classes.form} >
+                    <Typography>Something Went Wrong</Typography>
+                    <Box className={classes.middlePosition}>
+                    <Button variant="contained" onClick={ () => navigate('/dashboard/request-for-ride') }>OK</Button>
+                    </Box>
+                </Paper>
+            </Modal>
                     </div>
                     <div sx={{ display: { xs: 'none', sm: 'block' }}} style={{flex:1,  flexDirection:'column'}}>
 

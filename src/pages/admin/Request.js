@@ -220,7 +220,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
             setTravellerList([
                 ...travellerList,
                 {
-                    _id: travellerId?travellerId:'0',
+                    _id: travellerId?travellerId: '0',
                     name: travellerName,
                     number: travellerNumber,
                     designation:''
@@ -262,36 +262,72 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                 travellerIdArray.push(item.id)
             });
             
-            const data = await setTravellerRequestData(
-                {
-                    selfTravellerId : requestBy._id,
-                    selfTravellerName : requestBy.name,
-                    selfTravellerNo : requestBy.number,
-                    travellersId: travellerIdArray,
-                    travellersDetails: travellerList,
-                    source: source,
-                    oneWayOrRoundTrip:tripStatus,
-                    destination: destination,
-                    requestLocation:requestLocation,
-                    startDateTime : startDate,
-                    endDateTime : endDate,
-                    // requestedVehicleType : selectedVehicle.vehicleType,
-                    sourceLat: sourceLocation && sourceLocation.lat,
-                    sourceLong: sourceLocation && sourceLocation.lng,
-                    destinationLat: destinationLocation && destinationLocation.lat,
-                    destinationLong: destinationLocation && destinationLocation.lng,
-                    reason: reason,
-                    capacity: travellerList && travellerList?.length > 0 ? travellerList?.length + 1: 1,
-                    createdBy: adminDetails.user._id
+            if(requestBy._id === ''){
+                console.log("---NO Request BY ID Found------")
+                const data = await setTravellerRequestData(
+                    {
+                        selfTravellerId : adminDetails.user._id ,
+                        selfTravellerName : fullName,
+                        selfTravellerNo :  adminDetails.user.contactNo,
+                        travellersId: travellerIdArray,
+                        travellersDetails: travellerList,
+                        source: source,
+                        oneWayOrRoundTrip:tripStatus,
+                        destination: destination,
+                        requestLocation:requestLocation,
+                        startDateTime : startDate,
+                        endDateTime : endDate,
+                        // requestedVehicleType : selectedVehicle.vehicleType,
+                        sourceLat: sourceLocation && sourceLocation.lat,
+                        sourceLong: sourceLocation && sourceLocation.lng,
+                        destinationLat: destinationLocation && destinationLocation.lat,
+                        destinationLong: destinationLocation && destinationLocation.lng,
+                        reason: reason,
+                        capacity: travellerList && travellerList?.length > 0 ? travellerList?.length + 1: 1,
+                        createdBy: adminDetails.user._id
+                    }
+                );
+                if(data.message !== 'Traveller already have ride' ){
+                    navigate('/admin/requeststatusadmin')
                 }
-            );
-            if(data.message !== 'Traveller already have ride' ){
-                navigate('/admin/requeststatusadmin')
+                else{
+                    sethasRide(data)
+                    setisopenChangedate(true)    
+                }
             }
             else{
-                sethasRide(data)
-                setisopenChangedate(true)    
+                const data = await setTravellerRequestData(
+                    {
+                        selfTravellerId : requestBy._id ,
+                        selfTravellerName : requestBy.name,
+                        selfTravellerNo :  requestBy.number,
+                        travellersId: travellerIdArray,
+                        travellersDetails: travellerList,
+                        source: source,
+                        oneWayOrRoundTrip:tripStatus,
+                        destination: destination,
+                        requestLocation:requestLocation,
+                        startDateTime : startDate,
+                        endDateTime : endDate,
+                        // requestedVehicleType : selectedVehicle.vehicleType,
+                        sourceLat: sourceLocation && sourceLocation.lat,
+                        sourceLong: sourceLocation && sourceLocation.lng,
+                        destinationLat: destinationLocation && destinationLocation.lat,
+                        destinationLong: destinationLocation && destinationLocation.lng,
+                        reason: reason,
+                        capacity: travellerList && travellerList?.length > 0 ? travellerList?.length + 1: 1,
+                        createdBy: adminDetails.user._id
+                    }
+                );
+                if(data.message !== 'Traveller already have ride' ){
+                    navigate('/admin/requeststatusadmin')
+                }
+                else{
+                    sethasRide(data)
+                    setisopenChangedate(true)    
+                }
             }
+            
         }
         else{
             setError(true);
@@ -379,7 +415,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                     }}
                 />
                                 <TextField
-                                    
+                                    error = { requestLocation === null }
                                     id="outlined-select-currency"
                                     select
                                     label="Select Request location"
@@ -455,6 +491,7 @@ const Request = ({sourceLocation, destinationLocation, allUserList, vehicleList,
                                                 Requested By
                                                 <Radio 
                                                     checked={traveller._id === requestBy._id }
+                                                    disabled = { traveller._id === '0' ? true : false } 
                                                     value={traveller.id}
                                                     // onChange={ () => handleself(traveller) }
                                                     onClick={ () => handleself(traveller) }

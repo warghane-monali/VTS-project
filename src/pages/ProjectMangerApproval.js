@@ -32,7 +32,7 @@ const useStyles = makeStyles( theme => ({
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '8px',
-        background: '#0c1572 !important',
+        background: '#020202 !important',
     },
     appbarBackIcon: {
         fontSize: '24px !important'
@@ -226,7 +226,7 @@ export const ProjectMangerApproval = ({getJourneyfetchdata,getProjectheaddata,se
                     {<ArrowBackRoundedIcon className={classes.appbarMenuIcon} onClick={() => navigate('/')}/> }
                 </IconButton>
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent:'center', cursor: 'pointer',marginRight:'auto',marginLeft:'auto'}}>
-                    <div style={{margin:12}} >
+                    {/* <div style={{margin:12}} >
                         <Typography variant="h6" component="div" style={{color:'white', textAlign:'center'}}>
                             Vehicle Tracking
                         </Typography>
@@ -236,7 +236,8 @@ export const ProjectMangerApproval = ({getJourneyfetchdata,getProjectheaddata,se
                                   src="/static/img/sakal_logo.png"
                             />
                         </div>
-                    </div>
+                    </div> */}
+                    <img style={{ width:180,height:50 }} alt = "React" src = "/static/img/APGRIDES_final_logo-01.jpg" />
                 </div>
         </AppBar>
 
@@ -397,9 +398,11 @@ export const ProjectMangerApproval = ({getJourneyfetchdata,getProjectheaddata,se
                         <Typography style={ { margin:10 } }>
                             The Requested Journey is {Permission} <br />
                         </Typography>
-                        <Button variant='contained' onClick={() => navigate('/')} >
+                       <Box className={classes.middlePosition}>
+                       <Button variant='contained' onClick={() => navigate('/')} >
                                 Okay
                         </Button>
+                       </Box>
                     </Paper>
                 
             </Modal>
