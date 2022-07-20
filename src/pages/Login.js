@@ -122,7 +122,7 @@ const Login = ({ userDetails, adminDetails, login, sendOtp, verifyOtp }) => {
                                           src="/static/img/APGRIDES logo.jpg"
                                     />
                                 </div> */}
-                                <img style={{ width:330,paddingLeft:10 }} alt = "React" src = "/static/img/APGRIDES_final_logo-01.jpg" />
+                                <img style={{ width:330,paddingLeft:5 }} alt = "React" src = "/static/img/APGRIDES_final_logo-01.jpg" />
                             </div>
                         </div>
                         {loginWithEmail?<div style={{width:'90%', display: 'flex', flexDirection: 'column', alignItems: 'center', margin:'5%', marginBottom:'1rem'}} >
