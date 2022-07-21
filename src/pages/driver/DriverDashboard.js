@@ -982,8 +982,8 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
                                             sx={{ m: 1, width: '25ch' }}
                                             label='Odo Meter Reading / मीटर रीडिंग'
                                             required
-                                            error={odoMeter.match(/[0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
-                                            helperText={odoMeter.match(/[0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                            error={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
+                                            helperText={odoMeter.match(/[^0-9]/g) ? 'Please enter valid odo Meter Reading' : ''}
                                             value={odoMeter}
                                             onChange={e => {
                                                 setOdoMeter(e.target.value)
