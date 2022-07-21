@@ -1605,7 +1605,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
 
                             }
                         }}>
-                        <BottomNavigationAction label={changeLang ? 'दैनंदिन चेक इन' : "Daily Check-In Data"} icon={<InsertInvitationIcon />} />
+                        <BottomNavigationAction label={changeLang ? 'दैनंदिन चेक इन' : "CheckIn-OUT"} icon={<InsertInvitationIcon  fontSize='small' />} />
                         <BottomNavigationAction label={changeLang ? 'पुढचा प्रवास' : "Upcoming Ride"} icon={<DashboardIcon />} />
                         <BottomNavigationAction label={changeLang ? 'भविष्यातील प्रवास' : "Future Ride"} icon={<DirectionsCarIcon />} />
 
