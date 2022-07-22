@@ -321,10 +321,11 @@ export function getDriverListData(data) {
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
         let urlencoded = new URLSearchParams();
-        urlencoded.append("userRole", data.userRole);
+        urlencoded.append("userRole", "Driver");
         urlencoded.append("startDate", data.startDate);
-        urlencoded.append("lat", data.lat);
-        urlencoded.append("log", data.log);
+        urlencoded.append("endDate",data.endDate);
+        urlencoded.append("lat", data.sourceLat);
+        urlencoded.append("log", data.sourceLong);
 
         let requestOptions = {
             method: 'POST',
@@ -334,7 +335,7 @@ export function getDriverListData(data) {
         };
 
         return fetch(BASE_URL + '/user/getdriverlist', requestOptions).then(response => response.json()).then(res => {
-            // dispatch(getDriverList(res));
+             dispatch(getDriverList(res));
             return res
         })
             .catch((error) => {
@@ -368,12 +369,17 @@ export function getCarListData(data) {
             });
     }
 }
-export function getDriverUserListData(requestBody) {
+export function getDriverUserListData(data) {
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
         let urlencoded = new URLSearchParams();
         urlencoded.append("userRole", "Driver");
+        urlencoded.append("startDate", data.startDateTime);
+        urlencoded.append("endDate",data.endDateTime);
+        urlencoded.append("lat", data.sourceLat);
+        urlencoded.append("log", data.sourceLong);
+
 
         let requestOptions = {
             method: "POST",
@@ -381,7 +387,7 @@ export function getDriverUserListData(requestBody) {
             body: urlencoded,
             redirect: "follow",
         };
-        return fetch(BASE_URL + "/user/userav", requestOptions)
+        return fetch(BASE_URL + "/user/getdriverlist", requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 let filteredData = result.reduce((unique, o) => {

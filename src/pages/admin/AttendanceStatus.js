@@ -167,7 +167,8 @@ const AttedanceStatus = ({
                           <TableCell>{row && moment(row.endDateTime).format('DD-MMM-YYYY hh:mm:a')}</TableCell>
                           <TableCell>{row && row.status}</TableCell>
                           <TableCell>
-                            <Button
+                            {
+                              row.status === 'PENDING' ? <Button
                               style={{
                                 margin: 4,
                                 marginTop: 8,
@@ -185,7 +186,12 @@ const AttedanceStatus = ({
                             >
                               Approved
                             </Button>
-                            <Button
+                            : ''
+                            }
+                            {
+                              row.status === 'REJECT' ? 
+                              'Request is rejected'
+                              : <Button
                               style={{
                                 margin: 4,
                                 marginTop: 8,
@@ -201,6 +207,7 @@ const AttedanceStatus = ({
                             >
                               REJECT
                             </Button>
+                            }
                           </TableCell>
                         </TableRow>
                       );

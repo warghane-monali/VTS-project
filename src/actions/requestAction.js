@@ -171,19 +171,25 @@ export const setheadApproveReject = data => {
 }
 
 
-export function getVehicleListData() {
+export function getVehicleListData(data) {
     return dispatch => {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
         let urlencoded = new URLSearchParams();
-        urlencoded.append("agencyName", "SAKAAL PAPERS LTD.");
+        urlencoded.append("agencyName", "SAKAAL PAPERS LTD.")
+        urlencoded.append("startDate",data.startDateTime);
+        urlencoded.append("lat",data.sourceLat);
+        urlencoded.append("log",data.sourceLong);
+        urlencoded.append("endtDate",data.endDateTime);
+
+
         let requestOptions = {
             method: 'POST',
             headers: myHeaders,
             body: urlencoded,
             redirect: 'follow'
         };
-        return fetch(BASE_URL + '/vehicle/vehicleAV', requestOptions).then(response => response.json()).then(res => {
+        return fetch(BASE_URL + '/vehicle/getcarlist', requestOptions).then(response => response.json()).then(res => {
             dispatch(getVehicleList(res));
             return res
         })

@@ -555,7 +555,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
         })
 
         getCheckinVehicle()
-
+        
     }
 
     const setCheckOutvehicle = async () => {
@@ -614,7 +614,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     };
 
     const setattendance = async () => {
-        const data = await setDriverAttendanceData(userDetails, drivervalue[0], drivervalue[1]);
+        const data = await setDriverAttendanceData(userDetails,moment(drivervalue[0]).format('YYYY-MM-DD'), moment(drivervalue[1]).format('YYYY-MM-DD'));
         getattendance();
     }
 

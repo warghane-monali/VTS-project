@@ -341,10 +341,11 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     const [showData,setshowData]= useState(false)
 
     useEffect(() => {
-        console.log("IN Use Effect")
-        getVehicleListData();
-         getDriverUserListData();
-        getRideInfo(requestDetails );
+        
+        getvehicles();
+        getdriverlist();
+       
+        // getRideInfo(requestDetails );
         getLocationInfo();
         console.log("status",requestDetails.requestStatus);
         console.log("status",requestDetails);
@@ -369,6 +370,26 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
     //     //     allocatevehicledata();
     //     // }
    // }, []);
+
+   const getvehicles = async () => {
+    const data = await getVehicleListData({
+        startDateTime:requestDetails.startDateTime,
+        sourceLat:requestDetails.sourceLat,
+        sourceLong:requestDetails.sourceLong,
+        endDateTime:requestDetails.endDateTime,
+    });
+    setCarList(data)
+   }
+
+   const getdriverlist = async () => {
+    const data = await getDriverUserListData({
+        startDateTime:requestDetails.startDateTime,
+        sourceLat:requestDetails.sourceLat,
+        sourceLong:requestDetails.sourceLong,
+        endDateTime:requestDetails.endDateTime,
+    })
+    setDriverList(data)
+   }
 
     const allocatedriversdata = async () => {
         console.log("In driver allocation")
@@ -443,14 +464,10 @@ const RequestPermission = ({adminDetails, vehicleList, userList, getVehicleListD
         });
     };
 
-    const getRideInfo = async (requestDetail)=>{
-            const driverListData = await getDriverListData({userRole:'Driver', startDate: requestDetail && requestDetail.startDateTime,
-                lat: requestDetail && requestDetail.sourceLat, log: requestDetail && requestDetail.sourceLong});
-            const carListData = await getCarListData({userRole:'SAKAAL PAPERS LTD.', startDate: requestDetail && requestDetail.startDateTime,
-                lat: requestDetail && requestDetail.sourceLat, log: requestDetail && requestDetail.sourceLong});
-            setDriverList(driverListData);
-            setCarList(carListData);
-    };
+    // const getRideInfo = async (requestDetail)=>{
+    //         setDriverList(driverListData);
+    //         setCarList(carListData);
+    // };
 
     const onChangeDriverInfo =(value)=>{
         setDriverInfo(value);
@@ -1525,7 +1542,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
+        getVehicleListData: (data) => dispatch(ActionCreators.getVehicleListData(data)),
         getDriverUserListData: (requestBody) => dispatch(ActionCreatorsAdmin.getDriverUserListData(requestBody)),
         setAcceptStatusData: (requestBody) => dispatch(ActionCreatorsAdmin.setAcceptStatusData(requestBody)),
         setRejectCancelStatusData: (requestBody) => dispatch(ActionCreatorsAdmin.setRejectCancelStatusData(requestBody)),
