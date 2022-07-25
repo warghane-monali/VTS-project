@@ -199,6 +199,29 @@ export function getVehicleListData(data) {
     }
 }
 
+export function getallvehicleListData(){
+    return dispatch => {
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("agencyName", "SAKAAL PAPERS LTD.")
+
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: 'follow'
+        };
+        return fetch(BASE_URL + '/vehicle/getallcarlist', requestOptions).then(response => response.json()).then(res => {
+            dispatch(getVehicleList(res));
+            return res
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+}
+
 export function addVehicleListData(data) {
     console.log("----Add vehicle data-------",data)
     return dispatch => {

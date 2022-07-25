@@ -313,8 +313,6 @@ export function getdriverattendanceData(requestBody) {
             redirect: 'follow'
         };
 
-        console.log('requestOptions', requestOptions)
-
 
         return axios.post(BASE_URL + '/driverattendance/getdriverattendance', {driverId: requestBody._id})
         .then(response => response.data)

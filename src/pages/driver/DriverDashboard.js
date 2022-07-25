@@ -349,7 +349,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     setJourneyCheckOutData,
     getCheckinVehicleData, vehicleCheckIn, vehicleCheckOut,
     vehicleCheckInOut, setPasswordData, setDriverAttendanceData, getdriverattendanceData, driverattendance, getVehicleListData,
-    getDriverAllUpcomingRideswithdateData, driverAllUpcomingRideswithdate ,journeyVehicleCheckinDeatils}) => {
+    getDriverAllUpcomingRideswithdateData, driverAllUpcomingRideswithdate ,journeyVehicleCheckinDeatils,getallvehicleListData}) => {
 
     const classes = useStyles();
     const navigate = useNavigate();
@@ -423,7 +423,7 @@ const DriverDashboard = ({ getTabIndex, tabIndexData, changeLang, getDriverAllUp
     }
 
     const getVehicleList = async () => {
-        const data = await getVehicleListData()
+        const data = await getallvehicleListData()
         setData(data)
     };
 
@@ -1658,6 +1658,7 @@ const mapDispatchToProps = dispatch => {
         // setRequestStatusAdminDataReports: (startDate, endDate) => dispatch(ActionCreators.setRequestStatusAdminDataReports(startDate, endDate)),
         getdriverattendanceData: (driverattendance) => dispatch(ActionCreatorsDriver.getdriverattendanceData(driverattendance)),
         getVehicleListData: () => dispatch(ActionCreatorRequest.getVehicleListData()),
+        getallvehicleListData :() => dispatch(ActionCreatorRequest.getallvehicleListData()),
         getDriverAllUpcomingRideswithdateData: (requestBody) => dispatch(ActionCreatorsDriver.getDriverAllUpcomingRideswithdateData(requestBody)),
         journeyVehicleCheckinDeatils : (requestBody) => dispatch(ActionCreatorsDriver.journeyVehicleCheckinDeatils(requestBody)),
     }

@@ -67,7 +67,7 @@ const SakalOffices = [
     },
 ]
 
-const Request = ({sourceLocation, destinationLocation, userDetails, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData}) => {
+const Request = ({sourceLocation, destinationLocation, userDetails, allUserList, vehicleList, travellerListData, requestRideData, getVehicleListData, setTravellerListData, setTravellerRequestData, flushRequestState, getAllUserListData,getallvehicleListData}) => {
 
     const classes = useStyles();
     const history = createBrowserHistory();
@@ -137,7 +137,7 @@ const Request = ({sourceLocation, destinationLocation, userDetails, allUserList,
 
 
     useEffect(() => {
-        getVehicleListData();
+        getallvehicleListData();
         getAllUserListData({userRole: userDetails && userDetails?.user.userRole});
     }, []);
 
@@ -647,6 +647,7 @@ const mapDispatchToProps = dispatch => {
     return {
         setTravellerRequestData: (requestBody) => dispatch(ActionCreators.setTravellerRequestData(requestBody)),
         getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
+        getallvehicleListData :() => dispatch(ActionCreators.getallvehicleListData()),
         setTravellerListData: (requestBody) => dispatch(ActionCreators.setTravellerListData(requestBody)),
         getAllUserListData: (requestBody) => dispatch(ActionCreators.getAllUserListData(requestBody)),
         flushRequestState: () => dispatch(ActionCreators.flushRequestState())
