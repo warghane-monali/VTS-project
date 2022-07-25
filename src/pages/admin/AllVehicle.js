@@ -146,7 +146,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         },
     ]
 
-const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData,AddMaintenanceData}) => {
+const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleListData, updateVehicleListData,AddMaintenanceData,getallvehicleListData}) => {
 
     const classes = useStyles();
     const [data, setData] = useState([]);
@@ -192,7 +192,7 @@ const AllVehicle = ({adminDetails, vehicleList, getVehicleListData, addVehicleLi
     }, []);
 
     const getVehicleList = async () => {
-        const data = await getVehicleListData();
+        const data = await getallvehicleListData();
         setData(data);
         setCount(data.length)
     };
@@ -898,6 +898,7 @@ const mapDispatchToProps = dispatch => {
         addVehicleListData: (requestBody) => dispatch(ActionCreators.addVehicleListData(requestBody)),
         updateVehicleListData: (requestBody) => dispatch(ActionCreators.updateVehicleListData(requestBody)),
         AddMaintenanceData: (requestBody) => dispatch(ActionCreators.AddMaintenanceData(requestBody)),
+        getallvehicleListData :() => dispatch(ActionCreators.getallvehicleListData()),
     }
 };
 
