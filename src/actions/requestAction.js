@@ -249,7 +249,7 @@ export function addVehicleListData(data) {
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/vehicle/vehicleI', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getVehicleListData());
+            dispatch(getallvehicleListData());
             console.log("----Add vehicle API RES----------",res)
             return res
         })
@@ -283,7 +283,7 @@ export function updateVehicleListData(data) {
             redirect: 'follow'
         };
         return fetch(BASE_URL + '/vehicle/vehicleU', requestOptions).then(response => response.json()).then(res => {
-            dispatch(getVehicleListData());
+            dispatch(getallvehicleListData());
         })
         .catch((error) => {
             console.error('Error:', error);

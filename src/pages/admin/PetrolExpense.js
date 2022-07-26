@@ -145,7 +145,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }))
 ;
-const PetrolExpense = ({adminDetails, vehicleList, getVehicleListData, AddPetrolExpenseData, getPetrolExpenseListData, vehiclePetrolExpenseList}) => {
+const PetrolExpense = ({adminDetails, vehicleList, getVehicleListData, AddPetrolExpenseData, getPetrolExpenseListData, vehiclePetrolExpenseList,getallvehicleListData}) => {
 
     const classes = useStyles();
     const [vehicleId, setVehicleId] = useState("");
@@ -237,7 +237,7 @@ const PetrolExpense = ({adminDetails, vehicleList, getVehicleListData, AddPetrol
     }
 
     const getVehicleList = async () => {
-        const data = await getVehicleListData()
+        const data = await getallvehicleListData()
         setData(data)
     };
 
@@ -517,6 +517,7 @@ const mapDispatchToProps = dispatch => {
         getVehicleListData: () => dispatch(ActionCreators.getVehicleListData()),
         AddPetrolExpenseData: (requestBody) => dispatch(ActionCreators.AddPetrolExpenseData(requestBody)),
         getPetrolExpenseListData: (requestBody) => dispatch(ActionCreators.getPetrolExpenseListData(requestBody)),
+        getallvehicleListData :() => dispatch(ActionCreators.getallvehicleListData()),
     }
 }
 

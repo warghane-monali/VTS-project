@@ -107,7 +107,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         },
     },
 }));
-const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, AddMaintenanceData, getVehicleMaintenanceData, vehicleMaintenance,EndMaintenanceData}) => {
+const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, AddMaintenanceData, getVehicleMaintenanceData, vehicleMaintenance,EndMaintenanceData,getallvehicleListData}) => {
 
     const classes = useStyles();
     const [vehicleId, setVehicleId] = useState("");
@@ -152,7 +152,7 @@ const VehicleMaintenancepage = ({adminDetails, vehicleList, getVehicleListData, 
     };
 
     const getVehicleList = async () => {
-        const data = await getVehicleListData()
+        const data = await getallvehicleListData()
         setData(data)
     };
 
@@ -581,6 +581,7 @@ const mapDispatchToProps = dispatch => {
         AddMaintenanceData: (requestBody) => dispatch(ActionCreators.AddMaintenanceData(requestBody)),
         EndMaintenanceData : (requestBody) => dispatch(ActionCreators.EndMaintenanceData(requestBody)),
         getVehicleMaintenanceData: (requestBody) => dispatch(ActionCreators.getVehicleMaintenanceData(requestBody)),
+        getallvehicleListData :() => dispatch(ActionCreators.getallvehicleListData()),
     }
 }
 
